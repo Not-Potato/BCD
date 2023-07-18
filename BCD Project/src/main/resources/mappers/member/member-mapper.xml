@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="memberMapper">
+	<resultMap type="member" id="memberResultSet">
+		<result column="m_idx" property="idx"></result>
+		<result column="m_phone" property="phone"></result>
+		<result column="m_nickname" property="nickname"></result>
+		<result column="m_join_date" property="joinDate"></result>
+		<result column="m_delete_date" property="deleteDate"></result>
+
+		<result column="m_profile" property="uploadName"></result>
+		<result column="m_profile_path" property="uploadPath"></result>
+		<result column="m_profile_origin" property="uploadOriginName"></result>
+		
+		<result column="m_id" property="id"></result>
+		<result column="m_pwd" property="pwd"></result>
+		
+		<result column="sns_id" property="snsId"></result>
+		<result column="sns_type" property="snsType"></result>
+	</resultMap>
+</mapper>

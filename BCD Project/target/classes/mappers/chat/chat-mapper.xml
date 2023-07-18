@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="chatMapper">
+	<resultMap type="chatMsg" id="chatMsgResultSet">
+		<result column="cm_idx" property="idx"></result>
+		<result column="cr_idx" property="roomIdx"></result>
+		<result column="m_idx" property="senderIdx"></result>
+		<result column="cm_content" property="content"></result>
+		<result column="cm_send_date" property="sendDate"></result>
+	</resultMap>
+
+	<resultMap type="chatRoom" id="chatRoomResultSet">
+		<result column="cr_idx" property="idx"></result>
+		<result column="cr_participants" property="participants"></result>
+		<result column="cr_category" property="category"></result>
+		<result column="cr_title" property="title"></result>
+		<result column="cr_create_date" property="createDate"></result>
+		<result column="cr_end_date" property="entDate"></result>
+	</resultMap>
+</mapper>

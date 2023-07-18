@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="boardMapper">
+	<resultMap type="post" id="postResultSet">
+		<result column="p_idx" property="idx"></result>
+		<result column="m_idx" property="memIdx"></result>
+		
+		<result column="p_status" property="status"></result>
+		<result column="p_main_category" property="mainCategory"></result>
+		<result column="p_sub_category" property="subCategory"></result>
+		<result column="p_vote_title" property="voteTitle"></result>
+		<result column="p_deadline" property="deadline"></result>
+		<result column="p_vote_1ST" property="vote1ST"></result>
+		<result column="p_vote_2nd" property="vote2ND"></result>
+		
+		<result column="p_vote_img_path" property="uploadPath"></result>
+		<result column="p_vote_1st_img" property="upload1st"></result>
+		<result column="p_vote_2nd_img" property="upload2nd"></result>
+		<result column="p_vote_1st_img_origin" property="upload1stOrigin"></result>
+		<result column="p_vote_2nd_img_origin" property="upload2ndOrigin"></result>
+		
+		<result column="p_title" property="title"></result>
+		<result column="p_content" property="content"></result>
+		<result column="p_review" property="review"></result>
+		<result column="p_views" property="views"></result>
+		<result column="p_create_date" property="createDate"></result>
+		<result column="p_delete_date" property="deleteDate"></result>
+	</resultMap>
+	
+	<resultMap type="vote" id="voteResultSet">
+		<result column="v_idx" property="idx"></result>
+		<result column="p_idx" property="postIdx"></result>
+		<result column="m_idx" property="memIdx"></result>
+		<result column="v_select" property="seleted"></result>
+	</resultMap>
+	
+	<resultMap type="comment" id="commentResultSet">
+		<result column="c_idx" property="idx"></result>
+		<result column="p_idx" property="postIdx"></result>
+		<result column="m_idx" property="memIdx"></result>
+		<result column="c_content" property="content"></result>
+		<result column="c_create_date" property="createDate"></result>
+		<result column="c_delete_date" property="deleteDate"></result>
+	</resultMap>
+</mapper>
