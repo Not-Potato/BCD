@@ -1,7 +1,9 @@
 package kr.co.bcd.member.model.service;
 
-import kr.co.bcd.member.model.dto.Member;
+import org.springframework.stereotype.Service;
 
+import kr.co.bcd.member.model.dto.Member;
+@Service
 public class MemberServiceImpl {
 	
 	public Member detailMember(int idx) {
