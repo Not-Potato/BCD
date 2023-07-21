@@ -68,7 +68,6 @@
 </head>
 	<body>
 	
-	
       	<div class="modal modal-signin position-fixed d-block bg-opacity-20 py-5 backdrop" tabindex="-1" role="dialog" id="CreateRoom" >
 		  <div class="modal-dialog modal-dialog-centered " role="document">
 		    <div class="modal-content rounded-4 shadow">
