@@ -44,4 +44,41 @@
 		<result column="c_create_date" property="createDate"></result>
 		<result column="c_delete_date" property="deleteDate"></result>
 	</resultMap>
+	
+	<select id="selectListCount" resultType="_int">
+		SELECT COUNT(*) FROM POST
+		WHERE P_DELETE_DATE IS NULL
+		<if test="category != null and category != ''">
+		AND P_SUB_CATEGORY = #{category}
+		</if>
+		<if test="keyword != null and keyword != ''">
+		AND {
+			p_title LIKE '%' || #{keyword} || '%'
+         OR p_content LIKE '%' || #{keyword} || '%'
+         OR p_review LIKE '%' || #{keyword} || '%'
+         OR p_vote_title LIKE '%' || #{keyword} || '%'
+         OR p_vote_1ST LIKE '%' || #{keyword} || '%'
+         OR p_vote_2ND LIKE '%' || #{keyword} || '%'
+		}
+		</if>
+	</select>
+	
+	<select id="selectListAll" resultMap="postResultSet">
+		SELECT * FROM POST
+		WHERE P_DELETE_DATE IS NULL 
+		<if test="category != null and category != ''">
+		AND P_SUB_CATEGORY = #{category}
+		</if>
+		<if test="keyword != null and keyword != ''">
+		AND {
+			p_title LIKE '%' || #{keyword} || '%'
+         OR p_content LIKE '%' || #{keyword} || '%'
+         OR p_review LIKE '%' || #{keyword} || '%'
+         OR p_vote_title LIKE '%' || #{keyword} || '%'
+         OR p_vote_1ST LIKE '%' || #{keyword} || '%'
+         OR p_vote_2ND LIKE '%' || #{keyword} || '%'
+		}
+		</if>
+		ORDER BY p_create_date DESC
+	</select>
 </mapper>
