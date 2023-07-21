@@ -37,7 +37,7 @@ public class UploadFileController {
 	
 	// 파일 삭제
 	public boolean deleteFile(Member member) {
-		member = memberService.detailMember(member.getIdx());
+		//member = memberService.detailMember(member.getIdx());
 		
 		if (!Objects.isNull(member)) {
 			// 지워야 할 파일 = 경로 + 파일명

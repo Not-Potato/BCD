@@ -31,4 +31,8 @@ public class Member {
 	//  ------------------------- SNS 회원 입력 사항 -----------------------------
 	private String snsId;					// sns 회원 id
 	private String snsType;					// sns 회원 type
+	
+	
+	// pwd 확인용
+	private String pwdChk;
 }

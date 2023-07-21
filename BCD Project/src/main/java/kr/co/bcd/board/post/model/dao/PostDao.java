@@ -1,5 +1,6 @@
 package kr.co.bcd.board.post.model.dao;
 
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import kr.co.bcd.board.post.model.dto.Post;
 import kr.co.bcd.common.paging.model.PageInfo;
+
 
 @Repository
 public class PostDao {
