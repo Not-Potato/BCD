@@ -28,8 +28,7 @@ public class PostServiceImpl implements PostService {
 	public List<Post> selectListAll(PageInfo pi, String category, String keyword) {
 		return postDao.selectListAll(sqlSession, pi, category, keyword);
 	}
-	
-	
+
 	public Post detailBoard(int idx) {
 		//return postDao.detailBoard(sqlSession, idx);
 		return null;
