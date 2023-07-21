@@ -1,5 +1,8 @@
 package kr.co.bcd.member.model.service;
 
-public class MemberService {
+import kr.co.bcd.member.model.dto.Member;
 
+public interface MemberService {
+	
+	int register(Member member);
 }
