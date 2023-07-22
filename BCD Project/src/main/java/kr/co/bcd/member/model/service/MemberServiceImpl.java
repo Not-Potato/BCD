@@ -28,4 +28,22 @@ public class MemberServiceImpl implements MemberService {
 	public int register (Member member) {
 		return memberDao.register(sqlSession, member);
 	}
+
+	@Override
+	public Member selectMember(int memberIdx) {
+		return memberDao.selectMember(sqlSession, memberIdx);
+		
+	}
+	
+	@Override
+	public String selectNickname(int memberIdx) {
+		return memberDao.selectNickname(sqlSession, memberIdx);
+		
+	}
+	
+	@Override
+	public void updateProfile(Member member) {
+		memberDao.updateProfile(sqlSession, member);
+		
+	}
 }
