@@ -20,9 +20,9 @@ public class Member {
 	private String deleteDate;				// 탈퇴일
 	
 	// 프로필 사진 관련 사항
-	private String uploadName;				// 프로필 사진 변경된 파일명
-	private String uploadPath;				// 프로필 사진 저장 경로
-	private String uploadOriginName;		// 프로필 사진 원본 파일명
+	private String profile;				// 프로필 사진 변경된 파일명
+	private String profilePath;				// 프로필 사진 저장 경로
+	private String profileOrigin;		// 프로필 사진 원본 파일명
 	
 	//  ------------------------ 일반 회원 입력 사항 ----------------------------
 	private String id;						// 일반 회원 ID
@@ -34,5 +34,5 @@ public class Member {
 	
 	
 	// pwd 확인용
-	private String pwdChk;
+	//private String pwdChk;
 }
