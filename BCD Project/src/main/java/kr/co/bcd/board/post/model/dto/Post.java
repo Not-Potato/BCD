@@ -39,5 +39,8 @@ public class Post {
 	private String createDate;			// 작성일
 	private String deleteDate;			// 삭제일
 	
-	
+	// ------------------- 추가 사항 -----------------------
+	private int commentCount;			// 댓글 수
+	private String writer;				// 작성자 닉네임
+	private int voteCount;				// 투표 참여자 수
 }
