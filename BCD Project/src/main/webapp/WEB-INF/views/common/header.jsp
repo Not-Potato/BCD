@@ -20,9 +20,12 @@
 					<a>새 글 쓰기</a>
                 </li>
                 <li>
-					<a>로그인</a>
+					<button type="button" id="phoneRegisterBtn">로그인</button>
                 </li>
             </ul>
         </div>
     </div>
+    <%@ include file="../member/register.jsp" %>
+  	
+ 
 </header>

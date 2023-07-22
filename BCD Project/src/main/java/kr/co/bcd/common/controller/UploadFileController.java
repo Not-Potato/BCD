@@ -41,7 +41,7 @@ public class UploadFileController {
 		
 		if (!Objects.isNull(member)) {
 			// 지워야 할 파일 = 경로 + 파일명
-			File deleteFile = new File(member.getUploadPath() + member.getUploadName());
+			File deleteFile = new File(member.getProfilePath() + member.getProfile());
 			deleteFile.delete();
 			return true;
 		} else {
@@ -86,9 +86,9 @@ public class UploadFileController {
 			upload.transferTo(filePath);
 			
 			// 경로, 원본 파일명, 수정된 파일명 저장
-			member.setUploadPath(UPLOAD_PATH);
-			member.setUploadOriginName(originalName);
-			member.setUploadName(fileName);
+			member.setProfilePath(UPLOAD_PATH);
+			member.setProfileOrigin(originalName);
+			member.setProfile(fileName);
 		}
 		return member;
 	}

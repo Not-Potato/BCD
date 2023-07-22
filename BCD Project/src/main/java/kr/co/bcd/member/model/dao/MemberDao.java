@@ -13,4 +13,17 @@ public class MemberDao {
 		return sqlSession.insert("memberMapper.register", member);
 	}
 
+	public Member selectMember(SqlSessionTemplate sqlSession, int memberIdx) {
+	
+		return sqlSession.selectOne("memberMapper.selectMember", memberIdx);
+	}
+
+	public String selectNickname(SqlSessionTemplate sqlSession, int memberIdx) {
+		return sqlSession.selectOne("memberMapper.selectNickname", memberIdx);
+	}
+
+	public void updateProfile(SqlSessionTemplate sqlSession, Member member) {
+		sqlSession.update("memberMapper.updateProfile", member);
+	}
+
 }

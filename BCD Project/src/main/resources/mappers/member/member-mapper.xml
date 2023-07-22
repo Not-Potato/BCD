@@ -10,9 +10,9 @@
 		<result column="m_join_date" property="joinDate"></result>
 		<result column="m_delete_date" property="deleteDate"></result>
 
-		<result column="m_profile" property="uploadName"></result>
-		<result column="m_profile_path" property="uploadPath"></result>
-		<result column="m_profile_origin" property="uploadOriginName"></result>
+		<result column="m_profile" property="profile"></result>
+		<result column="m_profile_path" property="profilePath"></result>
+		<result column="m_profile_origin" property="profileOrigin"></result>
 		
 		<result column="m_id" property="id"></result>
 		<result column="m_pwd" property="pwd"></result>
@@ -20,4 +20,23 @@
 		<result column="sns_id" property="snsId"></result>
 		<result column="sns_type" property="snsType"></result>
 	</resultMap>
+	
+	<select id="selectMember" resultMap="memberResultSet">
+		SELECT * FROM MEMBER
+		WHERE m_idx = #{memberIdx}
+	</select>
+	
+	<update id="updateProfile" parameterType="Member">
+		UPDATE MEMBER
+		SET m_nickname = #{nickname}, 
+			m_profile = #{profile}, 
+			m_profile_path = #{profilePath}, 
+			m_profile_origin = #{profileOrigin}, 
+			m_pwd = #{pwd}
+		WHERE m_idx = #{memberIdx} 	
+		
+	</update>
+	
+	
+	
 </mapper>
