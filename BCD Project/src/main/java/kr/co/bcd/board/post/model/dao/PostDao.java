@@ -34,4 +34,9 @@ public class PostDao {
 		return sqlSession.selectList("boardMapper.selectListAll", paramMap, rowBounds);
 	}
 
+	public int insertPost(SqlSessionTemplate sqlSession, Post post) {
+		return sqlSession.insert("boardMapper.insertPost", post);
+	}
+	
+	
 }

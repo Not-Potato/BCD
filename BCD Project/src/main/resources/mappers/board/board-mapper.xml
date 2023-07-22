@@ -93,5 +93,36 @@
 		WHERE P_IDX = #{idx}
 	</select>
 	
-
+	<insert id="insertPost" parameterType="Post">
+		INSERT INTO POST(P_IDX,
+				 M_IDX,
+				 P_MAIN_CATEGORY,
+				 P_SUB_CATEGORY,
+				 P_VOTE_TITLE,
+				 P_DEADLINE,
+				 P_VOTE_1ST,
+				 P_VOTE_2ND,
+				 P_VOTE_IMG_PATH,
+				 P_VOTE_1ST_IMG,
+				 P_VOTE_2ND_IMG,
+				 P_VOTE_1ST_IMG_ORIGIN,
+				 P_VOTE_2ND_IMG_ORIGIN,
+				 P_TITLE,
+				 P_CONTENT)
+		  VALUES(p_idx_sequence.NEXTVAL,
+		  		 #{memIdx},
+		  		 #{mainCategory},
+		  		 #{subCategory},
+		  		 #{voteTitle},
+		  		 #{deadline},
+		  		 #{vote1ST},
+		  		 #{vote2ND},
+		  		 #{uploadPath},
+		  		 #{upload1st},
+		  		 #{upload2nd},
+		  		 #{upload1stOrigin},
+		  		 #{upload2ndOrigin},
+		  		 #{title},
+		  		 #{content})
+	</insert>
 </mapper>
