@@ -22,6 +22,7 @@ public class PostServiceImpl implements PostService {
 	@Autowired
 	private SqlSessionTemplate sqlSession;
 	
+	
 	@Override
 	public int selectListCount(String category, String keyword) {
 		return postDao.selectListCount(sqlSession, category, keyword);

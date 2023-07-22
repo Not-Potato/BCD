@@ -81,4 +81,17 @@
 		</if>
 		ORDER BY p_create_date DESC
 	</select>
+	
+	<select id="selectCommentCount" resultType="_int">
+		SELECT COUNT(*) FROM "COMMENT"
+		WHERE C_DELETE_DATE IS NULL 
+		AND P_IDX = #{idx}
+	</select>
+
+	<select id="selectVoteTotalCount" resultType="_int">
+		SELECT COUNT(*) FROM VOTE
+		WHERE P_IDX = #{idx}
+	</select>
+	
+
 </mapper>

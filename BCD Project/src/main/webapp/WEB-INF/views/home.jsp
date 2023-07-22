@@ -145,7 +145,7 @@
 				            </div>
 				
 				            <div class="fs-6 text-secondary mb-2">
-				                마감일 | <span>${ item.createDate }</span>
+				                마감일 | <span>${ item.deadline }</span>
 				            </div>
 				
 				            <div class="fw-bold fs-5 mb-2 col-12 d-inline-block text-truncate">
@@ -161,6 +161,9 @@
 				                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
 				                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
 				                    </svg>
+				                    <%-- 
+				                    <span class="ms-2">${ item.writer }</span>
+				                     --%>
 				                    <span class="ms-2">@작성자@</span>
 				                </div>
 				
@@ -168,13 +171,13 @@
 				                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-chat-right-dots-fill" viewBox="0 0 16 16">
 				                        <path d="M16 2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h9.586a1 1 0 0 1 .707.293l2.853 2.853a.5.5 0 0 0 .854-.353V2zM5 6a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 1a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
 				                    </svg>
-				                    <span class="ms-2">@댓글수@</span>
+				                    <span class="ms-2">${ item.commentCount }</span>
 				                </div>
 				
 				            </div>
 				
 				            <div class="" style="font-size: 14px;">
-				                현재 <span class="text-primary">@투표자수@</span>명이 투표에 참여했어요!
+				                현재 <span class="text-primary">${ item.voteCount }</span>명이 투표에 참여했어요!
 				            </div>
 				        </div>
 				    </div>
