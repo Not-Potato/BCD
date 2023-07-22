@@ -15,6 +15,7 @@ import kr.co.bcd.board.comment.model.service.CommentServiceImpl;
 import kr.co.bcd.board.post.model.dto.Post;
 import kr.co.bcd.board.post.model.service.PostServiceImpl;
 import kr.co.bcd.board.vote.model.service.VoteServiceImpl;
+import kr.co.bcd.common.controller.SessionManageController;
 import kr.co.bcd.common.paging.model.PageInfo;
 import kr.co.bcd.common.paging.template.Pagination;
 import kr.co.bcd.member.model.dto.Member;
@@ -34,6 +35,9 @@ public class BoardController {
 	
 	@Autowired
 	private MemberServiceImpl memberService;
+	
+	@Autowired
+	private SessionManageController sessionManage;
 	
 	@GetMapping("/list.do")
 	public String boardList(@RequestParam(value="category", defaultValue="") String category, 
@@ -72,15 +76,16 @@ public class BoardController {
 			p.setCreateDate(p.getCreateDate().substring(0, 10));
 			p.setDeadline(p.getDeadline().substring(0, 10));
 			p.setCommentCount( commentService.selectCommentCount(p.getIdx()) );
-			p.setVoteCount( voteService.selectVoteTotalCount(p.getIdx()) );
-//			m = memberService.getMember(p.getMemIdx());
-//			p.setWriter(m.getNickname);
+			p.setVoteCount( voteService.selectVoteTotalCount(p.getIdx()) );			
+			p.setWriter( "닉네임잘이" );
+//			p.setWriter( memberService.selectNickname(p.getMemIdx()) );
 		}
 		
 		model.addAttribute("list", list);
 		model.addAttribute("row", row);
 		model.addAttribute("pi", pi);
 		
+		sessionManage.getSessionMsg(session, model);
 		// 댓글 수 불러오기
 		
 		// 투표자 수 불러오기
@@ -88,5 +93,10 @@ public class BoardController {
 		// 작성자 닉네임 불러오기
 		
 		return "home";
+	}
+	
+	@GetMapping("/detail.do")
+	public String board() {
+		return "/board/detail";
 	}
 }

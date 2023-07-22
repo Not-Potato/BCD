@@ -33,10 +33,15 @@ public class PostServiceImpl implements PostService {
 		return postDao.selectListAll(sqlSession, pi, category, keyword);
 	}
 
+	@Override
+	public int insertPost(Post post) {
+		return postDao.insertPost(sqlSession, post);
+	}
+
 	public Post detailBoard(int idx) {
-		//return postDao.detailBoard(sqlSession, idx);
 		return null;
 	}
+
 
 
 }
