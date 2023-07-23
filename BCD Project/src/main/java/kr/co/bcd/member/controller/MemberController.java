@@ -29,6 +29,22 @@ public class MemberController {
 		return "member/setting";
 	}
 	
+	@RequestMapping("/naverLogin.do")
+	public String naverLogin() {
+		return "member/naverLogin";
+	}
+	
+	@RequestMapping("/naversuccess.do")
+	public String naversuccess() {
+		return "member/naversuccess";
+	}
+
+	//SNS 로그인 성공 시 home으로 사용자 보냄
+	@RequestMapping("/home.do")
+	public String home() {
+		return "home";
+	}
+	
 	//회원정보 수정
 	@RequestMapping("/changeProfile.do")
 	public String updateProfile (HttpSession session, Model model, Member member) {

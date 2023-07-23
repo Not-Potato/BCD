@@ -37,7 +37,7 @@
                 </li>
                 <li>
 
-					<button type="button" id="phoneRegisterBtn">로그인</button>
+					<button type="button" id="loginBtn">로그인</button>
 					<a href="#" class="d-flex align-items-center btn btn-primary">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-door-open" viewBox="0 0 16 16">
 							<path d="M8.5 10c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1z"/>
@@ -50,7 +50,7 @@
             </ul>
         </div>
     </div>
-    <%@ include file="../member/register.jsp" %>
+    <%@ include file="../member/loginModal.jsp" %>
   	
  
 </header>

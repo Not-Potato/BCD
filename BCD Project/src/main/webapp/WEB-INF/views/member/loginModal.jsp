@@ -34,7 +34,7 @@
                     	</div>    
                     
                     	<div class="col-md mb-3">
-                            <img src="../../resources/images/btnG.png" alt="Naver" class="w-100 me-1" style="height:auto; width:100;" />   
+                            <img src="../../resources/images/btnG.png" alt="Naver" class="w-100 me-1" style="height:auto; width:100;" id="naverLoginBtn" />   
                     	</div> 
                     
                     	<div class="col-md mb-3">
@@ -63,7 +63,27 @@
       closeModalBtn.addEventListener("click", function() {
     	  modalSignin.classList.add("d-none");
           location.reload();
-      }); 
+      });
+      
+
+    	document.getElementById('naverLoginBtn').addEventListener('click', function() {
+    	        // AJAX를 사용하여 백엔드로 네이버 인증 URL을 요청합니다.
+    	        var xhr = new XMLHttpRequest();
+    	        xhr.open('GET', '/member/naverLogin', true); // 백엔드의 네이버 인증 URL을 처리하는 URL로 변경해주세요.
+    	        xhr.onreadystatechange = function() {
+    	            if (xhr.readyState === XMLHttpRequest.DONE) {
+    	                if (xhr.status === 200) {
+    	                    var naverAuthUrl = xhr.responseText;
+    	                    // 클라이언트에서 반환된 네이버 인증 URL로 리다이렉트하여 네이버 로그인 과정을 진행합니다.
+    	                    window.location.href = naverAuthUrl;
+    	                } else {
+    	                    console.error('네이버 인증 URL을 가져오는 데 실패했습니다.');
+    	                }
+    	            }
+    	        };
+    	        xhr.send();
+    	    });
+      
 </script>
 
 </body>
