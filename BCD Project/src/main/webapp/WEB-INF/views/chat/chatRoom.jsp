@@ -6,12 +6,13 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../resources/css/chat/chatRoom.css" />
     <%@ include file="../common/head.jsp" %>
 </head>
 <body>
 <%@ include file="../common/header.jsp" %>
 <div class="container">
-	<div class="row clearfix">
+	<div class="row clearfix mt-5">
 	    <div class="col-lg-12">
 	        <div class="card chat-app">
 	            <div id="plist" class="people-list">
@@ -29,52 +30,15 @@
 	                            <div class="status"> <i class="fa fa-circle offline"></i> left 7 mins ago </div>                                            
 	                        </div>
 	                    </li>
-	                    <li class="clearfix active">
-	                        <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
-	                        <div class="about">
-	                            <div class="name">Aiden Chavez</div>
-	                            <div class="status"> <i class="fa fa-circle online"></i> online </div>
-	                        </div>
-	                    </li>
-	                    <li class="clearfix">
-	                        <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="avatar">
-	                        <div class="about">
-	                            <div class="name">Mike Thomas</div>
-	                            <div class="status"> <i class="fa fa-circle online"></i> online </div>
-	                        </div>
-	                    </li>                                    
-	                    <li class="clearfix">
-	                        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-	                        <div class="about">
-	                            <div class="name">Christian Kelly</div>
-	                            <div class="status"> <i class="fa fa-circle offline"></i> left 10 hours ago </div>
-	                        </div>
-	                    </li>
-	                    <li class="clearfix">
-	                        <img src="https://bootdey.com/img/Content/avatar/avatar8.png" alt="avatar">
-	                        <div class="about">
-	                            <div class="name">Monica Ward</div>
-	                            <div class="status"> <i class="fa fa-circle online"></i> online </div>
-	                        </div>
-	                    </li>
-	                    <li class="clearfix">
-	                        <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="avatar">
-	                        <div class="about">
-	                            <div class="name">Dean Henry</div>
-	                            <div class="status"> <i class="fa fa-circle offline"></i> offline since Oct 28 </div>
-	                        </div>
-	                    </li>
 	                </ul>
 	            </div>
+	            
 	            <div class="chat">
 	                <div class="chat-header clearfix">
 	                    <div class="row">
 	                        <div class="col-lg-6">
-	                            <!-- <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
-	                                <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
-	                            </a> -->
 	                            <div class="chat-about">
-	                                <h3 class="m-b-0">BCD 채팅방</h3>
+	                                <h3 class="m-b-0">bcd</h3>
 	                                <small>참여자 : a,b,c</small>
 	                            </div>
 	                        </div>
