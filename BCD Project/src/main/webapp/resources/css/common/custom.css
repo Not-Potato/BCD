@@ -1,1 +1,7 @@
- 
+/* datetime-local 입력 창 내의 달력 아이콘 크기와 위치를 조절 */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    transform: scale(2.0); 
+    position: relative;
+    top: -6px;
+    right: 5px;
+}
