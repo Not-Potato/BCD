@@ -13,4 +13,6 @@ public interface PostService {
 	// 게시글 목록 가져오기
 	List<Post> selectListAll(PageInfo pi, String category, String keyword);
 	
+	// 게시글 작성하기
+	int insertPost(Post post);
 }
