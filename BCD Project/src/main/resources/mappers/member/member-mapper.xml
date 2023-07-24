@@ -25,6 +25,11 @@
 		SELECT * FROM MEMBER
 		WHERE m_idx = #{memberIdx}
 	</select>
+		
+	<select id="selectNickname" resultType="String">
+		SELECT m_nickname FROM MEMBER
+		WHERE m_idx = #{memberIdx}
+	</select>	
 	
 	<update id="updateProfile" parameterType="Member">
 		UPDATE MEMBER
