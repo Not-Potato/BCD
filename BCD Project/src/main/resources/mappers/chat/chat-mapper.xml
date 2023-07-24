@@ -19,4 +19,42 @@
 		<result column="cr_create_date" property="createDate"></result>
 		<result column="cr_end_date" property="entDate"></result>
 	</resultMap>
+	
+	<select id="selectListCount" resultType="_int">
+		SELECT COUNT(*)FROM CHAT_ROOM
+		WHERE cr_end_date IS NULL
+		<if test="category != null and category != ''">
+		AND cr_category = #{category}
+		</if>
+	</select>
+	
+	<select id="selectListAll" resultMap="chatRoomResultSet">
+		SELECT * FROM CHAT_ROOM
+		WHERE cr_end_date IS NULL
+		<if test="category != null and category != ''">
+		AND cr_category = #{category}
+		</if>
+		ORDER BY cr_create_date DESC
+	</select>
+	
+	<insert id = "createChatRoom" parameterType="ChatRoom">
+		INSERT INTO chat_room (CR_IDX,
+						   	   CR_PARTICIPANTS,
+							   CR_CATEGORY,
+							   CR_TITLE,
+							   CR_CREATE_DATE
+							   )
+					VALUES(CR_IDX_SEQUENCE.NEXTVAL, 
+							   #{participants},
+							   #{category},
+							   #{title}, 
+							   SYSDATE
+							   )
+		
+	</insert>
+	
+	
+	
+	
+	
 </mapper>
