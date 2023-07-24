@@ -7,9 +7,7 @@ import org.springframework.ui.Model;
 
 @Controller
 public class SessionManageController {
-	public void setSessionMsg(String msg, 
-							  String status, 
-							  HttpSession session) {
+	public void setSessionMsg(String msg, String status, HttpSession session) {
 		session.setAttribute("msg", msg);
 		session.setAttribute("status", status);
 	}

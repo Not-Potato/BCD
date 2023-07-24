@@ -200,7 +200,21 @@
 			<artifactId>gson</artifactId>
 			<version>2.8.8</version>
 		</dependency>
-<!-- end of add -->
+
+		<!-- 소셜 로그인  oauth2 -->
+		<dependency>
+		    <groupId>com.github.scribejava</groupId>
+		    <artifactId>scribejava-apis</artifactId>
+		    <version>2.8.1</version>
+		</dependency>
+		
+		<dependency>
+    		<groupId>com.github.scribejava</groupId>
+    		<artifactId>scribejava-core</artifactId>
+    		<version>2.8.1</version>
+		</dependency>
+			
+<!-- end of add -->		
 	</dependencies>
     <build>
         <plugins>
