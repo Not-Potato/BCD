@@ -20,6 +20,9 @@
 <!-- 파비콘 -->
 <link rel="icon" href="../../../resources/images/favicon.svg">
 
+<!-- tooltip css -->
+<link rel="stylesheet" href="../../../resources/css/common/tooltip.css" />
+
 <!-- sweetAlert2 CDN -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script> 
