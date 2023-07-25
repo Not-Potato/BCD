@@ -20,21 +20,21 @@ import kr.co.bcd.member.model.dto.Member;
 @Controller
 public class UserController {
 
-	@Inject
-	private UserService service; 
-	
-	@Inject 
-	private SnsValue naverSns;
-	
+//	@Inject
+//	private UserService service; 
+//	
+//	@Inject 
+//	private SnsValue naverSns;
+//	
 //	@Inject 
 //	private SnsValue kakaoSns;
 	
 	
-    @RequestMapping(value = "/member/naverLogin", method = { RequestMethod.GET, RequestMethod.POST })
-    public void login(Model model)throws Exception {
-        
-    	SNSLogin snsLogin = new SNSLogin(naverSns);
-    	model.addAttribute("naver_url", snsLogin.getNaverAuthURL());
+//    @RequestMapping(value = "/member/naverLogin", method = { RequestMethod.GET, RequestMethod.POST })
+//    public void login(Model model)throws Exception {
+//        
+//    	SNSLogin snsLogin = new SNSLogin(naverSns);
+//    	model.addAttribute("naver_url", snsLogin.getNaverAuthURL());
         /* 네이버아이디로 인증 URL을 생성하기 위하여 naverLoginBO클래스의 getAuthorizationUrl메소드 호출 */
         
         
@@ -46,4 +46,4 @@ public class UserController {
     }
 
 
-}
+//}

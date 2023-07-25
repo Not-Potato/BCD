@@ -13,7 +13,7 @@
     	<div class="modal-content rounded-4 shadow">
 		     <!-- 모달 header -->
 		     <div class="modal-header pl-3 pr-3 pb-2 pt-2">
-		     	<img src="../../resources/images/logo.svg" alt="Logo" class="w-100 me-1" style="height:30px; width:40px;"/>  
+		     	<img src="../../resources/images/logo.svg" alt="Logo" style="height:30px; width:60px;"/>  
 		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeModalBtn"></button> 
 		        <hr>
 		     </div>
