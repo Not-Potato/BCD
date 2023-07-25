@@ -16,8 +16,12 @@ public class VoteServiceImpl implements VoteService {
 	private SqlSessionTemplate sqlSession;
 	
 	@Override
-	public int selectVoteTotalCount(int idx) {
-		return voteDao.selectVoteTotalCount(sqlSession, idx);
+	public int selectVoteCount(int idx) {
+		return voteDao.selectVoteCount(sqlSession, idx);
 	}
-	
+
+	@Override
+	public int selectVoteCount(int idx, String AorB) {
+		return voteDao.selectVoteCount(sqlSession, idx, AorB);
+	}
 }
