@@ -15,4 +15,10 @@ public interface PostService {
 	
 	// 게시글 작성하기
 	int insertPost(Post post);
+	
+	// 게시글 조회수 업데이트
+	int viewsUpdate(Post post);
+	
+	// 게시글 조회하기 (상세 페이지)
+	Post detailBoard(int idx);
 }

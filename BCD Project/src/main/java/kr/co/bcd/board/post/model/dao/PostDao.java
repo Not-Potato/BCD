@@ -37,6 +37,13 @@ public class PostDao {
 	public int insertPost(SqlSessionTemplate sqlSession, Post post) {
 		return sqlSession.insert("boardMapper.insertPost", post);
 	}
-	
+
+	public int viewsUpdate(SqlSessionTemplate sqlSession, Post post) {
+		return sqlSession.update("boardMapper.viewsUpdate", post);
+	}
+
+	public Post detailBoard(SqlSessionTemplate sqlSession, int idx) {
+		return sqlSession.selectOne("boardMapper.detailBoard", idx);
+	}
 	
 }
