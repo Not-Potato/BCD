@@ -29,9 +29,9 @@
 	  <div class="modal-dialog modal-dialog-centered " role="document">
 	    <div class="modal-content rounded-4 shadow">
 	        <div class="modal-header pl-1 pb-2 pt-2 pr-1 pt-0">
-		        <h5 class="fw-bold mb-0 fs-4">BCD LOGO</h5>
-      				<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" id="closeModalBtn2"></button> 
-      				<hr>
+		        <img src="../../resources/images/logo.svg" alt="Logo" style="height:30px; width:60px;"/>   
+      			<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" id="closeModalBtn2"></button> 
+      			<hr>
      		</div>
 	      	<div class="modal-body p-5 pt-0">
 		        <h1 class="fw-bold mt-5 mb-5 fs-2 text-center">채팅방 만들기</h1>
