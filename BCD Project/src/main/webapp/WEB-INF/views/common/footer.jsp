@@ -1,5 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
+<aside>
+	<div style="position: fixed; bottom: 50px; right: 50px;" data-tooltip="실시간 채팅하러 가기!">
+		<a role="button" href="/chat/list.do" style="">
+				<img class="border rounded-circle" style="width: 100px; box-shadow: 0 2px 3px #e4e8f0;" src="https://i.postimg.cc/NFW9fxRB/chat-icon.png">
+		</a>
+	</div>
+</aside>
+
+
 <footer class="footer mt-auto py-3">
 	<div class="container d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
 		<p class="col-md-4 mb-0">&copy; 2023 BCD Company, Inc</p>

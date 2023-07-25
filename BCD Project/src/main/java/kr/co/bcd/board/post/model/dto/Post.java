@@ -43,4 +43,7 @@ public class Post {
 	private int commentCount;			// 댓글 수
 	private String writer;				// 작성자 닉네임
 	private int voteCount;				// 투표 참여자 수
+	
+	private int voteACount;				// 투표 항목 1 카운트
+	private int voteBCount;				// 투표 항목 2 카운트
 }

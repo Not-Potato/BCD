@@ -11,6 +11,11 @@
 
 	<!-- card css -->
 	<link rel="stylesheet" href="../../resources/css/common/card.css" />
+	<style>
+		.hidden {
+			display: none;
+		}
+	</style>
 </head>
 <body>
 	<%@ include file="./common/header.jsp" %>
@@ -34,35 +39,48 @@
 
 			<div class="card mt-3" style="border: none;">
 						<!-- 대분류 -->
-				<div class="card-header bg-transparent">
+				<div class="card-header bg-transparent" id="bigCategories">
 					<ul class="nav nav-tabs card-header-tabs">
 						<li class="nav-item">
-							<a class="nav-link active text-primary" aria-current="true" href="#">인기항목</a>
+							<a class="nav-link active text-primary" aria-current="true"  id=popularTab>인기항목</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link text-dark" href="#">큰고민</a>
+							<a class="nav-link text-dark"  id="bigWorryTab">큰고민</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link text-dark" href="#">작은고민</a>
+							<a class="nav-link text-dark"  id="smallWorryTab">작은고민</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link text-dark" href="#">모두보기</a>
+							<a class="nav-link text-dark"  id="allCategoryTab">모두보기</a>
 						</li>
 					</ul>
 				</div>
 				<div class="card-body ps-0">
 				 	<!-- 소분류 -->
-					<div class="mb-2">
-						<a class="btn btn-primary">카테고리1</a>
-						<a class="btn btn-primary">카테고리2</a>
-						<a class="btn btn-primary">카테고리3</a>
+					<div class="mb-2 d-flex gap-1" id="smallCategories">
+						
+						<a class="btn btn-outline-primary" data-category="popular" id="popular1">카테고리1</a>
+						<a class="btn btn-outline-primary" data-category="popular" id="popular2">카테고리2</a>
+						<a class="btn btn-outline-primary" data-category="popular" id="popular3">카테고리3</a>
+						
+						<a class="btn btn-outline-primary" data-category="bigWorry" id="bigWorry1">카테고리4</a>
+						<a class="btn btn-outline-primary" data-category="bigWorry" id="bigWorry2">카테고리5</a>
+						<a class="btn btn-outline-primary" data-category="bigWorry" id="bigWorry3">카테고리6</a>
+					
+					
+						<a class="btn btn-outline-primary" data-category="smallWorry" id="smallWorry1">카테고리7</a>
+						<a class="btn btn-outline-primary" data-category="smallWorry" id="smallWorry2">카테고리8</a>
+						<a class="btn btn-outline-primary" data-category="smallWorry" id="smallWorry3">카테고리9</a>
+						
 					</div>
 					
 					<!-- 적용된 필터 -->
-					<div class="">
-						<a class="btn btn-primary">카테고리1</a>
-						<a class="btn btn-primary">카테고리2</a>
-						<a class="btn btn-outline-primary">
+					<div class="mb-2 d-flex gap-1 d-flex align-items-center mt-3" style="height: 38px;">
+						<div class="selectedBtn d-flex gap-1">
+						  <!-- 선택된 버튼 들어갈 자리 -->
+		
+						</div>
+						<a role="button" id="resetBtn" class="text-secondary d-none">
 							<i class="bi bi-arrow-repeat"></i>
 							초기화
 						</a>
@@ -123,7 +141,7 @@
 	</c:when>
 	<c:otherwise>
 		<c:forEach var="item" items="${list}">
-				<div class="col-xl-3 col-sm-6">
+				<div class="col-xl-3 col-sm-6" role="button" onclick="location.href='/board/detail.do?idx=${item.idx}';">
 				    <div class="card-shadow card">
 				        <div class="card-body">
 				            <div class="mb-2">
@@ -185,6 +203,144 @@
 				el: ".swiper-pagination",
 			},
 		});
+		
+		/*  카테고리  */
+		const popularTab = document.getElementById("popularTab");
+		const bigWorryTab = document.getElementById("bigWorryTab");
+		const smallWorryTab = document.getElementById("smallWorryTab");
+		const allCategoryTab = document.getElementById("allCategoryTab");
+		const bigCategories= document.getElementById("bigCategories").getElementsByTagName("a");
+		const smallCategories= document.getElementById("smallCategories").getElementsByTagName("a");
+		const selectedBtnTag= document.querySelector(".selectedBtn").getElementsByTagName("a");
+		
+		let selectedCount = 0;
+		
+		//active class 없애기
+		function removeActive(){
+			console.log("removeActive() 실행됨");
+			for(const activeClass of bigCategories) {
+				activeClass.classList.remove("active");
+			}
+		}
+		
+		popularTab.addEventListener("click", function() {
+			removeActive();
+			popularTab.classList.add("active");
+			selectedCategory = "popular"
+			showCategories(selectedCategory);
+		});
+		bigWorryTab.addEventListener("click", function() {
+			removeActive();
+			bigWorryTab.classList.add("active");
+			selectedCategory = "bigWorry"
+			showCategories(selectedCategory);
+		});
+		smallWorryTab.addEventListener("click", function() {
+			removeActive();
+			smallWorryTab.classList.add("active");
+			selectedCategory = "smallWorry"
+			showCategories(selectedCategory);
+		});
+		allCategoryTab.addEventListener("click", function() {
+			removeActive();
+			allCategoryTab.classList.add("active");
+			for(const category of smallCategories){
+	      		category.style.display = "block"; 
+			}
+		});
+		
+		window.onload = function() {
+			popularTab.click();
+	    };
+		
+		//대분류에 맞는 카테고리 가져오기
+		function showCategories(selectedCategory){
+			for(const category of smallCategories){
+				if (category.getAttribute("data-category") == selectedCategory) {
+	      			category.style.display = "block"; 
+				}else {
+					category.style.display = "none"; 
+				}
+				console.log("카테고리 : "+category.getAttribute("data-category"));
+			}
+		}	
+		
+		//선택된 카테고리 표시
+		
+		//중복 허용 안되는 배열 만들기
+		const selectedBtnIds = new Set();
+	    //클릭된 버튼 넣을 자리
+		const selectedBtnSection = document.querySelector(".selectedBtn");
+	    
+		function selectBtn(){
+			
+			for(const btn of smallCategories){
+				btn.addEventListener("click", function(){
+					//클릭된 버튼 아이디 가져오는
+					const btnId = this.getAttribute("id");
+					//클릭하면 버튼 색깔 변경되는
+					let isOutline = this.classList.contains("btn-outline-primary");
+					 if (isOutline) {
+						this.classList.replace("btn-outline-primary", "btn-primary");
+					 } else {
+						 this.classList.replace("btn-primary", "btn-outline-primary");
+					 }
+					//클릭된 버튼아이디로 버튼 자체 가져오기
+					const selectedBtn = document.getElementById(btnId);
+					//배열에 선택된 버튼이 존재하는지 확인
+					const selected = selectedBtnIds.has(btnId);
+					//선택된 버튼 보여주는 복제 버튼 만들기
+					const cloneBtn = selectedBtn.cloneNode(true);
+					//복제된 버튼의 id 변경
+					cloneBtn.setAttribute("id",btnId+"-cloned");
+					if(selected) { //배열에 카테고리 존재한다면??
+						selectedBtnSection.removeChild(document.getElementById(btnId+'-cloned'));
+						console.log("삭제전 :"+Array.from(selectedBtnIds));	
+						selectedBtnIds.delete(btnId);
+						console.log("삭제 :"+Array.from(selectedBtnIds));
+						selectedCount--;
+						resetBtnShow();
+					}else { //존재하지 않는다면 버튼 넣기
+						selectedBtnSection.appendChild(cloneBtn);
+						cloneBtn.classList.remove("btn", "btn-primary");
+						cloneBtn.classList.add("bg-secondary", "p-2", "bg-opacity-10", "text-dark", "rounded");
+						console.log("추가전 :"+Array.from(selectedBtnIds));
+						selectedBtnIds.add(btnId);
+						console.log("추가  :"+Array.from(selectedBtnIds));
+						selectedCount++;
+						resetBtnShow();
+					}
+				});
+			}
+		}
+		selectBtn();
+		
+		//초기화 버튼
+		const resetBtn = document.getElementById("resetBtn");
+		
+		function resetBtnShow() {
+			if (selectedCount > 0) {
+				resetBtn.classList.remove('d-none');
+			} else {
+				resetBtn.classList.add('d-none');
+			}
+		}
+		
+		resetBtn.addEventListener("click", function(){
+			for(const btnId of selectedBtnIds){
+				selectedBtnSection.removeChild(document.getElementById(btnId+'-cloned'));
+			}
+			
+			for (const btn of smallCategories){
+				btn.classList.replace("btn-primary", "btn-outline-primary");
+				
+			}
+			selectedBtnIds.clear();
+			selectedCount = 0;
+			resetBtnShow();
+		}) 
+			
+		/*  카테고리 끝*/
 	</script>
 </body>
 </html>
