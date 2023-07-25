@@ -29,9 +29,7 @@ public class UserController {
 	
 //	@Inject 
 //	private SnsValue kakaoSns;
-	
-	
-=======
+
 //package kr.co.bcd.user.loginApi;
 //
 //import java.io.IOException;
