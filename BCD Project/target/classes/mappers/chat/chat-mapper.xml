@@ -38,6 +38,9 @@
 	</select>
 	
 	<insert id = "createChatRoom" parameterType="ChatRoom">
+		<selectKey keyProperty="idx" resultType="int" order="AFTER">
+        	SELECT CR_IDX_SEQUENCE.CURRVAL FROM DUAL
+    	</selectKey>
 		INSERT INTO chat_room (CR_IDX,
 						   	   CR_PARTICIPANTS,
 							   CR_CATEGORY,
@@ -52,6 +55,12 @@
 							   )
 		
 	</insert>
+	<select id="enterChatRoom" resultMap="chatRoomResultSet">
+		SELECT CR_IDX, CR_PARTICIPANTS, CR_CATEGORY,CR_TITLE,CR_CREATE_DATE
+		FROM CHAT_ROOM
+		WHERE CR_IDX = #{idx}
+	</select>
+	
 	
 	
 	

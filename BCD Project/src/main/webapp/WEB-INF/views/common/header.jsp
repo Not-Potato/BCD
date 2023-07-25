@@ -31,14 +31,10 @@
 					</button>
                 </li>
                 <li>
-
-
 					<button type="button" class="d-flex align-items-center btn btn-primary" id="loginBtn">
 						<i class="bi bi-door-open"></i>
 						<span class="ms-1">로그인</span>		
 					</button>
-
-
                 </li>
             </ul>
         </div>

@@ -26,16 +26,22 @@
 	
 	<!-- 모달창 -->
    	<div class="modal modal-signin position-fixed d-block py-5 backdrop d-none" tabindex="-1" role="dialog" id="createModal" >
-	  <div class="modal-dialog modal-dialog-centered " role="document">
+	  <div class="modal-dialog modal-dialog-centered" role="document">
 	    <div class="modal-content rounded-4 shadow">
+	    <!-- 모달 header -->
 	        <div class="modal-header pl-1 pb-2 pt-2 pr-1 pt-0">
+<<<<<<< HEAD
+	        	<img src="../../resources/images/logo.svg" alt="Logo" style="height:30px; width:60px;"/>  
+=======
 		        <img src="../../resources/images/logo.svg" alt="Logo" style="height:30px; width:60px;"/>   
+>>>>>>> branch 'master' of https://github.com/Not-Potato/BCD-BACK.git
       			<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" id="closeModalBtn2"></button> 
       			<hr>
      		</div>
+     		<!-- 모달 body -->
 	      	<div class="modal-body p-5 pt-0">
 		        <h1 class="fw-bold mt-5 mb-5 fs-2 text-center">채팅방 만들기</h1>
-		        <form class="chatModalForm" onsubmit="return createChatRoomForm()" action="/chat/createChatRoom.do" method="post">
+		        <form class="chatModalForm" onsubmit="return createChatRoomForm()" action="/chat/create.do" method="post">
 			        <div class="form-floating mb-3">
 			            <input type="text" class="form-control rounded-3" id="floatingInput" placeholder="ff" name="title">
 			            <label for="floatingInput">채팅방 이름</label>
@@ -52,8 +58,7 @@
 			         <div class="form-floating mb-3">
 			          	<select class="form-select" id="smallSelectGrid" name="category">
 			                <option value="basis" selected>세세한 분류</option>
-			                <option value="value1">음식</option>
-			                <option value="value2">옷</option>
+			               
 			            </select>
 			            <label for="smallSelectGrid">작게</label>
 			         </div>
@@ -159,16 +164,13 @@
 	</c:when>
 	<c:otherwise>
 		<c:forEach var="item" items="${list}">
-				<div class="col-xl-3 col-sm-6">
+				<div class="col-xl-3 col-sm-6" onclick="location.href='enter.do?idx=${item.idx}'">
 				    <div class="card-shadow card">
 				        <div class="card-body">
 				        	<div class="fw-bold fs-5 mb-2 col-12 d-inline-block text-truncate">
 				                ${ item.title }
 				            </div>
 				         
-				
-				            
-				
 				            <div class="badge border text-dark border-success  rounded p-2 me-2 ps-3 pe-3 mb-2">
 				                ${ item.category }
 				            </div>
@@ -178,7 +180,7 @@
 				                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
 				                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
 				                    </svg>
-				                    <span class="ms-2">개설자 | </span>
+				                    <span class="ms-2">개설자 | ${memberNickname}</span>
 				                </div>
 				
 				            </div>
@@ -196,7 +198,7 @@
 		</main>
 		
 		<div class="mb-3" style="text-align: right;">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal" id="createRoomBtn">방 만들기</button>
+            <button class="btn btn-primary" data-bs-toggle="modal" id="createRoomBtn">방 만들기</button>
         </div>
 	</div>
         
@@ -244,7 +246,15 @@
 			const bigCategorySelect = document.getElementById("floatingSelectGrid");
 			const smallCategorySelect = document.getElementById("smallSelectGrid");
 			
-			if(bigCategorySelect.value == "value1") {
+			if(bigCategorySelect.value == "basis" || bigCategorySelect.value == "" || bigCategorySelect.value == null ){
+				console.log(bigCategorySelect.value);
+				smallCategorySelect.innerHTML = `
+		            <option value="basis" selected>세세한 분류</option>
+		        `;
+			}
+			
+			else if(bigCategorySelect.value == "value1") {
+				console.log(bigCategorySelect.value);
 				smallCategorySelect.innerHTML = `
 					<option value="basis" selected>세세한 분류</option>
 	                <option value="진로">진로</option>
@@ -258,11 +268,7 @@
 	                <option value="옷">옷</option>
 	            `;
 			}
-			else {
-				smallCategorySelect.innerHTML = `
-		            <option value="basis" selected>세세한 분류</option>
-		        `;
-			}
+			
 		}
 		
 		

@@ -177,6 +177,14 @@ body{
     padding: 20px
 }
 
+::after {
+    position:absolute;
+    right:10%;
+    
+    
+    
+}
+
 .online,
 .offline,
 .me {
