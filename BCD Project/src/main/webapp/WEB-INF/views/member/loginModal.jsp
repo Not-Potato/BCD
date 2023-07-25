@@ -11,13 +11,13 @@
  <div class="modal modal-signin position-fixed d-block py-5 backdrop d-none" tabindex="-1" role="dialog" id="modalSignin">
    	<div class="modal-dialog modal-dialog-centered" role="document">
     	<div class="modal-content rounded-4 shadow">
+
 		  
 		   <div class="modal-header pb-2 pt-2">
    				<img src="../../resources/images/logo.svg" alt="Logo" style="height:30px; width:60px;"/>    
     			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeModalSignin"></button> 
     			<hr>
  		   </div>
-
 		    <div class="modal-body p-5 pt-0">
 		        <h1 class="fw-bold mt-5 mb-5 fs-2 text-center">BCD에 오신 것을 환영합니다!</h1>
 		        

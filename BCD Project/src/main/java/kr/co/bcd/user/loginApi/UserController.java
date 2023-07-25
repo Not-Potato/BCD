@@ -26,12 +26,10 @@ public class UserController {
 //	
 //	@Inject 
 //	private SnsValue naverSns;
-	
+
 //	@Inject 
 //	private SnsValue kakaoSns;
-	
-	
-=======
+
 //package kr.co.bcd.user.loginApi;
 //
 //import java.io.IOException;
@@ -71,6 +69,7 @@ public class UserController {
 //    	SNSLogin snsLogin = new SNSLogin(naverSns);
 //    	model.addAttribute("naver_url", snsLogin.getNaverAuthURL());
 
+
         /* 네이버아이디로 인증 URL을 생성하기 위하여 naverLoginBO클래스의 getAuthorizationUrl메소드 호출 */
         
         
@@ -80,7 +79,6 @@ public class UserController {
         
       
 //   }
-
 
 }
 
