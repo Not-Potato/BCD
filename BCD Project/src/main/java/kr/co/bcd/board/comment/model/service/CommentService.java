@@ -10,4 +10,7 @@ public interface CommentService {
 	
 	// 게시글 댓글 리스트 가져오기
 	List<Comment> detailComment(int idx);
+	
+	// 댓글 작성
+	int insert(Comment comment);
 }

@@ -47,6 +47,15 @@ public class PostServiceImpl implements PostService {
 	public Post detailBoard(int idx) {
 		return postDao.detailBoard(sqlSession, idx);
 	}
-	
+
+	@Override
+	public int selectPostStatus(int idx) {
+		return postDao.selectPostStatus(sqlSession, idx);
+	}
+
+	@Override
+	public int updateStatus(Post post) {
+		return postDao.updateStatus(sqlSession, post);
+	}
 	
 }

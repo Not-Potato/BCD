@@ -126,6 +126,22 @@
 			WHERE P_IDX = #{idx}
 	</select>
 	
+	<select id="selectPostStatus" resultType="_int">
+		SELECT COUNT(*) FROM POST
+			WHERE P_IDX = #{idx}
+			AND P_DELETE_DATE IS NULL 
+			AND P_STATUS = 'A'
+	</select>
+	
+	<update id="updateStatus" parameterType="Post">
+		UPDATE POST
+			SET P_STATUS = #{status}
+			WHERE P_IDX = #{idx}
+	</update>
+	
+	
+	
+	
 	
 	
 	
@@ -149,6 +165,18 @@
 		ORDER BY c_create_date DESC
 	</select>
 
+	<insert id="insertComment"  parameterType="Comment">
+		INSERT INTO "COMMENT"(c_idx, 
+							  p_idx, 
+							  m_idx, 
+							  c_content, 
+							  c_create_date)
+					   VALUES(c_idx_sequence.NEXTVAL, 
+					   		  #{postIdx}, 
+					   		  #{memIdx}, 
+					   		  #{content}, 
+					   		  SYSDATE)
+	</insert>
 
 
 
@@ -161,9 +189,39 @@
 
 	<select id="selectVoteCount" resultType="_int">
 		SELECT COUNT(*) FROM VOTE
-		WHERE P_IDX = #{idx}
-		<if test="choice != null">
-		AND V_SELECT = #{choice}
+		WHERE P_IDX = #{postIdx}
+		<if test="seleted != null">
+		AND V_SELECT = #{seleted}
 		</if>
 	</select>
+
+	<select id="selectVoteCountOne" resultType="_int">
+		SELECT COUNT(*) FROM VOTE
+		WHERE P_IDX = #{postIdx}
+		AND M_IDX = #{memIdx}
+	</select>
+	
+	<select id="selectVoterStatus" resultMap="voteResultSet">
+		SELECT * FROM VOTE
+			WHERE P_IDX = #{postIdx}
+			AND M_IDX = #{memIdx}
+	</select>
+
+
+	<insert id="insertVote" parameterType="Vote">
+		INSERT INTO VOTE(v_idx, 
+						 p_idx, 
+						 m_idx, 
+						 v_select)
+				  VALUES(v_idx_sequence.NEXTVAL, 
+						 #{postIdx},
+						 #{memIdx},
+						 #{seleted})
+	</insert>
+	
+	<delete id="deleteVote">
+		DELETE FROM VOTE
+		WHERE P_IDX = #{postIdx}
+		AND M_IDX = #{memIdx}
+	</delete>
 </mapper>
