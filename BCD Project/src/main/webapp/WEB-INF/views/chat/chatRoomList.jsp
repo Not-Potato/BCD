@@ -30,7 +30,11 @@
 	    <div class="modal-content rounded-4 shadow">
 	    <!-- 모달 header -->
 	        <div class="modal-header pl-1 pb-2 pt-2 pr-1 pt-0">
+<<<<<<< HEAD
 	        	<img src="../../resources/images/logo.svg" alt="Logo" style="height:30px; width:60px;"/>  
+=======
+		        <img src="../../resources/images/logo.svg" alt="Logo" style="height:30px; width:60px;"/>   
+>>>>>>> branch 'master' of https://github.com/Not-Potato/BCD-BACK.git
       			<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" id="closeModalBtn2"></button> 
       			<hr>
      		</div>

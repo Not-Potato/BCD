@@ -13,6 +13,9 @@ public interface MemberService {
 
 	//회원정보수정
 	void updateProfile(Member member);
+	
+	//닉네임 중복확인 (ajax)
+	int nicknameCheck(String nickname);
 
 	
 

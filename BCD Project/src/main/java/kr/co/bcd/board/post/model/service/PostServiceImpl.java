@@ -38,10 +38,15 @@ public class PostServiceImpl implements PostService {
 		return postDao.insertPost(sqlSession, post);
 	}
 
-	public Post detailBoard(int idx) {
-		return null;
+	@Override
+	public int viewsUpdate(Post post) {
+		return postDao.viewsUpdate(sqlSession, post);
 	}
 
-
-
+	@Override
+	public Post detailBoard(int idx) {
+		return postDao.detailBoard(sqlSession, idx);
+	}
+	
+	
 }

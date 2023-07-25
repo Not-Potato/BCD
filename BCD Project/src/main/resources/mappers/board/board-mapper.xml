@@ -82,17 +82,6 @@
 		ORDER BY p_create_date DESC
 	</select>
 	
-	<select id="selectCommentCount" resultType="_int">
-		SELECT COUNT(*) FROM "COMMENT"
-		WHERE C_DELETE_DATE IS NULL 
-		AND P_IDX = #{idx}
-	</select>
-
-	<select id="selectVoteTotalCount" resultType="_int">
-		SELECT COUNT(*) FROM VOTE
-		WHERE P_IDX = #{idx}
-	</select>
-	
 	<insert id="insertPost" parameterType="Post">
 		INSERT INTO POST(P_IDX,
 				 M_IDX,
@@ -125,4 +114,56 @@
 		  		 #{title},
 		  		 #{content})
 	</insert>
+	
+	<update id="viewsUpdate" parameterType="Post">
+		UPDATE POST
+			SET P_VIEWS = #{views}
+			WHERE P_IDX = #{idx}
+	</update>
+	
+	<select id="detailBoard" resultMap="postResultSet">
+		SELECT * FROM POST
+			WHERE P_IDX = #{idx}
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="selectCommentCount" resultType="_int">
+		SELECT COUNT(*) FROM "COMMENT"
+		WHERE C_DELETE_DATE IS NULL 
+		AND P_IDX = #{idx}
+	</select>
+
+	<select id="detailComment" resultMap="commentResultSet">
+		SELECT * FROM "COMMENT"
+		WHERE C_DELETE_DATE IS NULL 
+		AND P_IDX = #{idx}
+		ORDER BY c_create_date DESC
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+	<select id="selectVoteCount" resultType="_int">
+		SELECT COUNT(*) FROM VOTE
+		WHERE P_IDX = #{idx}
+		<if test="choice != null">
+		AND V_SELECT = #{choice}
+		</if>
+	</select>
 </mapper>

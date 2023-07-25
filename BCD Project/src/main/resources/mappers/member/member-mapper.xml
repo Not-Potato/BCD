@@ -42,6 +42,10 @@
 		
 	</update>
 	
-	
+	<select id="nicknameCheck" resultType="_int">
+		SELECT COUNT(*) FROM MEMBER
+		WHERE m_nickname = #{nickname}
+	</select>
+		
 	
 </mapper>

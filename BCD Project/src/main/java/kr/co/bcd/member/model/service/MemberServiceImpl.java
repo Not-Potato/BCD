@@ -46,4 +46,10 @@ public class MemberServiceImpl implements MemberService {
 		memberDao.updateProfile(sqlSession, member);
 		
 	}
+	
+	@Override
+	public int nicknameCheck(String nickname) {
+		return memberDao.nicknameCheck(sqlSession, nickname);
+	}
+
 }

@@ -1,7 +1,10 @@
 package kr.co.bcd.board.controller;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import kr.co.bcd.board.comment.model.dto.Comment;
 import kr.co.bcd.board.comment.model.service.CommentServiceImpl;
 import kr.co.bcd.board.post.model.dto.Post;
 import kr.co.bcd.board.post.model.service.PostServiceImpl;
@@ -76,9 +80,8 @@ public class BoardController {
 			p.setCreateDate(p.getCreateDate().substring(0, 10));
 			p.setDeadline(p.getDeadline().substring(0, 10));
 			p.setCommentCount( commentService.selectCommentCount(p.getIdx()) );
-			p.setVoteCount( voteService.selectVoteTotalCount(p.getIdx()) );			
-			p.setWriter( "닉네임잘이" );
-//			p.setWriter( memberService.selectNickname(p.getMemIdx()) );
+			p.setVoteCount( voteService.selectVoteCount(p.getIdx()) );			
+			p.setWriter( memberService.selectNickname(p.getMemIdx()) );
 		}
 		
 		model.addAttribute("list", list);
@@ -96,7 +99,54 @@ public class BoardController {
 	}
 	
 	@GetMapping("/detail.do")
-	public String board() {
-		return "/board/detail";
+	public String board(@RequestParam(value = "idx") int idx, Model model, HttpSession session, HttpServletRequest request) {
+		
+		Post post = postService.detailBoard(idx);
+
+		// DB 조회 성공 시
+		if (!Objects.isNull(post)) {		
+			// 댓글 가져오기
+			System.out.println(idx);
+			List<Comment> commentList = commentService.detailComment(idx);
+			// 댓글 존재하는 경우 --> 닉네임 매치 &
+			
+			if (!Objects.isNull(commentList)) {
+				for (Comment comment : commentList) {
+					comment.setNickname( memberService.selectNickname(comment.getMemIdx()) );
+				}
+			}
+			
+			// 조회수 업데이트
+			post.setViews(post.getViews() + 1);
+			postService.viewsUpdate(post);
+
+			// 작성일 포매팅
+			post.setCreateDate(post.getCreateDate().substring(0, 19));
+			
+			// 총 댓글 수, 작성자 닉네임, 총 투표 참여자 수 + 투표 항목 a/b 각각 참여자 수 setting
+			post.setCommentCount( commentService.selectCommentCount(idx) );
+			post.setWriter( memberService.selectNickname(idx) );
+			post.setVoteCount( voteService.selectVoteCount(idx) );
+			
+			// 한 명 이상 투표한 경우 각 항목의 투표자 수 가져오기
+			if (post.getVoteCount() > 0) {				
+				post.setVoteACount( voteService.selectVoteCount(idx, "A") );
+				post.setVoteBCount( voteService.selectVoteCount(idx, "B") );
+			}
+			
+			// TODO: 첨부 img 있으면...
+			
+			// 바인딩 
+			model.addAttribute("referer", (String)request.getHeader("REFERER"));
+			model.addAttribute("post", post);
+			model.addAttribute("comment", commentList);
+			
+			return "/board/detail";
+		
+		// DB 조회 실패 시
+		} else {
+			return "/common/errorPage";
+		}
+		
 	}
 }
