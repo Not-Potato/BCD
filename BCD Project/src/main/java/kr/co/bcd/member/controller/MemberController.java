@@ -1,6 +1,10 @@
 package kr.co.bcd.member.controller;
 
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,25 @@ public class MemberController {
 		model.addAttribute("member", member);
 		return "member/setting";
 	}
+	
+	//닉네임 중복여부
+	@RequestMapping("/nicknameCheck.do")
+	public void nicknameCheck (HttpSession session, Model model, Member member, HttpServletResponse response) throws IOException {
+		String nickname = member.getNickname();
+		System.out.println(nickname);
+		int result = memberService.nicknameCheck(nickname); 
+		System.out.println(result);
+		
+			if (result == 0) {
+				PrintWriter out = response.getWriter();
+				out.print(result);
+				return;//가입가능
+			}else {
+				return;//가입불가
+			}
+		
+	}
+	
 	
 	@RequestMapping("/naverLogin.do")
 	public String naverLogin() {
