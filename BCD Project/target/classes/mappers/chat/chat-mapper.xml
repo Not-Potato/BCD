@@ -34,7 +34,7 @@
 		<if test="category != null and category != ''">
 		AND cr_category = #{category}
 		</if>
-		ORDER BY cr_create_date DESC
+		ORDER BY cr_idx DESC
 	</select>
 	
 	<insert id = "createChatRoom" parameterType="ChatRoom">
