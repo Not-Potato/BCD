@@ -23,7 +23,6 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
-
 	<!-- websocket -->
 	<websocket:handlers>
 		<websocket:mapping handler="chatMsgHandler" path="/chatMsg" />
@@ -34,8 +33,7 @@
 	
 	<!-- websocket 끝-->
 
-	
-	<context:component-scan base-package="kr.co.bcd" />
 
+	<context:component-scan base-package="kr.co.bcd" />
 	
 </beans:beans>
