@@ -23,6 +23,7 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
+<<<<<<< HEAD
 	<!-- websocket -->
 	<websocket:handlers>
 		<websocket:mapping handler="chatMsgHandler" path="/chatMsg" />
@@ -35,5 +36,8 @@
 
 	
 	<context:component-scan base-package="kr.co" />
+=======
+	<context:component-scan base-package="kr.co.bcd" />
+>>>>>>> branch 'HJ' of https://github.com/Not-Potato/BCD-BACK.git
 	
 </beans:beans>
