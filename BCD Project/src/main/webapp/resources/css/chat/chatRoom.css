@@ -177,14 +177,6 @@ body{
     padding: 20px
 }
 
-::after {
-    position:absolute;
-    right:10%;
-    
-    
-    
-}
-
 .online,
 .offline,
 .me {
@@ -209,7 +201,7 @@ body{
     float: right
 }
 
-.clearfix:after {
+.clearfix::after {
     visibility: hidden;
     display: block;
     font-size: 0;
@@ -217,3 +209,5 @@ body{
     clear: both;
     height: 0
 }
+
+
