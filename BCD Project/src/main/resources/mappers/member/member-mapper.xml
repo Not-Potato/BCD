@@ -47,5 +47,9 @@
 		WHERE m_nickname = #{nickname}
 	</select>
 		
+	<select id="checkPhone" resultType="_int">
+		SELECT COUNT(*) FROM MEMBER
+		WHERE m_phone = #{phone}
+	</select>	
 	
 </mapper>

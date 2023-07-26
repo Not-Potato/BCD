@@ -51,5 +51,10 @@ public class MemberServiceImpl implements MemberService {
 	public int nicknameCheck(String nickname) {
 		return memberDao.nicknameCheck(sqlSession, nickname);
 	}
+	
+	@Override
+	public int checkPhone(String phone) {
+		return memberDao.checkPhone(sqlSession, phone);
+	}
 
 }
