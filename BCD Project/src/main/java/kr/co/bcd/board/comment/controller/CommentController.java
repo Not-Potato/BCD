@@ -3,9 +3,12 @@ package kr.co.bcd.board.comment.controller;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.bcd.board.comment.model.dto.Comment;
 import kr.co.bcd.board.comment.model.service.CommentServiceImpl;
@@ -36,5 +39,29 @@ public class CommentController {
 			}
 		}
 		return "redirect:/board/detail.do?idx=" + comment.getPostIdx();
+	}
+	
+	@PostMapping("/edit.do")
+	@ResponseBody
+	public ResponseEntity<String> editComment(@RequestBody Comment comment) {
+		// TODO: 현재 접속자 == 댓글 작성자 ck
+		// TODO: 수정 가능한 comment인지 (delect_date 존재하지 않는지) ck 
+		// TODO: DB UPDATE 진행 (content update)
+		
+		// 제대로 된 comment(댓글 객체) 넘어오는 것 확인 완료!
+		System.out.println(comment);
+		return ResponseEntity.ok("성공");
+	}
+	
+	@PostMapping("/delete.do")
+	@ResponseBody
+	public ResponseEntity<String> deleteComment(Integer idx) {
+		// TODO: 현재 접속자 == 댓글 작성자 ck
+		// TODO: 수정 가능한 comment인지 (delete_date 존재하지 않는지) ck
+		// TODO: DB UPDATE 진행 (delete_date update)
+		
+		// 제대로 된 idx(댓글 고유 번호) 넘어오는 것 확인 완료!
+		System.out.println(idx); 
+		return ResponseEntity.ok("성공");
 	}
 }
