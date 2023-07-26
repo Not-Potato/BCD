@@ -126,11 +126,10 @@
 			WHERE P_IDX = #{idx}
 	</select>
 	
-	<select id="selectPostStatus" resultType="_int">
-		SELECT COUNT(*) FROM POST
+	<select id="selectPostStatus" resultType="string">
+		SELECT P_STATUS FROM POST
 			WHERE P_IDX = #{idx}
-			AND P_DELETE_DATE IS NULL 
-			AND P_STATUS = 'A'
+			AND P_DELETE_DATE IS NULL
 	</select>
 	
 	<update id="updateStatus" parameterType="Post">
@@ -139,7 +138,16 @@
 			WHERE P_IDX = #{idx}
 	</update>
 	
+	<select id="selectWriterIdx" resultType="_int">
+		SELECT M_IDX FROM POST
+			WHERE P_IDX = #{idx}
+	</select>
 	
+	<update id="updateReview" parameterType="Post">
+		UPDATE POST
+			SET P_REVIEW = #{review}
+			WHERE P_IDX = #{idx}
+	</update>
 	
 	
 	

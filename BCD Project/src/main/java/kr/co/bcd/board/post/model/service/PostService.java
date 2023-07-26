@@ -23,9 +23,15 @@ public interface PostService {
 	Post detailBoard(int idx);
 	
 	// 게시글 상태 조회하기 (삭제되지 않은 글 + 진행 중인 투표)
-	int selectPostStatus(int idx);
+	String selectPostStatus(int idx);
 	
 	// 투표 진행 상태 변경하기 
 	// STATUS => A:진행중(디폴트) B:정상종료 C:조기마감
 	int updateStatus(Post post);
+	
+	// 게시글 번호 받아서 작성자 idx 가져오기
+	int selectWriterIdx(int idx);
+	
+	// 리뷰 작성 + 수정 (UPDATE)
+	int updateReview(Post post);
 }
