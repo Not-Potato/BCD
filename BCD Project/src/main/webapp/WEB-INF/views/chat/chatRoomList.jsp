@@ -23,18 +23,13 @@
 <body>
  <%@ include file="../common/header.jsp" %>
  
-	
 	<!-- 모달창 -->
    	<div class="modal modal-signin position-fixed d-block py-5 backdrop d-none" tabindex="-1" role="dialog" id="createModal" >
 	  <div class="modal-dialog modal-dialog-centered" role="document">
 	    <div class="modal-content rounded-4 shadow">
 	    <!-- 모달 header -->
 	        <div class="modal-header pl-1 pb-2 pt-2 pr-1 pt-0">
-<<<<<<< HEAD
-	        	<img src="../../resources/images/logo.svg" alt="Logo" style="height:30px; width:60px;"/>  
-=======
 		        <img src="../../resources/images/logo.svg" alt="Logo" style="height:30px; width:60px;"/>   
->>>>>>> branch 'master' of https://github.com/Not-Potato/BCD-BACK.git
       			<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" id="closeModalBtn2"></button> 
       			<hr>
      		</div>
@@ -163,7 +158,7 @@
 					</tr>
 	</c:when>
 	<c:otherwise>
-		<c:forEach var="item" items="${list}">
+		<c:forEach var="item" items="${list}" varStatus="loop">
 				<div class="col-xl-3 col-sm-6" onclick="location.href='enter.do?idx=${item.idx}'">
 				    <div class="card-shadow card">
 				        <div class="card-body">
@@ -184,9 +179,8 @@
 				                </div>
 				
 				            </div>
-				
 				            <div class="" style="font-size: 14px;">
-				                현재 <span class="text-primary">참여자수</span>명이 참여 중 이에요!
+				                현재 <span class="text-primary">${participantsSizeList[loop.index]}</span>명이 참여 중 이에요!
 				            </div>
 				        </div>
 				    </div>
