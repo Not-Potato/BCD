@@ -33,6 +33,10 @@ public class ChatRoomDao {
 		return sqlSession.insert("chatMapper.createChatRoom" , chatRoom);
 	}
 
+	public ChatRoom enterChatRoom(int idx, SqlSessionTemplate sqlSession) {
+		return sqlSession.selectOne("chatMapper.enterChatRoom" , idx);
+	}
+
 //	public String getParticipants(int idx, SqlSessionTemplate sqlSession) {
 //		return sqlSession.selectOne("chatMapper.getParticipants");
 //	}

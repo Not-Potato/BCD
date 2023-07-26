@@ -27,11 +27,10 @@ public class ChatRoomServiceImpl implements ChatRoomService{
 	public List<ChatRoom> selectListAll(PageInfo pi, String category) {
 		return chatRoomDao.selectListAll(pi,category, sqlSession);
 	}
-//	public String getParticipants(int idx) {
-//		return chatRoomDao.getParticipants(idx, sqlSession);
-//	}
-
 	public int createChatRoom(ChatRoom chatRoom) {
 		return chatRoomDao.createChatRoom(chatRoom, sqlSession);
+	}
+	public ChatRoom enterChatRoom(int idx) {
+		return chatRoomDao.enterChatRoom(idx, sqlSession);
 	}
 }

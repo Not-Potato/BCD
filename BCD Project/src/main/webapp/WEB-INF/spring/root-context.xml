@@ -29,4 +29,8 @@
 	<bean class="org.mybatis.spring.SqlSessionTemplate" id="sqlSession">
 		<constructor-arg ref="sqlSessionFactory"></constructor-arg>
 	</bean>
+	
+	 <!-- RestTemplate 빈 등록 -->
+    <bean class="org.springframework.web.client.RestTemplate" id="restTemplate" />
+    
 </beans>

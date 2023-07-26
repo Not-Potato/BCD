@@ -11,4 +11,5 @@ public interface ChatRoomService {
 	List<ChatRoom> selectListAll(PageInfo pi, String category);
 	//String getParticipants(int idx);
 	int createChatRoom(ChatRoom chatRoom);
+	ChatRoom enterChatRoom(int idx);
 }

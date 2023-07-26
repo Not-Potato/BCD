@@ -3,9 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket.xsd">
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 	
@@ -21,32 +23,17 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
-	<!-- 소셜 로그인 (네이버) -->
-	<beans:bean id="naverClientID" class="java.lang.String">
-		<beans:constructor-arg value="VH0vES0K33odVfIDgWKi" />
-	</beans:bean>
+	<!-- websocket -->
+	<websocket:handlers>
+		<websocket:mapping handler="chatMsgHandler" path="/chatMsg" />
+		<websocket:sockjs />
+	</websocket:handlers>
+    
+	<beans:bean id="chatMsgHandler" class="kr.co.bcd.chat.handler.ChatMsgHandler"></beans:bean>
 	
-	<beans:bean id="naverClientSecret" class="java.lang.String">
-		<beans:constructor-arg value="J0x9GEZhi8" />
-	</beans:bean>
-	
-	<beans:bean id="naverRedirectUrl" class="java.lang.String">
-		<beans:constructor-arg value="http://localhost:8080/auth/naver/callback" />
-	</beans:bean>
-	
-	<beans:bean id="naverSns" class="kr.co.bcd.user.loginApi.SnsValue">
-		<beans:constructor-arg value="naver" />
-		<beans:constructor-arg value="naverClientID" />
-		<beans:constructor-arg value="naverClientSecret" />
-		<beans:constructor-arg value="naverRedirectUrl" />
-	</beans:bean>
-	
-	<!-- 소셜 로그인 (카카오) -->
+	<!-- websocket 끝-->
 
 	
-	
 		<context:component-scan base-package="kr.co.bcd" />
-	
-	
 	
 </beans:beans>
