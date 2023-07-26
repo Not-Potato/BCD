@@ -45,17 +45,6 @@
 	
 	<!-- 소셜 로그인 (카카오) -->
 	
-	<!-- websocket -->
-	<websocket:handlers>
-		<websocket:mapping handler="chatMsgHandler" path="/chatMsg" />
-		<websocket:sockjs />
-	</websocket:handlers>
-    
-	<beans:bean id="chatMsgHandler" class="kr.co.bcd.chat.handler.ChatMsgHandler"></beans:bean>
-	
-	<!-- websocket 끝-->
-
-	
 		<context:component-scan base-package="kr.co.bcd" />
 	
 </beans:beans>
