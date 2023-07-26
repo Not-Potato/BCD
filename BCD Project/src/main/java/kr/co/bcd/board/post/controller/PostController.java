@@ -75,10 +75,53 @@ public class PostController {
 		
 		if (result > 0) {
 			sessionManage.setSessionMsg("성공적으로 작성되었습니다.", "success", session);
-			return "redirect:/board/list.do";
 		} else {
 			sessionManage.setSessionMsg("작성에 실패하였습니다", "error", session);
-			return "redirect:/board/list.do"; 		
 		}
+		return "redirect:/board/list.do"; 		
+	}
+	
+	@PostMapping("/earlyClosed.do")
+	public String earlyClosed(@RequestParam(value = "writerIdx") int writerIdx,
+							  @RequestParam(value = "postIdx") int postIdx, HttpSession session) {
+		
+		// TODO: 페이지에서 받아온 writerIdx와 session에서 받아온 현재 접속자 idx가 동일한지 확인하기
+//		boolean myPost = writerIdx == (int)session.getAttribute("memberIdx") ? true : false;
+		boolean myPost = true;
+		
+		// DB POST 테이블에서 delete date 없는 글인지, 현재 상태 A(진행 중) 맞는지 확인
+		int postStatus = postService.selectPostStatus(postIdx);
+		
+		// 위 두 조건에 만족하면 DB UPDATE 진행 (STATUS 칼럼 C로 변경)
+		if (myPost == true && postStatus == 1) {
+			Post post = new Post();
+			post.setIdx(postIdx);
+			post.setStatus("C");
+			int result = postService.updateStatus(post);	
+			if (result > 0) {
+				sessionManage.setSessionMsg("즉시 마감 처리가 완료되었습니다!", "success", session);
+			} else {
+				sessionManage.setSessionMsg("즉시 마감 처리에 실패했습니다!", "error", session);				
+			}
+		} else {
+			sessionManage.setSessionMsg("즉시 마감 처리가 불가능한 투표입니다!", "error", session);							
+		}		
+		return "redirect:/board/detail.do?idx=" + postIdx;
+	}
+	
+	@GetMapping("/goEdit.do")
+	public String goEdit(@RequestParam(value = "idx") int idx, HttpSession session) {
+		// TODO: 작성자 = 현재 접속자 ck
+		// TODO: delete date 없는 글 맞는지 ck
+		// TODO: 위 두 조건 만족 시 edit page 접속
+		return "";
+	}
+	
+	@GetMapping("/delete.do")
+	public String delete(@RequestParam(value = "idx") int idx, HttpSession session) {
+		// TODO: 작성자 = 현재 접속자 ck
+		// TODO: delete date 없는 글 맞는지 ck
+		// TODO: 위 두 조건 만족 시 DB UPDATE 진행 (P_DELETE_DATE 칼럼에 SYSDATE 추가)
+		return "";
 	}
 }

@@ -18,6 +18,7 @@ import kr.co.bcd.board.comment.model.dto.Comment;
 import kr.co.bcd.board.comment.model.service.CommentServiceImpl;
 import kr.co.bcd.board.post.model.dto.Post;
 import kr.co.bcd.board.post.model.service.PostServiceImpl;
+import kr.co.bcd.board.vote.model.dto.Vote;
 import kr.co.bcd.board.vote.model.service.VoteServiceImpl;
 import kr.co.bcd.common.controller.SessionManageController;
 import kr.co.bcd.common.paging.model.PageInfo;
@@ -100,19 +101,21 @@ public class BoardController {
 	
 	@GetMapping("/detail.do")
 	public String board(@RequestParam(value = "idx") int idx, Model model, HttpSession session, HttpServletRequest request) {
+		// TODO: test용 code!! 현재 2번 회원이 접속 중인 것으로 setting
+		session.setAttribute("memberIdx", 2);
 		
 		Post post = postService.detailBoard(idx);
 
 		// DB 조회 성공 시
 		if (!Objects.isNull(post)) {		
 			// 댓글 가져오기
-			System.out.println(idx);
 			List<Comment> commentList = commentService.detailComment(idx);
-			// 댓글 존재하는 경우 --> 닉네임 매치 &
 			
+			// 댓글 존재하는 경우 --> 닉네임 매치 & 작성일 초까지만 가져오도록 자르기
 			if (!Objects.isNull(commentList)) {
 				for (Comment comment : commentList) {
 					comment.setNickname( memberService.selectNickname(comment.getMemIdx()) );
+					comment.setCreateDate(comment.getCreateDate().substring(0, 19));
 				}
 			}
 			
@@ -128,11 +131,33 @@ public class BoardController {
 			post.setWriter( memberService.selectNickname(idx) );
 			post.setVoteCount( voteService.selectVoteCount(idx) );
 			
-			// 한 명 이상 투표한 경우 각 항목의 투표자 수 가져오기
-			if (post.getVoteCount() > 0) {				
-				post.setVoteACount( voteService.selectVoteCount(idx, "A") );
-				post.setVoteBCount( voteService.selectVoteCount(idx, "B") );
+			// 한 명 이상 투표한 경우 백분율로 변환 + 현재 접속자가 투표에 참여했는지 여부 확인하기
+			if (post.getVoteCount() > 0) {			
+				double totalCount = (double)post.getVoteCount();
+				double a = (voteService.selectVoteCount(idx, "A") / totalCount);
+				double b = (voteService.selectVoteCount(idx, "B") / totalCount);
+				post.setProbA((int) Math.round(a * 100));								
+				post.setProbB((int) Math.round(b * 100));
+				
+				// 세션에 저장된 회원 번호가 존재한다면 (비회원 상태가 아니라면)
+				if (session.getAttribute("memberIdx") != null) {
+					Vote vote = new Vote();
+					vote.setMemIdx((int)session.getAttribute("memberIdx"));
+					vote.setPostIdx(post.getIdx());
+					// 투표에 참여한 회원이라면
+					if (voteService.selectVoteCountOne(vote) > 0) {
+						model.addAttribute("vote", voteService.selectVoterStatus(vote));
+					}
+				}
+			// 참여자가 없는 경우 50 대 50으로 표시
+			} else {
+				post.setProbA(0);
+				post.setProbB(0);
 			}
+
+			// TODO: 본인 게시글 여부 체크
+//			post.setMyPost(post.getMemIdx() == (int)session.getAttribute("memberIdx") ? "yes" : "no");
+			post.setMyPost("yes");
 			
 			// TODO: 첨부 img 있으면...
 			
@@ -140,6 +165,10 @@ public class BoardController {
 			model.addAttribute("referer", (String)request.getHeader("REFERER"));
 			model.addAttribute("post", post);
 			model.addAttribute("comment", commentList);
+			
+			model.addAttribute("user", session.getAttribute("memberIdx"));
+			
+			sessionManage.getSessionMsg(session, model);
 			
 			return "/board/detail";
 		

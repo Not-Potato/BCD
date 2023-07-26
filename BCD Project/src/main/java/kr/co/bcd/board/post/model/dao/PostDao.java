@@ -15,7 +15,6 @@ import kr.co.bcd.common.paging.model.PageInfo;
 
 @Repository
 public class PostDao {
-
 	public int selectListCount(SqlSessionTemplate sqlSession, String category, String keyword) {
 		Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("category", category);
@@ -44,6 +43,14 @@ public class PostDao {
 
 	public Post detailBoard(SqlSessionTemplate sqlSession, int idx) {
 		return sqlSession.selectOne("boardMapper.detailBoard", idx);
+	}
+
+	public int selectPostStatus(SqlSessionTemplate sqlSession, int idx) {
+		return sqlSession.selectOne("boardMapper.selectPostStatus", idx);
+	}
+
+	public int updateStatus(SqlSessionTemplate sqlSession, Post post) {
+		return sqlSession.update("boardMapper.updateStatus", post);
 	}
 	
 }

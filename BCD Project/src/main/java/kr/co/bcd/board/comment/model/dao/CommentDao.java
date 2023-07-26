@@ -18,4 +18,8 @@ public class CommentDao {
 		return sqlSession.selectList("boardMapper.detailComment", idx);
 	}
 
+	public int insert(SqlSessionTemplate sqlSession, Comment comment) {
+		return sqlSession.insert("boardMapper.insertComment", comment);
+	}
+
 }
