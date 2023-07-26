@@ -17,6 +17,9 @@ public interface MemberService {
 	//닉네임 중복확인 (ajax)
 	int nicknameCheck(String nickname);
 
+	//소셜로그인회원 가입여부 확인용 
+	int checkPhone(String phone);
+
 	
 
 }

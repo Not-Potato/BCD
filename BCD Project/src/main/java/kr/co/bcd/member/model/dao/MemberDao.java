@@ -30,4 +30,8 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.nicknameCheck", nickname);
 	}
 
+	public int checkPhone(SqlSessionTemplate sqlSession, String phone) {
+		return sqlSession.selectOne("memberMapper.checkPhone", phone);
+	}
+
 }
