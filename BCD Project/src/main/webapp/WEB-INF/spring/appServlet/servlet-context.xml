@@ -23,28 +23,6 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
-	<!-- 소셜 로그인 (네이버) -->
-	<beans:bean id="naverClientID" class="java.lang.String">
-		<beans:constructor-arg value="VH0vES0K33odVfIDgWKi" />
-	</beans:bean>
-	
-	<beans:bean id="naverClientSecret" class="java.lang.String">
-		<beans:constructor-arg value="J0x9GEZhi8" />
-	</beans:bean>
-	
-	<beans:bean id="naverRedirectUrl" class="java.lang.String">
-		<beans:constructor-arg value="http://localhost:8080/auth/naver/callback" />
-	</beans:bean>
-	
-	<beans:bean id="naverSns" class="kr.co.bcd.user.loginApi.SnsValue">
-		<beans:constructor-arg value="naver" />
-		<beans:constructor-arg value="naverClientID" />
-		<beans:constructor-arg value="naverClientSecret" />
-		<beans:constructor-arg value="naverRedirectUrl" />
-	</beans:bean>
-	
-	<!-- 소셜 로그인 (카카오) -->
-	
 	<!-- websocket -->
 	<websocket:handlers>
 		<websocket:mapping handler="chatMsgHandler" path="/chatMsg" />
@@ -55,7 +33,6 @@
 	
 	<!-- websocket 끝-->
 
-	
-		<context:component-scan base-package="kr.co.bcd" />
+	<context:component-scan base-package="kr.co" />
 	
 </beans:beans>
