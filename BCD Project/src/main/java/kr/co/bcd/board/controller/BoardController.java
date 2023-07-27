@@ -128,7 +128,7 @@ public class BoardController {
 			
 			// 총 댓글 수, 작성자 닉네임, 총 투표 참여자 수 + 투표 항목 a/b 각각 참여자 수 setting
 			post.setCommentCount( commentService.selectCommentCount(idx) );
-			post.setWriter( memberService.selectNickname(idx) );
+			post.setWriter( memberService.selectNickname(post.getMemIdx()) );
 			post.setVoteCount( voteService.selectVoteCount(idx) );
 			
 			// 한 명 이상 투표한 경우 백분율로 변환 + 현재 접속자가 투표에 참여했는지 여부 확인하기
@@ -166,6 +166,7 @@ public class BoardController {
 			model.addAttribute("post", post);
 			model.addAttribute("comment", commentList);
 			
+			// TODO: 현재 접속자 본인 idx를 유저에 심음 (test code, 진행 완료 시 login 진행 시점에 발동)
 			model.addAttribute("user", session.getAttribute("memberIdx"));
 			
 			sessionManage.getSessionMsg(session, model);

@@ -45,12 +45,20 @@ public class PostDao {
 		return sqlSession.selectOne("boardMapper.detailBoard", idx);
 	}
 
-	public int selectPostStatus(SqlSessionTemplate sqlSession, int idx) {
+	public String selectPostStatus(SqlSessionTemplate sqlSession, int idx) {
 		return sqlSession.selectOne("boardMapper.selectPostStatus", idx);
 	}
 
 	public int updateStatus(SqlSessionTemplate sqlSession, Post post) {
 		return sqlSession.update("boardMapper.updateStatus", post);
+	}
+
+	public int selecetWriterIdx(SqlSessionTemplate sqlSession, int idx) {
+		return sqlSession.selectOne("boardMapper.selectWriterIdx", idx);
+	}
+
+	public int updateReview(SqlSessionTemplate sqlSession, Post post) {
+		return sqlSession.update("boardMapper.updateReview", post);
 	}
 	
 }

@@ -34,10 +34,10 @@ public class VoteController {
 		int voteStatus = voteService.selectVoteCountOne(vote);
 
 		// DB POST 테이블에서 마감 시간 안 지난 거 맞는지 + delete date 없는 글인지 확인
-		int postStatus = postService.selectPostStatus(vote.getPostIdx());
+		String postStatus = postService.selectPostStatus(vote.getPostIdx());
 
 		// 해당 글에 투표한 적이 없는 회원이면서 && 유효한 투표라면 --> DB 업데이트
-		if (voteStatus == 0 && postStatus == 1) {
+		if (voteStatus == 0 && postStatus == "A") {
 			int result = voteService.insertVote(vote);
 			if (result > 0) {
 				sessionManage.setSessionMsg("투표가 완료되었습니다.", "success", session);
@@ -58,10 +58,10 @@ public class VoteController {
 		int voteStatus = voteService.selectVoteCountOne(vote);
 
 		// DB POST 테이블에서 마감 시간 안 지난 거 맞는지 + delete date 없는 글인지 확인
-		int postStatus = postService.selectPostStatus(vote.getPostIdx());
+		String postStatus = postService.selectPostStatus(vote.getPostIdx());
 		
 		// 해당 글에 투표한 적 있는 회원이면서 && 현재 기준 유효한 투표라면 --> DB 업데이트 (DELETE)
-		if (voteStatus > 0 && postStatus == 1) {
+		if (voteStatus > 0 && postStatus == "A") {
 			int result = voteService.deleteVote(vote);
 			if (result > 0) {
 				sessionManage.setSessionMsg("성공적으로 철회되었습니다!", "success", session);
