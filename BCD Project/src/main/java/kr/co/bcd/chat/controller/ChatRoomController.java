@@ -154,9 +154,13 @@ public class ChatRoomController {
 				//배열로 바꾸기
 				List<String> participantsList = Arrays.asList(getParticipants.split(","));
 				System.out.println("추가될 참여자 : " + newParticipant);
+
 //				participantsList.add(newParticipant);		
 //				String updateParticipants = String.join(",", participantsList);
 				result.setParticipants(getParticipants);
+				
+				model.addAttribute("participantsList", participantsList);
+
 				//참여자 수 구하기
 				participantsSize = participantsList.size();
 				
