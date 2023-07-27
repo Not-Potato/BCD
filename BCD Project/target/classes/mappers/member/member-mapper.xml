@@ -52,4 +52,9 @@
 		WHERE m_phone = #{phone}
 	</select>	
 	
+	<select id="checkIdx" resultType="_int">
+		SELECT m_idx FROM MEMBER
+		WHERE m_phone = #{phone}
+	</select>	
+	
 </mapper>

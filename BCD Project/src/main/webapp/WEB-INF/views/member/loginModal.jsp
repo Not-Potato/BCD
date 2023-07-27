@@ -4,15 +4,14 @@
 <%@ page import="java.net.URLEncoder" %>
 <%@ page import="java.security.SecureRandom" %>
 <%@ page import="java.math.BigInteger" %>
-
 <!-- 현재 URL 가져오기 -->
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     // 현재 URL 가져오기
     String currentUrl = request.getRequestURL().toString();
     // 세션에 현재 URL 저장
     session.setAttribute("currentUrl", currentUrl);
 %>
+
 
 <!DOCTYPE html>
 <html>
@@ -52,20 +51,21 @@
 	        	 	<div class="centered text-center mt-5">
 	                	<div class="row mt-3">
 	                    	<div class="col-md mb-3 ">
-	                        	<button class="py-2 btn btn-outline-dark rounded-3" type="submit" id="phoneRegisterBtn" style="height:58.59px; width:300px;">
+	                        	<button class="py-2 btn btn-outline-dark rounded-3" type="submit" id="phoneRegisterBtn" style="height:70px; width:300px;">
 	                            	휴대전화 로그인
 	                        	</button>
 	                    	</div>    
 	                    </div>
 	                    <div class="row mt-3">
 	                    	<div class="col-md mb-3">
-	                            <a href="<%=apiURL%>"><img height="50" src="http://static.nid.naver.com/oauth/small_g_in.PNG" /></a> 
+	                          <%--   <a href="<%=apiURL%>"><img  src="../../resources/images/btnG.png" alt="Naver" id="naverLoginBtn" style="height:70px; width:366px;" /></a>  --%>
+	                             <a href="<%=apiURL%>"><img height="50" src="http://static.nid.naver.com/oauth/small_g_in.PNG" /></a>  
 	                    	</div> 
 	                    </div>
 	                    
 	                    <div class="row mt-3">
 	                    	<div class="col-md mb-3">
-	                            <img src="../../resources/images/btnK.png" alt="Kakao" id="naverLoginBtn" style="height:58.59px; width:300px;"/>   
+	                            <img src="../../resources/images/kakaoM.png" alt="Kakao" id="kakaoLoginBtn"/>   
 	                        </div>                
 	        			</div>  
         			</div>
@@ -80,17 +80,23 @@
 <script>
 
 //page.1 로그인 형태 (phone vs naver vs kakao ) 
-  const loginBtn = document.getElementById("loginBtn");
+ // const loginBtn = document.getElementById("loginBtn");
   const closeModalSignin = document.getElementById("closeModalSignin");
-  
-  loginBtn.addEventListener("click", function() {
+  const phoneRegisterBtn = document.getElementById("phoneRegisterBtn");
+  /* loginBtn.addEventListener("click", function() {
 	  modalSignin.classList.remove("d-none"); //modalSignin 열기
-  });
+  }); */
   
   closeModalSignin.addEventListener("click", function() {
 	  modalSignin.classList.add("d-none"); //modalSignin 닫기
       location.reload();
   });
+  
+  
+  phoneRegisterBtn.addEventListener("click", function() {
+	 	modalSignin.classList.add("d-none"); //modalSignin 닫기
+	 	modalNickname.classList.remove("d-none"); // modalNickname 열기
+	 	});
 //end of page.1 로그인 형태 (phone vs naver vs kakao )       
 
 

@@ -34,4 +34,8 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.checkPhone", phone);
 	}
 
+	public int checkIdx(SqlSessionTemplate sqlSession, String phone) {
+		return sqlSession.selectOne("memberMapper.checkIdx", phone);
+	}
+
 }
