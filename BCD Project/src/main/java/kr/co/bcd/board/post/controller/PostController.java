@@ -90,10 +90,10 @@ public class PostController {
 		boolean myPost = true;
 		
 		// DB POST 테이블에서 delete date 없는 글인지, 현재 상태 A(진행 중) 맞는지 확인
-		int postStatus = postService.selectPostStatus(postIdx);
+		String postStatus = postService.selectPostStatus(postIdx);
 		
 		// 위 두 조건에 만족하면 DB UPDATE 진행 (STATUS 칼럼 C로 변경)
-		if (myPost == true && postStatus == 1) {
+		if (myPost == true && postStatus == "A") {
 			Post post = new Post();
 			post.setIdx(postIdx);
 			post.setStatus("C");
@@ -107,6 +107,41 @@ public class PostController {
 			sessionManage.setSessionMsg("즉시 마감 처리가 불가능한 투표입니다!", "error", session);							
 		}		
 		return "redirect:/board/detail.do?idx=" + postIdx;
+	}
+
+	@PostMapping("/review.do")
+	public String updateReview(Post post, HttpSession session,
+							   @RequestParam(value="reviewMode") String reviewMode) {
+		// 작성 OR 수정 체크 (alert 창 띄울 때 사용)
+		System.out.println(reviewMode);
+		String mode = reviewMode.equals("write") ? "작성" : reviewMode.equals("edit") ? "수정" : "삭제";
+		
+		// delete date 칼럼이 NULL 인지 ck + status가 B(마감) 혹은 C(조기마감)인지 ck
+		String postStatus = postService.selectPostStatus(post.getIdx());
+		// 작성자 현재 접속자 일치하는지 ck
+		int postWriterIdx = postService.selectWriterIdx(post.getIdx());
+		
+		
+		// 위 조건 만족 시
+		if (postStatus != "A" && postWriterIdx == (int)session.getAttribute("memberIdx")) {
+			if (mode.equals("삭제")) {
+				post.setReview("");
+			} else {				
+				// TODO: 데이터 규격 검사
+			}
+			
+			// 작성, 수정, 삭제 => DB UPDATE 실행
+			int result = postService.updateReview(post);
+			
+			if (result > 0) {
+				sessionManage.setSessionMsg("리뷰 " + mode + "이(가) 완료되었습니다!", "success", session);
+			} else {
+				sessionManage.setSessionMsg("리뷰 " + mode + " 중 오류가 발생했습니다.", "error", session);				
+			}
+		} else {
+			sessionManage.setSessionMsg("리뷰 " + mode + "이(가) 불가능한 글입니다!", "error", session);	
+		}
+		return "redirect:/board/detail.do?idx=" + post.getIdx();
 	}
 	
 	@GetMapping("/goEdit.do")
@@ -124,4 +159,5 @@ public class PostController {
 		// TODO: 위 두 조건 만족 시 DB UPDATE 진행 (P_DELETE_DATE 칼럼에 SYSDATE 추가)
 		return "";
 	}
+	
 }

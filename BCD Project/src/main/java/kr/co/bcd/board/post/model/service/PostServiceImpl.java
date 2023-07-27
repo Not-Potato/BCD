@@ -49,13 +49,23 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public int selectPostStatus(int idx) {
+	public String selectPostStatus(int idx) {
 		return postDao.selectPostStatus(sqlSession, idx);
 	}
 
 	@Override
 	public int updateStatus(Post post) {
 		return postDao.updateStatus(sqlSession, post);
+	}
+
+	@Override
+	public int selectWriterIdx(int idx) {
+		return postDao.selecetWriterIdx(sqlSession, idx);
+	}
+
+	@Override
+	public int updateReview(Post post) {
+		return postDao.updateReview(sqlSession, post);
 	}
 	
 }
