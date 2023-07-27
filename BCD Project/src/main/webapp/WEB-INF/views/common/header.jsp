@@ -1,5 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+	<c:if test="${not empty modalJspPath}">
+    	<jsp:include page="${modalJspPath}" />
+  	</c:if>
+ <script> 	
+ 	window.onload = function() {	
+		const modalJspPath = "${modalJspPath}"; 
+		const modalNickname = document.getElementById("modalNickname");
+		// modalJspPath 변수가 비어있지 않다면 닉네임모달 열기
+	    if (modalJspPath !== "") {
+	      modalNickname.classList.remove("d-none"); // 모달 열기
+	    }
+	};
+</script>
 <header>
 	<div class="container mt-3 mb-4">
 		<div class="d-flex flex-wrap align-items-center justify-content-between">
@@ -41,7 +55,16 @@
             </ul>
         </div>
     </div>
-    <%@ include file="../member/loginModal.jsp" %>
+
+    <%@ include file="../member/loginModal.jsp" %> 
   	
+<script>
+  	const loginBtn = document.getElementById("loginBtn"); 
+  	
+  	loginBtn.addEventListener("click", function() {
+  	  modalSignin.classList.remove("d-none"); //modalSignin 열기
+    });
+  	
+</script>
  
 </header>

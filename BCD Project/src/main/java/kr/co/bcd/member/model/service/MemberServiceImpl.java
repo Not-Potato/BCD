@@ -57,4 +57,9 @@ public class MemberServiceImpl implements MemberService {
 		return memberDao.checkPhone(sqlSession, phone);
 	}
 
+	@Override
+	public int checkIdx(String phone) {
+		return memberDao.checkIdx(sqlSession, phone);
+	}
+	
 }

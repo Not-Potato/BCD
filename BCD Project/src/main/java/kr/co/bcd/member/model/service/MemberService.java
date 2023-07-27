@@ -19,7 +19,8 @@ public interface MemberService {
 
 	//소셜로그인회원 가입여부 확인용 
 	int checkPhone(String phone);
-
 	
+	//소셜로그인회원 가입 시 인덱스 번호 가져오기
+	int checkIdx(String phone);
 
 }

@@ -19,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
+import kr.co.bcd.common.controller.SessionManageController;
 import kr.co.bcd.member.model.dto.Member;
 import kr.co.bcd.member.model.service.MemberServiceImpl;
 
@@ -31,7 +32,7 @@ public class MemberController {
 	MemberServiceImpl memberService;
 
 	
-	//닉네임 중복여부
+	//닉네임 중복여부 (ajax)
 		@RequestMapping("/nicknameCheck.do")
 		public void nicknameCheck (HttpSession session, Model model, Member member, HttpServletResponse response) throws IOException {
 			String nickname = member.getNickname();
@@ -39,11 +40,13 @@ public class MemberController {
 			int result = memberService.nicknameCheck(nickname); 
 			System.out.println(result);
 			
+				PrintWriter out = response.getWriter();
+				
 				if (result == 0) {
-					PrintWriter out = response.getWriter();
 					out.print(result);
 					return;//가입가능
 				}else {
+					out.print(result);
 					return;//가입불가
 				}
 			
@@ -58,24 +61,14 @@ public class MemberController {
 			return "member/setting";
 		}
 		
-		//SNS 회원가입 후 닉네임입력 모달로 이동
-		@RequestMapping("/nicknameModal.do")
-		public String nicknameModal() {
-			return "member/nicknameModal";
-		}
 		
-		
-		@RequestMapping("/home.do")
-		public String home() {
-			return "home";
-		}
 		
 		//회원정보 수정
-		@RequestMapping("/changeProfile.do")
+		@RequestMapping("/updateProfile.do")
 		public String updateProfile (HttpSession session, Model model, Member member) {
-			member.setIdx((int)session.getAttribute("memberIdx"));
-			memberService.updateProfile(member);
-			return "/home";
+			//member.setIdx((int)session.getAttribute("memberIdx"));
+			//memberService.updateProfile(member);
+			return "member/mypage";
 		}
 		
 		
@@ -108,8 +101,8 @@ public class MemberController {
 		}
 	
 
-//네이버 로그인 API 구현부
 		
+//네이버 로그인 API 구현부	
 		
 		//네이버 자동로그인 시 활용 (Json -> Map) 
 		private final RestTemplate restTemplate;
@@ -120,7 +113,7 @@ public class MemberController {
 
 		// 네이버 로그인 access_token 발행 후 프로필 정보 가져오기
 		@RequestMapping("/loginResult")
-		public String naversuccess(HttpServletRequest request, Model model )throws Exception {	
+		public String naversuccess(HttpServletRequest request, Model model, HttpSession session )throws Exception {	
 		      	
 			String clientId = "VH0vES0K33odVfIDgWKi"; // 네이버 애플리케이션 클라이언트 아이디값
 	            String clientSecret = "J0x9GEZhi8"; // 네이버 애플리케이션 클라이언트 시크릿값
@@ -139,35 +132,42 @@ public class MemberController {
 	            Map<String, Object> json = restTemplate.getForObject(apiURL, Map.class);
 	            String accessToken = (String) json.get("access_token");
 	            
-System.out.println("memberController accessToken: " + accessToken);
+
 	            // 네이버 API를 통해 사용자 프로필 정보 조회
 	            Member member = getNaverProfile(accessToken);
 	            
+	            //가입여부 확인 (휴대전화로)
+	            
 	            	int result = memberService.checkPhone(member.getPhone());
-
-
-            		model.addAttribute("member", member);
-            	
-                    // 현재 요청의 URI 가져오기
-                    String currentUrl = request.getRequestURI();
-System.out.println("memberController currentUrl:" + currentUrl);	
-                    // ".jsp" 제외하기
-                    String withoutJsp = currentUrl.replace(".jsp", "");
-
-                    // 마지막으로부터 두 번째 슬래시까지 추출
-                    int lastIndex = withoutJsp.lastIndexOf("/");
-                    String previousUrl = withoutJsp.substring(0, lastIndex);
-
-                    // 세션에 이전 페이지 URL 저장
-                    HttpSession session = request.getSession();
-                    session.setAttribute("previousUrl", previousUrl);
-
-System.out.println("memberController previousUrl:" + previousUrl);	
-            		
-            		
-            		return "redirect:" + previousUrl; //BCD 닉네임 정하는 모달로 이동
-
-
+	            	
+	            	if (result <= 0 ) {
+	            		//사용자 정보 보내주숴 나머지 회원가입 마무리 시키기
+	            		model.addAttribute("member", member);
+	            	
+	                    // 사용자 이전 URL 가져오기
+	                    String currentUrl = (String)session.getAttribute("currentUrl");
+	                    String withoutJsp = currentUrl.replace(".jsp", "");
+	                    String previousUrl = withoutJsp.substring(36); // 마지막으로부터 두 번째 슬래시까지 남기고 삭제                 
+	                    session.setAttribute("previousUrl", previousUrl);
+	  		
+	                    // 모달 JSP 경로를 모델에 추가하여 리턴
+	                    model.addAttribute("modalJspPath", "../member/nicknameModal.jsp");	                 
+	            		return previousUrl; //BCD 닉네임 정하는 모달로 이동
+	            	}
+	            	else {
+	            		//이전페이지로 이동
+	                    String currentUrl = (String)session.getAttribute("currentUrl");
+	                    String withoutJsp = currentUrl.replace(".jsp", "");
+	                    String previousUrl = withoutJsp.substring(36); // 마지막으로부터 두 번째 슬래시까지 남기고 삭제                 
+	                    session.setAttribute("previousUrl", previousUrl);
+	                    
+	        			// 임시 회원번호 (test)
+	        			int m_idx = memberService.checkIdx(member.getPhone());
+	        			session.setAttribute("memberIdx", m_idx);
+	                    
+	            		return previousUrl; //BCD 닉네임 정하는 모달로 이동	
+	            	}
+	            	
 	}
 		
 		// 발행된 access_token을 활용해 사용자 정보 가져오기	

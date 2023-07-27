@@ -28,4 +28,9 @@ public class CommentServiceImpl implements CommentService {
 		return commentDao.detailComment(sqlSession, idx);
 	}
 
+	@Override
+	public int insert(Comment comment) {
+		return commentDao.insert(sqlSession, comment);
+	}
+
 }
