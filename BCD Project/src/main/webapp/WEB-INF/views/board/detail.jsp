@@ -218,7 +218,7 @@
 					<div class="border-bottom mb-5">
 						<p class="fs-4 fw-bold d-flex align-items-center">
 		                    <i class="bi bi-chat-right-dots-fill"></i>
-		                    <span class="ms-2">${ post.commentCount }</span>
+		                    <span class="ms-2 commentTotal">${ post.commentCount }</span>
 	                	</p>
 					</div>
 				</div>
@@ -563,8 +563,14 @@
 		                contentType: 'application/json',
 		                data: JSON.stringify(commentData),
 		                success: function(res) {
-		                    console.log("서버 응답");
-		                    commentUpdate("수정", inputElement);
+		                	if (res === 'success') {
+		                		commentUpdate("수정", inputElement);
+	                        }
+		                	Swal.fire({
+		                		icon: res, 
+		                		title: res, 
+		                		text: res == 'success' ? '성공적으로 수정되었습니다!' : '수정에 실패하였습니다.'
+		                	});
 		                },
 		                error: function(error) {
 		                    console.log("에러 발생");
@@ -601,9 +607,21 @@
 		                    url: '/comment/delete.do',
 		                    data: {idx: parseInt(commentIdx)},
 		                    success: function(res) {
-		                        // 서버 응답 처리
-		                        console.log("댓글 삭제 성공");
-		                        // 여기서 원하는 동작 수행, 예를 들어 해당 댓글을 화면에서 제거하는 등
+		                        if (res === 'success') {
+		                        	commentDiv.remove();
+		                            // 댓글 삭제 후 댓글 토탈 카운트 갱신
+		                            const commentTotalElement = $('.commentTotal'); // 댓글 토탈 카운트가 표시된 요소 선택
+		                            const currentCount = parseInt(commentTotalElement.text());
+		                            const updatedCount = currentCount - 1;
+		                            commentTotalElement.text(updatedCount);
+		                        }
+		                        
+			                	Swal.fire({
+			                		icon: res, 
+			                		title: res, 
+			                		text: res == 'success' ? '성공적으로 삭제되었습니다!' : '댓글 삭제에 실패하였습니다.'
+			                	});
+			                	
 		                    },
 		                    error: function(error) {
 		                        console.log("댓글 삭제 실패");
