@@ -228,7 +228,7 @@
 					<form id="commentWriteForm" action="/comment/insert.do" method="post" >
 						<div class="input-group mb-3">
 							<input type="hidden" name="postIdx" value="${ post.idx }">
-							<textarea name="content" class="form-control p-3" style="height: 150px; resize: none;" placeholder="댓글을 입력해 주세요!"></textarea>
+							<textarea name="content" id="inputComment" class="form-control p-3" style="height: 150px; resize: none;" placeholder="댓글을 입력해 주세요!"></textarea>
 							<button class="btn btn-outline-primary p-5" type="button" id="commentWriteBtn">작성</button>
 						</div>
 					</form>
@@ -337,7 +337,7 @@
 						<form id="reviewForm" action="/post/review.do" method="post">
 							<input type="hidden" name="idx" value="${ post.idx }">
 							<input type="hidden" name="reviewMode" id="reviewMode" value="write">
-							<textarea name="review" id="reviewInput" class="form-control p-3  animate__animated animate__bounceInLeft" 
+							<textarea name="review" id="inputReview" class="form-control p-3  animate__animated animate__bounceInLeft" 
 									  style="animation-delay: 9.2s; height: 150px; resize: none;" 
 									  placeholder="간단한 후기를 입력해 주세요!"
 									  >${ (post.review == "") || (post.review == null) ? "" : post.review }</textarea>
@@ -397,7 +397,6 @@
 			
 			// 모달 창 실행 시
 			$("#reviewModal").on('shown.bs.modal', function() {
-				/* $("#reviewInput").foucs(); */
 				console.log($(".animate__animated"));
 				if (!isFirstModalLoad) {
 					$(".animate__animated").removeClass("animate__backInDown");
@@ -415,6 +414,29 @@
 			
 			// modal 내 리뷰 form 전송 버튼
 			$("#reviewFormBtn").click(function() {
+				// 리뷰 내용 (#inputReview) null 체크
+				let reviewContent = $("#inputReview").val();
+		    	
+		    	if (!reviewContent) {
+		    		Swal.fire({
+                		icon: 'error', 
+                		title: 'error', 
+                		text: '리뷰 내용을 입력해 주세요!'
+                	});
+		    		return;
+		    	}
+		    	
+		    	// 글자수 제한 (최대 300 자)
+		    	let maxReviewLength = 300;
+		    	if (reviewContent.length > maxReviewLength) {
+		    		Swal.fire({
+                		icon: 'error', 
+                		title: 'error', 
+                		text: '리뷰는 최대 ' + maxReviewLength + '자까지 입력 가능합니다!'
+                	});
+		    		return;
+		    	}
+		    	
 				$("#reviewForm").submit();
 			});
 			
@@ -493,10 +515,32 @@
 			// 수정 화면에서 취소 누르면 돌아가기 위해 기존 내용 저장할 변수 선언
 		    let previousContent;
 
-		    // 댓글 작성
-		    $("#commentWriteBtn").click(function() {
-		        $("#commentWriteForm").submit();
-		    });
+			// 댓글 작성
+			$("#commentWriteBtn").click(function() {
+				// 리뷰 내용 (#inputReview) null 체크
+				let commentContent = $("#inputComment").val();
+			    	
+				if (!commentContent) {
+					Swal.fire({
+						icon: 'error', 
+						title: 'error', 
+						text: '댓글 내용을 입력해 주세요!'
+					});
+					return;
+				}
+			    	
+				// 글자수 제한 (최대 300 자)
+				let maxCommentLength = 300;
+				if (commentContent.length > maxCommentLength) {
+					Swal.fire({
+						icon: 'error', 
+						title: 'error', 
+						text: '댓글은 최대 ' + maxCommentLength + '자까지 입력 가능합니다!'
+					});
+					return;
+				}
+				$("#commentWriteForm").submit();
+			});
 
 		    // 댓글 수정 창 내에서 저장 OR 취소 시 사용할 함수
 		    let commentUpdate = function(action, inputElement) {
@@ -551,6 +595,28 @@
 		            const commentContent = inputElement.val();
 		            const commentDiv = $(this).closest('.comment');
 		            const commentIdx = commentDiv.find('.commentIdx').val();
+		            
+					// 댓글 내용 (#inputElement) null 체크
+		            	
+		        	if (!commentContent) {
+		        		Swal.fire({
+		        			icon: 'error', 
+		        			title: 'error', 
+		        			text: '댓글 내용을 입력해 주세요!'
+		        		});
+		        		return;
+		        	}
+		            	
+		        	// 글자수 제한 (최대 300 자)
+		        	let maxCommentLength = 300;
+		        	if (commentContent.length > maxCommentLength) {
+		        		Swal.fire({
+		        			icon: 'error', 
+		        			title: 'error', 
+		        			text: '댓글은 최대 ' + maxCommentLength + '자까지 입력 가능합니다!'
+		        		});
+		        		return;
+		        	}
 
 		            const commentData = {
 		                idx: commentIdx,

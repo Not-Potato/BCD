@@ -44,11 +44,7 @@ public class PostDao {
 	public Post detailBoard(SqlSessionTemplate sqlSession, int idx) {
 		return sqlSession.selectOne("boardMapper.detailBoard", idx);
 	}
-
-	public String selectPostStatus(SqlSessionTemplate sqlSession, int idx) {
-		return sqlSession.selectOne("boardMapper.selectPostStatus", idx);
-	}
-
+	
 	public int updateStatus(SqlSessionTemplate sqlSession, Post post) {
 		return sqlSession.update("boardMapper.updateStatus", post);
 	}
@@ -59,6 +55,22 @@ public class PostDao {
 
 	public int updateReview(SqlSessionTemplate sqlSession, Post post) {
 		return sqlSession.update("boardMapper.updateReview", post);
+	}
+
+	public int isNotDelPost(SqlSessionTemplate sqlSession, int idx) {
+		return sqlSession.selectOne("boardMapper.isNotDelPost", idx);
+	}
+
+	public Post selectStatus(SqlSessionTemplate sqlSession, int idx) {
+		return sqlSession.selectOne("boardMapper.selectStatus", idx);
+	}
+
+	public int updatePost(SqlSessionTemplate sqlSession, Post post) {
+		return sqlSession.update("boardMapper.updatePost", post);
+	}
+
+	public int markPostAsDeleted(SqlSessionTemplate sqlSession, int idx) {
+		return sqlSession.update("boardMapper.markPostAsDeleted", idx);
 	}
 	
 }

@@ -49,11 +49,6 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public String selectPostStatus(int idx) {
-		return postDao.selectPostStatus(sqlSession, idx);
-	}
-
-	@Override
 	public int updateStatus(Post post) {
 		return postDao.updateStatus(sqlSession, post);
 	}
@@ -66,6 +61,26 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public int updateReview(Post post) {
 		return postDao.updateReview(sqlSession, post);
+	}
+
+	@Override
+	public int isNotDelPost(int idx) {
+		return postDao.isNotDelPost(sqlSession, idx);
+	}
+
+	@Override
+	public Post selectStatus(int idx) {
+		return postDao.selectStatus(sqlSession, idx);
+	}
+
+	@Override
+	public int updatePost(Post post) {
+		return postDao.updatePost(sqlSession, post);
+	}
+
+	@Override
+	public int markPostAsDeleted(int idx) {
+		return postDao.markPostAsDeleted(sqlSession, idx);
 	}
 	
 }
