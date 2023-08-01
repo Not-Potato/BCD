@@ -108,16 +108,14 @@
 					</div>
 					
 					<!-- 적용된 필터 -->
-					<div class="mb-2 d-flex gap-1">
+					<div class="mb-2 d-flex gap-1 d-flex align-items-center mt-3" style="height: 38px;">
 						<div class="selectedBtn d-flex gap-1">
 						  <!-- 선택된 버튼 들어갈 자리 -->
 		
 						</div>
-						<a class="btn btn-outline-primary" id="resetBtn">
-							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
-								<path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
-								<path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
-							</svg>
+						
+						<a role="button" id="resetBtn" class="text-secondary d-none">
+							<i class="bi bi-arrow-repeat"></i>
 							초기화
 						</a>
 					</div>
@@ -277,6 +275,8 @@
 		const smallCategories= document.getElementById("smallCategories").getElementsByTagName("a");
 		const selectedBtnTag= document.querySelector(".selectedBtn").getElementsByTagName("a");
 		
+		let selectedCount = 0;
+		
 		//active class 없애기
 		function removeActive(){
 			console.log("removeActive() 실행됨");
@@ -356,16 +356,21 @@
 					//복제된 버튼의 id 변경
 					cloneBtn.setAttribute("id",btnId+"-cloned");
 					if(selected) { //배열에 카테고리 존재한다면??
-							
 						selectedBtnSection.removeChild(document.getElementById(btnId+'-cloned'));
 						console.log("삭제전 :"+Array.from(selectedBtnIds));	
 						selectedBtnIds.delete(btnId);
 						console.log("삭제 :"+Array.from(selectedBtnIds));
+						selectedCount--;
+						resetBtnShow();
 					}else { //존재하지 않는다면 버튼 넣기
 						selectedBtnSection.appendChild(cloneBtn);
+						cloneBtn.classList.remove("btn", "btn-primary");
+						cloneBtn.classList.add("bg-secondary", "p-2", "bg-opacity-10", "text-dark", "rounded");
 						console.log("추가전 :"+Array.from(selectedBtnIds));
 						selectedBtnIds.add(btnId);
 						console.log("추가  :"+Array.from(selectedBtnIds));
+						selectedCount++;
+						resetBtnShow();					
 					}
 				});
 			}
@@ -374,6 +379,15 @@
 		
 		//초기화 버튼
 		const resetBtn = document.getElementById("resetBtn");
+		
+		function resetBtnShow(){
+			if(selectedCount>0){
+				resetBtn.classList.remove("d-none");
+			} else {
+				resetBtn.classList.add("d-none");
+			}
+		}
+		
 		resetBtn.addEventListener("click", function(){
 			for(const btnId of selectedBtnIds){
 				selectedBtnSection.removeChild(document.getElementById(btnId+'-cloned'));
@@ -384,6 +398,8 @@
 				
 			}
 			selectedBtnIds.clear();
+			selectedCount = 0;
+			resetBtnShow();
 			
 		}) 
 			

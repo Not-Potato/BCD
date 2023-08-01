@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.co.bcd.chat.model.dto.ChatRoom;
 import kr.co.bcd.chat.model.service.ChatRoomServiceImpl;
+import kr.co.bcd.common.controller.SessionManageController;
 import kr.co.bcd.common.paging.model.PageInfo;
 import kr.co.bcd.common.paging.template.Pagination;
 import kr.co.bcd.member.model.service.MemberServiceImpl;
@@ -31,6 +32,9 @@ public class ChatRoomController {
 	
 	@Autowired
 	private MemberServiceImpl memberService;
+	
+	@Autowired
+	private SessionManageController sessionManage;
 	
 	@GetMapping("/list.do")
 	public String chatRoomList(@RequestParam(value="category", defaultValue="" )String category,
@@ -70,18 +74,9 @@ public class ChatRoomController {
 			
 		}
 		
-		int memberIdx = 3;
+		int memberIdx = 1;
 		String memberNickname = memberService.selectNickname(memberIdx);
 		System.out.println("닉네임 : " + memberNickname);
-		
-		
-		
-		
-		
-//		String participants = chatRoomService.getParticipants(idx);
-//		String[] participantsArray = participants.split(",");
-//		int participantsLength=participantsArray.length;
-		
 		
 		
 		model.addAttribute("participantsSizeList",participantsSizeList);
@@ -94,11 +89,12 @@ public class ChatRoomController {
 		return "chat/chatRoomList";
 		
 	} 
+	
 	@PostMapping("/create.do")
 	public String createChatRoom (ChatRoom chatRoom, HttpSession session, Model model) {
 		
 		
-		int memberIdx = 3;
+		int memberIdx = 1;
 		String memberNickname = memberService.selectNickname(memberIdx);
 		
 		chatRoom.setParticipants(memberNickname);
@@ -111,13 +107,13 @@ public class ChatRoomController {
 		
         
 	    if(result>0) {
-//	    	System.out.println(memberNickname);
-//	    	model.addAttribute("memberNickname",memberNickname);
-//	    	model.addAttribute("chatRoom" , chatRoom);
-//	    	return "chat/chatRoom";
-	    	
+	
+	    	sessionManage.setSessionMsg("채팅방이 성공적으로 생성되었습니다!", "success", session);
+	    
 	    	return "redirect:/chat/enter.do?idx="+createdChatRoomIdx;
 	    } else {
+	    	sessionManage.setSessionMsg("채팅방 생성에 실패했습니다!", "error", session);
+	    	
 	    	return "chat/chatRoomList";
 	    }
 		
@@ -126,6 +122,8 @@ public class ChatRoomController {
 	@RequestMapping("enter.do")
 	public String enterChatRoom(@RequestParam(value="idx")int idx, Model model, HttpSession session) {
 		
+    	sessionManage.getSessionMsg(session, model);
+
 		ChatRoom result = chatRoomService.enterChatRoom(idx);
 		
 		if(!Objects.isNull(result)) {
@@ -134,7 +132,7 @@ public class ChatRoomController {
 			result.setIdx(idx);
 			
 			//test 사용
-			int memberIdx = 3;
+			int memberIdx = 1;
 			//세션에 저장된 memberIdx로 참여자 목록에 닉네임 저장 
 //			int memberIdx = (int) session.getAttribute("memberIdx");
 			String newParticipant = memberService.selectNickname(memberIdx);
@@ -148,17 +146,17 @@ public class ChatRoomController {
 
 			int participantsSize;
 			
-			//참여자라면 -> db에 저장되어있는 닉네임이라면 개설자
+			//참여자라면 -> db에 저장되어있는 닉네임이라면 개설자 (createChatRoom.do에서 저장하고 오기 때문)
 			if(!getParticipants.contains(newParticipant)) {
 				getParticipants += ("," + newParticipant);
 				//배열로 바꾸기
 				List<String> participantsList = Arrays.asList(getParticipants.split(","));
 				System.out.println("추가될 참여자 : " + newParticipant);
-
-//				participantsList.add(newParticipant);		
-//				String updateParticipants = String.join(",", participantsList);
-				result.setParticipants(getParticipants);
 				
+				result.setParticipants(getParticipants);
+				chatRoomService.updateParticipants(result);
+				
+				//jsp에서 참여자 리스트 출력
 				model.addAttribute("participantsList", participantsList);
 
 				//참여자 수 구하기
@@ -174,8 +172,10 @@ public class ChatRoomController {
 			//DB 대화 목록 가져오기
 			
 			System.out.println("participantsSize사이즈"+participantsSize);
-	
+		
+			
 		model.addAttribute("result", result);
+		model.addAttribute("memberIdx", memberIdx);
 		model.addAttribute("memberNickname", newParticipant);
 		model.addAttribute("participantsSize", participantsSize);
 		return "chat/chatRoom";
@@ -185,6 +185,38 @@ public class ChatRoomController {
 		else {
 			
 			return "chat/chatRoomList";
+		}
+		
+	}
+	@RequestMapping("/modify.do")
+	public String chatRoomModify(ChatRoom chatRoom ,Model model,HttpSession session){
+		
+		int idx = chatRoom.getIdx();
+		
+		if(chatRoom!=null) {
+			
+			int isModified = chatRoomService.modifyChatRoom(chatRoom);
+			
+			if(isModified>0) {
+				
+				model.addAttribute("result", chatRoom);
+
+				sessionManage.setSessionMsg("채팅방이 성공적으로 수정되었습니다!", "success", session);
+			    
+		    	return "redirect:/chat/enter.do?idx="+idx;
+			}
+			else {
+				sessionManage.setSessionMsg("채팅방 수정에 실패했습니다!", "error", session);
+			    
+		    	return "redirect:/chat/enter.do?idx="+idx;
+				
+			}
+			
+		} 
+		else {
+			sessionManage.setSessionMsg("오류가 발생했습니다!", "error", session);
+		    
+	    	return "chat/chatRoomList";
 		}
 		
 	}
