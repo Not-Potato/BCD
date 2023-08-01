@@ -19,7 +19,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 		//핸들러 bean, 경로 저장, setAllowed는 모든 출처에서 접근을 허용하여 클라이언트-서버간의 실시간 통신 가능하게
-		registry.addHandler(chatMsgHandler(), "/chatMsg").setAllowedOrigins("*");
+		registry.addHandler(chatMsgHandler(), "/chatMsg/{idx}").setAllowedOrigins("*");
 		//		.addInterceptors(ChatInterceptor());
 		
 	}   
