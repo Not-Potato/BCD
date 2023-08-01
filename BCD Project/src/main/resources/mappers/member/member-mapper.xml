@@ -21,6 +21,45 @@
 		<result column="sns_type" property="snsType"></result>
 	</resultMap>
 	
+	<insert id="memberJoin" parameterType="Member">
+		<selectKey keyProperty="idx" resultType="_int" order="AFTER">
+        	SELECT M_IDX_SEQUENCE.CURRVAL FROM DUAL
+	    </selectKey>	
+	    
+		INSERT INTO MEMBER (m_idx, 
+							m_phone,
+							m_nickname,
+							sns_id,
+							sns_type,
+							m_join_date)
+					VALUES (m_idx_sequence.nextval,
+							#{phone},
+							#{nickname},
+							#{snsId},
+							#{snsType},
+							SYSDATE)		
+	</insert>
+	
+		<insert id="memberPhoneJoin" parameterType="Member">
+		<selectKey keyProperty="idx" resultType="_int" order="AFTER">
+        	SELECT M_IDX_SEQUENCE.CURRVAL FROM DUAL
+	    </selectKey>	
+	    
+		INSERT INTO MEMBER (m_idx, 
+							m_phone,
+							m_nickname,
+							m_id,
+							m_pwd,
+							m_join_date)
+					VALUES (m_idx_sequence.nextval,
+							#{phone},
+							#{nickname},
+							#{id},
+							#{pwd},
+							SYSDATE)		
+	</insert>
+	
+	
 	<select id="selectMember" resultMap="memberResultSet">
 		SELECT * FROM MEMBER
 		WHERE m_idx = #{memberIdx}
@@ -47,14 +86,24 @@
 		WHERE m_nickname = #{nickname}
 	</select>
 		
-	<select id="checkPhone" resultType="_int">
+	<select id="checkEmail" resultType="_int">
 		SELECT COUNT(*) FROM MEMBER
-		WHERE m_phone = #{phone}
+		WHERE sns_id = #{snsId} 
+		AND sns_type =#{snsType}
 	</select>	
 	
 	<select id="checkIdx" resultType="_int">
 		SELECT m_idx FROM MEMBER
-		WHERE m_phone = #{phone}
+		WHERE sns_id = #{email}
 	</select>	
 	
+	<select id="checkId" resultType="_int">
+		SELECT COUNT(*) FROM MEMBER
+		WHERE sns_id = #{snsId}
+	</select>
+	
+	<select id="idCheck" resultType="_int">
+		SELECT COUNT(*) FROM MEMBER
+		WHERE m_id = #{id}
+	</select>		
 </mapper>

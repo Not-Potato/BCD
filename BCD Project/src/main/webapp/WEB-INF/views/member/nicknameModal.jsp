@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-	
+<c:set var="contextPath"  value="${pageContext.request.contextPath}" />	
 
 <!DOCTYPE html>
 <html lang="ko" class="h-100">
@@ -22,14 +22,22 @@
  		   </div>
 
 		    <div class="modal-body p-5 pt-0 mt-4">
-		        <h1 class="fw-bold mt-5 mb-2 fs-2 text-center">BCD에 처음 오셨군요!</h1>
+		    <h1 class="fw-bold mt-5 mb-2 fs-2 text-center">BCD에 처음 오셨군요!</h1>
+<c:choose>
+		<c:when test="${ empty snsLogin }">		    		        
             	<h1 class="fw-bold mb-5 fs-2 text-center">우선, 사용하실 닉네임을 설정해 볼까요?</h1>
-            
-            
+         </c:when>    
+         <c:otherwise>  
+         		<h1 class="fw-bold mb-5 fs-2 text-center">사용하실 닉네임을 설정해 볼까요?</h1>
+         </c:otherwise>
+</c:choose>         
 	            <div class="d-flex justify-content-center mt-5" style="width: 100%;">
 	        	 	
-		        	 	<form class="centered text-center form-floating" style="width: 75%;">
+		        	 	<form class="centered text-center form-floating" style="width:75%;" action="/member/snsJoin.do"  id="nicknameForm">
 		                    	<input type="text" class="form-control" id="inputNickname" name="nickname" placeholder="Nickname" style="margin: 0 auto;" pattern="[A-Za-z0-9ㄱ-ㅎㅏ-ㅣ가-힣]+";> 
+		                    	 <input type="hidden" name="snsId" value="${member.snsId}"/>	
+					 			 <input type="hidden" name="phoneNumber" value="${member.phone}">	
+					      		 <input type="hidden" name="snsType" value="${member.snsType}">		
 		                    	<label for="inputNickname">Nickname</label>   	                   
 		            	</form>
 		          </div>    	
@@ -38,16 +46,25 @@
 		           			<p class="invalid-feedback text-center m-0" id="nicknameStatus" style="display:hidden"></p><!-- 닉네임 중복 여부 체크 -->		      
 		           		</div>
 	            	
-
+<c:choose>
+	<c:when test="${ empty snsLogin }">
 	        	 <div class="d-flex justify-content-center mt-5" style="width: 100%;">
-	        		<button type="button" id="nextBtn" class="btn btn-dark fs-5 pl-4 pr-4" onclick="return submitNickname()" data-tooltip="">다음</button>
+	        		<button type="button" id="nextBtn" class="btn btn-dark fs-5 pl-4 pr-4" onclick="return submitNickname()" data-tooltip="">다음</button>	      		
+	      		</div>	      		
+	 </c:when> 
+	 <c:otherwise>  
+	      		<div class="d-flex justify-content-center mt-5" style="width: 100%;">
+	        		<button type="button" id="nextBtn" class="btn btn-dark fs-5 pl-4 pr-4" onclick="return submitNicknameForSns()" data-tooltip="">가입 완료</button>	      		
 	      		</div>	
-	      		       	 
+	 </c:otherwise>     			
+ </c:choose>   	 
 			</div>
    		
 		</div>
 	</div>
 </div>
+
+<%@ include file="../member/idpwModal.jsp" %>
 
 <script>
 //page.2 닉네임  
@@ -79,7 +96,7 @@
    
  	 closeModalNickname.addEventListener("click", function() {
 	 	  modalNickname.classList.add("d-none");// modalNickname 닫기
-	       location.reload();
+	       //location.reload(); // 소셜로그인 회원 닫기 버튼시 오류 발생됨
 	 });
   
 
@@ -111,24 +128,21 @@
 						data : {
 							nickname : nickname
 						},
-						success : function(result) {
-							console.log(result);
-							  var resultNumber = parseInt(result);
-							if(resultNumber === 0) {	
+						success : function(result) {				
+							if(result == "success") {	
 								 nicknameStatus.css("display", "block");
 								 nicknameStatus.text("사용 가능한 닉네임입니다.");
 						         nicknameStatus.css("color", "green");
 						         isDuplicateNickname = true;
 						  
-							} else if(resultNumber > 0) {
+							} else if(result == "failed") {
 		                      	  	nicknameStatus.css("display", "block");
 		                            nicknameStatus.text("이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해주세요.");
 		                            nicknameStatus.css("color", "red");
 		                            isDuplicateNickname = false;
 		                      		return;
 		              		
-		            		} 
-							 else {
+		            		} else {
 		            			 nicknameStatus.css("display", "none");	
 		            			 isDuplicateNickname = false;
 		            			return;
@@ -179,7 +193,7 @@
 		     } else {
 		    	 
 		    	 moveToNextPage(nickname); //다음 모달창으로 이동 
-		    	 return true;
+		    	 return false;
 		     }
 		}	 
 		
@@ -187,11 +201,43 @@
 	    		document.getElementById("nicknamePlaceholder").innerText = nickname;   
 	    		document.getElementById("modalNickname").classList.add("d-none"); // modalNickname 닫으면서
 	    		document.getElementById("modalIdPw").classList.remove("d-none"); // modalIdPw 열기
+	    		
+	    		document.getElementById("passNickname").value = nickname; // modalIdPw에 닉네임 전달하기
+
 			}
+
+			
+					
+			 //가입완료 버튼
+			 function submitNicknameForSns() {		
+	    		 // 입력값이 비어있는 경우 서밋 막기
+			     if (nickname == "" || !isValidNickname || !isDuplicateNickname) {
+			
+			    	 	var nextBtn = document.getElementById("nextBtn"); // 버튼 요소 가져오기
+			    	 	nextBtn.setAttribute("data-tooltip", "에러메세지를 확인해주세요");
+			    	 
+			    	 	 // 마우스가 버튼을 떼었을 때 툴팁을 숨김
+			         	 nextBtn.addEventListener("mouseleave", function() {
+			             nextBtn.setAttribute("data-tooltip", "");
+			        	 });
+			    	 
+			    	 return false; // 폼의 기본 제출 동작 막기
+			    	 
+			     } else {
+			    	 
+			    	 document.getElementById("nicknameForm").submit();
+			    	 completeSnsLogin(nickname); //소셜로그인 완료! 
+			    	 return true;
+			     }
+			}	 
+			
+				function completeSnsLogin(nickname) {   
+		    		document.getElementById("modalNickname").classList.add("d-none"); // modalNickname 닫으면서	    		
+				}
 
 </script>
 
-<%@ include file="../member/idpwModal.jsp" %>
+
 
 </body>
 </html>

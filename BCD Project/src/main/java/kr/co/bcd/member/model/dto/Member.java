@@ -34,5 +34,5 @@ public class Member {
 	
 	
 	// pwd 확인용
-	//private String pwdChk;
+	private String pwdChk;
 }

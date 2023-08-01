@@ -1,19 +1,26 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-	<c:if test="${not empty modalJspPath}">
-    	<jsp:include page="${modalJspPath}" />
-  	</c:if>
+
+<!-- memberController에서 modelAttribute로 받은 내용에 따라 다음 동작 결정 -->
  <script> 	
  	window.onload = function() {	
-		const modalJspPath = "${modalJspPath}"; 
+		const snsLogin = "${snsLogin}"; 
 		const modalNickname = document.getElementById("modalNickname");
-		// modalJspPath 변수가 비어있지 않다면 닉네임모달 열기
-	    if (modalJspPath !== "") {
+		const welcomeModal = "${welcomeModal}"; 
+		const modalWelcome = document.getElementById("modalWelcome");
+		
+		 <!-- 소설로그인 회원인증 후 BCD 사이트 돌아와 회원가입 마무리(nickname만 쓰면 회원가입 마무리임)  --> 			
+	    if (snsLogin !== "") {
 	      modalNickname.classList.remove("d-none"); // 모달 열기
+	    }		
+	    
+	    <!-- 소셜로그인 성공모달  --> 	
+	    if (welcomeModal !== "") {
+	    	modalWelcome.classList.remove("d-none"); // 모달 열기
 	    }
 	};
 </script>
+
 <header>
 	<div class="container mt-3 mb-4">
 		<div class="d-flex flex-wrap align-items-center justify-content-between">
@@ -45,7 +52,6 @@
 					</button>
                 </li>
                 <li>
-
 					<button type="button" class="d-flex align-items-center btn btn-primary" id="loginBtn">
 						<i class="bi bi-door-open"></i>
 						<span class="ms-1">로그인</span>		
@@ -57,8 +63,10 @@
     </div>
 
     <%@ include file="../member/loginModal.jsp" %> 
-  	
+  	<%@ include file="../member/welcomeModal.jsp" %>
+
 <script>
+/* 로그인 버튼 클릭 시 로그인모달*/
   	const loginBtn = document.getElementById("loginBtn"); 
   	
   	loginBtn.addEventListener("click", function() {
