@@ -43,25 +43,49 @@ public class CommentController {
 	
 	@PostMapping("/edit.do")
 	@ResponseBody
-	public ResponseEntity<String> editComment(@RequestBody Comment comment) {
+	public ResponseEntity<String> editComment(@RequestBody Comment comment, HttpSession session) {
 		// TODO: 현재 접속자 == 댓글 작성자 ck
-		// TODO: 수정 가능한 comment인지 (delect_date 존재하지 않는지) ck 
-		// TODO: DB UPDATE 진행 (content update)
+		int userIdx = (int)session.getAttribute("memberIdx");
+		int commentAuthorIdx = commentService.getCommentAuthor(comment.getIdx());
 		
-		// 제대로 된 comment(댓글 객체) 넘어오는 것 확인 완료!
-		System.out.println(comment);
-		return ResponseEntity.ok("성공");
+		// TODO: 수정 가능한 comment인지 (delect_date 존재하지 않는지) ck 
+		int isValid = commentService.isCommentValid(comment.getIdx());
+		
+		// TODO: DB UPDATE 진행 (content update)
+		if(userIdx == commentAuthorIdx && isValid == 1) {
+			int result = commentService.updateComment(comment);
+			
+			if(result > 0) {
+				return ResponseEntity.ok("success");
+			} else {
+				return ResponseEntity.ok("error"); // 실패일 때도 ok로 넘기는 게 맞나?
+			}
+		} else {			
+			return ResponseEntity.ok("error"); // 실패일 때도 ok로 넘기는 게 맞나?22
+		}
 	}
 	
 	@PostMapping("/delete.do")
 	@ResponseBody
-	public ResponseEntity<String> deleteComment(Integer idx) {
+	public ResponseEntity<String> deleteComment(Integer idx, HttpSession session) {
 		// TODO: 현재 접속자 == 댓글 작성자 ck
-		// TODO: 수정 가능한 comment인지 (delete_date 존재하지 않는지) ck
-		// TODO: DB UPDATE 진행 (delete_date update)
+		int userIdx = (int)session.getAttribute("memberIdx");
+		int commentAuthorIdx = commentService.getCommentAuthor(idx);
 		
-		// 제대로 된 idx(댓글 고유 번호) 넘어오는 것 확인 완료!
-		System.out.println(idx); 
-		return ResponseEntity.ok("성공");
+		// TODO: 수정 가능한 comment인지 (delect_date 존재하지 않는지) ck 
+		int isValid = commentService.isCommentValid(idx);
+		
+		// TODO: DB UPDATE 진행 (content update)
+		if(userIdx == commentAuthorIdx && isValid == 1) {
+			int result = commentService.markCommentAsDeleted(idx);
+			
+			if(result > 0) {
+				return ResponseEntity.ok("success");
+			} else {
+				return ResponseEntity.ok("error"); // 실패일 때도 ok로 넘기는 게 맞나?
+			}
+		} else {			
+			return ResponseEntity.ok("error"); // 실패일 때도 ok로 넘기는 게 맞나?22
+		}
 	}
 }

@@ -160,17 +160,19 @@
 	
 	
 	
+	
+	
 	<select id="selectCommentCount" resultType="_int">
 		SELECT COUNT(*) FROM "COMMENT"
-		WHERE C_DELETE_DATE IS NULL 
-		AND P_IDX = #{idx}
+			WHERE C_DELETE_DATE IS NULL 
+			AND P_IDX = #{idx}
 	</select>
 
 	<select id="detailComment" resultMap="commentResultSet">
 		SELECT * FROM "COMMENT"
-		WHERE C_DELETE_DATE IS NULL 
-		AND P_IDX = #{idx}
-		ORDER BY c_create_date DESC
+			WHERE C_DELETE_DATE IS NULL 
+			AND P_IDX = #{idx}
+			ORDER BY c_create_date DESC
 	</select>
 
 	<insert id="insertComment"  parameterType="Comment">
@@ -185,6 +187,31 @@
 					   		  #{content}, 
 					   		  SYSDATE)
 	</insert>
+	
+	<select id="getCommentAuthor" resultType="_int">
+		SELECT m_idx FROM "COMMENT"
+			WHERE c_idx = #{idx}
+	</select>
+	
+	<select id="isCommentValid" resultType="_int">
+		SELECT COUNT(*) FROM "COMMENT"
+			WHERE C_DELETE_DATE IS NULL 
+			AND C_IDX = #{idx}
+	</select>
+	
+	<update id="updateComment" parameterType="Comment">
+		UPDATE "COMMENT"
+			SET c_content = #{content}
+			WHERE c_idx = #{idx}
+	</update>
+	
+	<update id="markCommentAsDeleted">
+		UPDATE "COMMENT"
+			SET c_delete_date = SYSDATE
+			WHERE c_idx = #{idx}
+	</update>
+
+
 
 
 
