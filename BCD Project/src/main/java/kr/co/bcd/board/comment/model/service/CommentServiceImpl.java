@@ -33,4 +33,24 @@ public class CommentServiceImpl implements CommentService {
 		return commentDao.insert(sqlSession, comment);
 	}
 
+	@Override
+	public int getCommentAuthor(int idx) {
+		return commentDao.getCommentAuthor(sqlSession, idx);
+	}
+
+	@Override
+	public int isCommentValid(int idx) {
+		return commentDao.isCommentValid(sqlSession, idx);
+	}
+
+	@Override
+	public int updateComment(Comment comment) {
+		return commentDao.updateComment(sqlSession, comment);
+	}
+
+	@Override
+	public int markCommentAsDeleted(int idx) {
+		return commentDao.markCommentAsDeleted(sqlSession, idx);
+	}
+
 }

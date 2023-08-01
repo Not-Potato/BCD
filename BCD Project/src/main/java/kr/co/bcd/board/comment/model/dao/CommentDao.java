@@ -22,4 +22,20 @@ public class CommentDao {
 		return sqlSession.insert("boardMapper.insertComment", comment);
 	}
 
+	public int getCommentAuthor(SqlSessionTemplate sqlSession, int idx) {
+		return sqlSession.selectOne("boardMapper.getCommentAuthor", idx);
+	}
+
+	public int isCommentValid(SqlSessionTemplate sqlSession, int idx) {
+		return sqlSession.selectOne("boardMapper.isCommentValid", idx);
+	}
+
+	public int updateComment(SqlSessionTemplate sqlSession, Comment comment) {
+		return sqlSession.update("boardMapper.updateComment", comment);
+	}
+
+	public int markCommentAsDeleted(SqlSessionTemplate sqlSession, int idx) {
+		return sqlSession.update("boardMapper.markCommentAsDeleted", idx);
+	}
+
 }

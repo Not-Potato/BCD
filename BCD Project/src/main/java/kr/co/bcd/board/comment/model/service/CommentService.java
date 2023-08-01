@@ -13,4 +13,16 @@ public interface CommentService {
 	
 	// 댓글 작성
 	int insert(Comment comment);
+	
+	// 댓글 작성자 가져오기
+	int getCommentAuthor(int idx);
+	
+	// 유효한 댓글(delete date 칼럼 null)인지 확인
+	int isCommentValid(int idx);
+	
+	// 댓글 수정
+	int updateComment(Comment comment);
+	
+	// 댓글 삭제
+	int markCommentAsDeleted(int idx);
 }
