@@ -32,7 +32,7 @@
     apiURL += "&state=" + state;
     //session.setAttribute("state", state);
  %>
- 
+
 
 <!-- 로그인 모달 page.1 -->
  <div class="modal modal-signin position-fixed d-block py-5 backdrop d-none" tabindex="-1" role="dialog" id="modalSignin">
@@ -65,7 +65,8 @@
 	                    
 	                    <div class="row mt-3">
 	                    	<div class="col-md mb-3">
-	                            <img src="../../resources/images/kakaoM.png" alt="Kakao" id="kakaoLoginBtn"/>   
+	                            <a href="https://kauth.kakao.com/oauth/authorize?client_id=0a1b520b1d14379b7230e168bd69de63&redirect_uri=http://localhost:8080/member/kakaoLogin&response_type=code&scope=account_email">
+	                            <img src="../../resources/images/kakaoM.png" alt="Kakao" id="kakaoLoginBtn"/></a>   	                        
 	                        </div>                
 	        			</div>  
         			</div>
@@ -89,7 +90,7 @@
   
   closeModalSignin.addEventListener("click", function() {
 	  modalSignin.classList.add("d-none"); //modalSignin 닫기
-      location.reload();
+     // location.reload();
   });
   
   

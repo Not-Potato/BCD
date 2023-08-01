@@ -63,6 +63,8 @@
 </div>
 </div>
 
+<%@ include file="../member/welcomeModal.jsp" %>
+
 <script>
       const registerbtn = document.getElementById("phoneRegisterBtn");
       const closeModalBtn = document.getElementById("closeModalBtn");

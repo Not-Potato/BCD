@@ -9,8 +9,8 @@ import kr.co.bcd.member.model.dto.Member;
 @Repository
 public class MemberDao {
 
-	public int register(SqlSessionTemplate sqlSession, Member member) {
-		return sqlSession.insert("memberMapper.register", member);
+	public int memberJoin(SqlSessionTemplate sqlSession, Member member) {
+		return sqlSession.insert("memberMapper.memberJoin", member);
 	}
 
 	public Member selectMember(SqlSessionTemplate sqlSession, int memberIdx) {
@@ -30,12 +30,26 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.nicknameCheck", nickname);
 	}
 
-	public int checkPhone(SqlSessionTemplate sqlSession, String phone) {
-		return sqlSession.selectOne("memberMapper.checkPhone", phone);
+	public int checkEmail(SqlSessionTemplate sqlSession, Member member) {
+		return sqlSession.selectOne("memberMapper.checkEmail", member);
 	}
 
-	public int checkIdx(SqlSessionTemplate sqlSession, String phone) {
-		return sqlSession.selectOne("memberMapper.checkIdx", phone);
+	public int checkIdx(SqlSessionTemplate sqlSession, String email) {
+		return sqlSession.selectOne("memberMapper.checkIdx", email);
 	}
+
+	public int checkId(SqlSessionTemplate sqlSession, String snsId) {
+		return sqlSession.selectOne("memberMapper.checkId", snsId);
+	}
+
+	public int idCheck(SqlSessionTemplate sqlSession, String id) {
+		return sqlSession.selectOne("memberMapper.idCheck", id);
+	}
+
+	public int memberPhoneJoin(SqlSessionTemplate sqlSession, Member member) {
+		return sqlSession.insert("memberMapper.memberPhoneJoin", member);
+	}
+
+
 
 }
