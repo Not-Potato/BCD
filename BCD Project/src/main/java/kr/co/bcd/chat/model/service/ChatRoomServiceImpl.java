@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.co.bcd.chat.model.dao.ChatRoomDao;
+import kr.co.bcd.chat.model.dto.ChatMsg;
 import kr.co.bcd.chat.model.dto.ChatRoom;
 import kr.co.bcd.common.paging.model.PageInfo;
 
@@ -32,5 +33,24 @@ public class ChatRoomServiceImpl implements ChatRoomService{
 	}
 	public ChatRoom enterChatRoom(int idx) {
 		return chatRoomDao.enterChatRoom(idx, sqlSession);
+	}
+	public int msgSave(ChatMsg chatMsg) {
+		return chatRoomDao.msgSave(chatMsg, sqlSession);
+	}
+	public void updateParticipants(ChatRoom result) {
+		chatRoomDao.updateParticipants(result, sqlSession);
+	}
+	public void deleteChatRoom(int idx) {
+		chatRoomDao.deleteChatRoom(idx, sqlSession);
+	}
+	public void deleteChatMsg(int idx) {
+		chatRoomDao.deleteChatMsg(idx,sqlSession);
+		
+	}
+	public int modifyChatRoom(ChatRoom chatRoom) {
+		return chatRoomDao.modifyChatRoom(chatRoom, sqlSession);
+	}
+	public List<ChatMsg> previousChat(int idx) {
+		return chatRoomDao.previousChat(idx, sqlSession);
 	}
 }
