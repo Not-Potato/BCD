@@ -25,10 +25,15 @@ public class MemberServiceImpl implements MemberService {
 	//}
 	
 	@Override
-	public int register (Member member) {
-		return memberDao.register(sqlSession, member);
+	public int memberJoin (Member member) {
+		return memberDao.memberJoin(sqlSession, member);
 	}
 
+	@Override 
+	public int memberPhoneJoin(Member member) {
+		return memberDao.memberPhoneJoin(sqlSession, member);	
+	}
+	
 	@Override
 	public Member selectMember(int memberIdx) {
 		return memberDao.selectMember(sqlSession, memberIdx);
@@ -53,13 +58,27 @@ public class MemberServiceImpl implements MemberService {
 	}
 	
 	@Override
-	public int checkPhone(String phone) {
-		return memberDao.checkPhone(sqlSession, phone);
+	public int checkEmail(Member member) {
+		return memberDao.checkEmail(sqlSession, member);
 	}
 
 	@Override
-	public int checkIdx(String phone) {
-		return memberDao.checkIdx(sqlSession, phone);
+	public int checkIdx(String email) {
+		return memberDao.checkIdx(sqlSession, email);
 	}
+
+	@Override 
+	public int checkId(String snsId) {	
+		return memberDao.checkId(sqlSession, snsId);
+	}
+
+	@Override 
+	public int idCheck(String id) {
+		return memberDao.idCheck(sqlSession, id);
+	}
+	
+	
+
+
 	
 }
