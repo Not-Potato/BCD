@@ -49,24 +49,54 @@
 		        <h1 class="fw-bold mt-5 mb-5 fs-2 text-center">BCD에 오신 것을 환영합니다!</h1>
 		        
 	        	 	<div class="centered text-center mt-5">
-	                	<div class="row mt-3">
-	                    	<div class="col-md mb-3 ">
-	                        	<button class="py-2 btn btn-outline-dark rounded-3" type="submit" id="phoneRegisterBtn" style="height:70px; width:300px;">
+	                	<div class="row">
+	                    	<div class="col-md mb-2 ">
+	                        <!-- 	<button class="py-2 btn btn-outline-dark rounded-3" type="submit" id="phoneRegisterBtn" style="height:70px; width:300px;">
+	                            	<i class="bi bi-phone-vibrate-fill"></i>
 	                            	휴대전화 로그인
 	                        	</button>
+	                        	 -->
+	                        	<button class="btn btn-outline-dark rounded-3" type="submit" id="" style="height:70px; width:300px; background-color: gray; border: none;">
+	                            	<div style="width: 200px; display: flex; align-items: center; gap: 10px;  justify-content: space-between;">
+	                            		<div style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+	                            		<i class="bi bi-phone-vibrate-fill" style="font-size: 30px;"></i>
+	                            		</div>
+	                            		<span style="color: #ffffff; ">휴대전화 로그인</span>
+	                            	</div>
+	                        	</button>	
 	                    	</div>    
 	                    </div>
-	                    <div class="row mt-3">
-	                    	<div class="col-md mb-3">
+	                    <div class="row">
+	                    	<div class="col-md mb-2">
 	                          <%--   <a href="<%=apiURL%>"><img  src="../../resources/images/btnG.png" alt="Naver" id="naverLoginBtn" style="height:70px; width:366px;" /></a>  --%>
-	                             <a href="<%=apiURL%>"><img height="50" src="http://static.nid.naver.com/oauth/small_g_in.PNG" /></a>  
+	          
+	                           
+	                    	
+                    		<a href="<%=apiURL%>">	                   
+	                    		<button class="btn btn-outline-dark rounded-3" type="submit" id="" style="height:70px; width:300px; background-color: rgb(3, 199, 90); border: none;">
+	                            	<div style="width: 200px; display: flex; align-items: center; gap: 10px;  justify-content: space-between;">                            		
+	                            		<img src="../../resources/images/naverLogo2.png" style="height:60px; width:auto;" alt="naver" id="naverLoginBtn"/> 
+	                            		<span style="color: #ffffff; ">네이버 로그인</span>
+	                            	</div>
+	                        	</button>			                        	
+	                        </a>
+	         
 	                    	</div> 
 	                    </div>
 	                    
-	                    <div class="row mt-3">
-	                    	<div class="col-md mb-3">
+	                    <div class="row">
+	                    	<div class="col-md mb-2">
 	                            <a href="https://kauth.kakao.com/oauth/authorize?client_id=0a1b520b1d14379b7230e168bd69de63&redirect_uri=http://localhost:8080/member/kakaoLogin&response_type=code&scope=account_email">
-	                            <img src="../../resources/images/kakaoM.png" alt="Kakao" id="kakaoLoginBtn"/></a>   	                        
+	                            <button class="btn btn-outline-dark rounded-3" type="submit" id="" style="height:70px; width:300px; background-color: #FEE500; border: none;">
+	                            	<div style="width: 200px; display: flex; align-items: center; gap: 10px;  justify-content: space-between;">
+	                            		<div style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+	                            		<i class="bi bi-chat-dots-fill" style="font-size: 30px;"></i>
+	                            		</div>
+	                            		<span style="color: black; ">카카오 로그인</span>
+	                            	</div>
+	                        	</button>
+	                            
+	                            </a>   	                        
 	                        </div>                
 	        			</div>  
         			</div>
@@ -77,6 +107,7 @@
 </div>
 
 <%@ include file="../member/nicknameModal.jsp" %>
+<%@ include file="../member/phoneModal.jsp" %>
 
 <script>
 

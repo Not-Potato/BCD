@@ -1,24 +1,24 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<!-- memberController에서 modelAttribute로 받은 내용에 따라 다음 동작 결정 -->
- <script> 	
- 	window.onload = function() {	
-		const snsLogin = "${snsLogin}"; 
-		const modalNickname = document.getElementById("modalNickname");
-		const welcomeModal = "${welcomeModal}"; 
-		const modalWelcome = document.getElementById("modalWelcome");
-		
-		 <!-- 소설로그인 회원인증 후 BCD 사이트 돌아와 회원가입 마무리(nickname만 쓰면 회원가입 마무리임)  --> 			
-	    if (snsLogin !== "") {
-	      modalNickname.classList.remove("d-none"); // 모달 열기
-	    }		
-	    
-	    <!-- 소셜로그인 성공모달  --> 	
-	    if (welcomeModal !== "") {
-	    	modalWelcome.classList.remove("d-none"); // 모달 열기
-	    }
-	};
+<script>	
+	 
+		document.addEventListener("DOMContentLoaded", function() {	
+			const snsLogin = "${snsLogin}"; 
+			const modalNickname = document.getElementById("modalNickname");
+			const welcomeModal = "${welcomeModal}"; 
+			const modalWelcome = document.getElementById("modalWelcome"); 
+			
+			// 소설로그인 회원인증 후 BCD 사이트 돌아와 회원가입 마무리(nickname만 쓰면 회원가입 마무리임) 			
+			if (snsLogin !== "") {
+				modalNickname.classList.remove("d-none"); // 모달 열기
+			} 		
+			    
+			// 소셜로그인 성공모달 	
+			if (welcomeModal !== "") {
+				modalWelcome.classList.remove("d-none"); // 모달 열기
+			} 	
+		}); 
 </script>
 
 <header>
@@ -51,28 +51,47 @@
 						<span class="ms-1">새 글 쓰기</span>
 					</button>
                 </li>
-                <li>
+<c:choose>     
+	<c:when test="${ !empty memberIdx}">     
+		<!-- 로그인 상태일때 -->      
+           <div class="dropdown-center">
+  				<button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+	   				<i class="bi bi-door-closed-fill"></i>
+	   				<span class="ms-1">내 정보</span>
+  				</button>
+				  <ul class="dropdown-menu">
+				    <li><a class="dropdown-item" href="#">활동내역</a></li>
+				    <li><a class="dropdown-item" href="/member/mypage.do">마이페이지</a></li>
+				    <li><a class="dropdown-item" href="/member/logout.do">로그아웃</a></li>
+				  </ul>
+				</div>			
+    </c:when>
+    <c:otherwise>      
+    	<!-- 비로그인 상태일때 -->            
+				<li>
 					<button type="button" class="d-flex align-items-center btn btn-primary" id="loginBtn">
 						<i class="bi bi-door-open"></i>
 						<span class="ms-1">로그인</span>		
 					</button>
-
                 </li>
+    </c:otherwise>
+</c:choose>                
             </ul>
         </div>
     </div>
 
     <%@ include file="../member/loginModal.jsp" %> 
-  	<%@ include file="../member/welcomeModal.jsp" %>
+    <%@ include file="../member/welcomeModal.jsp" %>
+
 
 <script>
-/* 로그인 버튼 클릭 시 로그인모달*/
+	<!--로그인 유무 확인 후 로그인 버튼 기능-->
   	const loginBtn = document.getElementById("loginBtn"); 
-  	
-  	loginBtn.addEventListener("click", function() {
-  	  modalSignin.classList.remove("d-none"); //modalSignin 열기
-    });
-  	
+  	 if (loginBtn) {	
+	  	loginBtn.addEventListener("click", function() {
+	  		modalSignin.classList.remove("d-none"); //modalSignin 열기
+    	}); 
+  	 }
 </script>
  
 </header>

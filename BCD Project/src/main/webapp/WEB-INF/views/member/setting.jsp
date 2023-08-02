@@ -23,7 +23,7 @@
 
 <div class="container pt-5 pb-5" style="width: 850px;">
 <main>
-<form method="post" class="image-form" enctype="multipart/form-data" name="proflieImgChange" id="proflieImgChange" action="/mem/proflieImgChange"> <!-- 파일을 업로드 할 땐 항상 post방식 get은 사용 할 수 없다. -->
+<form method="post" class="image-form" enctype="multipart/form-data" name="proflieImgChange" id="proflieImgChange" action="/member/proflieImgChange"> <!-- 파일을 업로드 할 땐 항상 post방식 get은 사용 할 수 없다. -->
 	<div class="mb-5">
 		<h2 class="fw-bold mb-5">내 정보 수정</h2>
             <div class="">
@@ -56,25 +56,28 @@
             <hr class="m-0">
   	 </div> 
 
- 		
+<c:choose>
+	<c:when test= "${empty member.getSnsType()}">
        <div class="">     
        	<div class= "row pt-4 mb-2">    
       	 	<label for="settingPw"><h3 class="col-5 fw-bold">비밀번호</h3></label>
       		<input type="password" class="form-control" id="settingPw" name="pwd" placeholder="" style="margin: 0 auto;">       
       		<p class="invalid-feedback m-0" id="pwdValidationStatusForSetting" style="display:hidden"></p>
         </div>
-   
-          
+       
        <div class= "row pt-4 mb-2">
             <label for="settingPw2"><h3 class="col-5 fw-bold">비밀번호 확인</h3></label>
              <input type="password" class="form-control" id="settingPw2" name="pwdChk" placeholder="" style="margin: 0 auto;"> 	    
-         	<p class="invalid-feedback m-0" id="pwdValidationStatusForSetting2"style="display:hidden"></p>       
+         	<p class="invalid-feedback m-0" id="pwdValidationStatusForSetting2" style="display:hidden"></p>       
        </div>
        
-         <br><br><br>
-         <hr>
-     </div>     
-         
+         	<br><br><br>
+         	<hr>
+     	</div> 
+     </c:when>   
+     <c:otherwise>
+     </c:otherwise> 
+</c:choose> 		        
 </form>
      <div class="row justify-content-center"> 
          <div class="col-1 p-0">  
@@ -97,6 +100,8 @@
 	
 	var pwdForSetting = $("#settingPw").val();
 	var pwd2ForSetting = $("#settingPw2").val();
+	var pwdForSettingElement = document.getElementById("settingPw");
+	var pwd2ForSettingElement = document.getElementById("settingPw2");
 	
 	var isValidNicknameForSetting = false; //정규식 컨트롤
 	var isDuplicateNicknameForSetting = false; //중복 컨트롤
@@ -111,8 +116,12 @@
 	    }
 	}	
 	document.getElementById("settingNickname").addEventListener("keydown", preventFormSubmission);
-	document.getElementById("settingPw").addEventListener("keydown", preventFormSubmission);
-	document.getElementById("settingPw2").addEventListener("keydown", preventFormSubmission);
+	
+	if (pwdForSettingElement) {
+		document.getElementById("settingPw").addEventListener("keydown", preventFormSubmission);
+		document.getElementById("settingPw2").addEventListener("keydown", preventFormSubmission);
+	}
+	
 
 	//닉네임 유효성 검사
 	$(document).ready(function() {
@@ -140,15 +149,14 @@
 					data : {
 						nicknameForSetting : nicknameForSetting
 					},
-					success : function(result) {
-						  var resultNumberForSetting = parseInt(result);
-						if(resultNumberForSetting === 0) {	
+					success : function(result) {					
+						if (result == "success") {	
 							 nicknameStatusForSetting.css("display", "block");
 							 nicknameStatusForSetting.text("사용 가능한 닉네임입니다.");
 					         nicknameStatusForSetting.css("color", "green");
 					         isDuplicateNicknameForSetting = true;
 					  
-						} else if(resultNumberForSetting > 0) {
+						} else if (result == "failed") {
 	                      	  	nicknameStatusForSetting.css("display", "block");
 	                            nicknameStatusForSetting.text("이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해주세요.");
 	                            nicknameStatusForSetting.css("color", "red");
@@ -188,47 +196,65 @@
 
 	
 	// pwd 검사
-	$(document).ready(function() {
-		$("settingPw").on("input", function() {
-					pwdForSetting = $ (this).val();
-				var pwdValidationStatusForSetting = $("#pwdValidationStatusForSetting");
-				const pwdregForSetting = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/; //영문 숫자 특수기호 조합 8자리 이상
-					
-				 if (pwdForSetting !== "") {
-				 	if(!pwdregForSetting.test(pwd)) {
-				 		pwdValidationStatusForSetting.css("display", "block");
-				 		pwdValidationStatusForSetting.text("영문,숫자,특수문자 조합 8자리 이상으로 구성해주세요.");
+	if (pwdForSettingElement) {	
+		$(document).ready(function() {
+			$("#settingPw").on("input", function() {
+						pwdForSetting = $ (this).val();
+					var pwdValidationStatusForSetting = $("#pwdValidationStatusForSetting");
+					const pwdregForSetting = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/; //영문 숫자 특수기호 조합 8자리 이상
+						
+					 if (pwdForSetting !== "") {
+					 	if(!pwdregForSetting.test(pwdForSetting)) {
+					 		pwdValidationStatusForSetting.css("display", "block");
+					 		pwdValidationStatusForSetting.text("영문,숫자,특수문자 조합 8자리 이상으로 구성해주세요.");
+					 		pwdValidationStatusForSetting.css("color", "red");
+					 		isValidPwdForSetting = false;					 		
+					 	} else {
+					 		pwdValidationStatusForSetting.css("display", "block");
+					 		pwdValidationStatusForSetting.text("사용가능한 비밀번호입니다.");
+					 		pwdValidationStatusForSetting.css("color", "green");
+					 		isValidPwdForSetting= true;		
+					 	}
+					} else {
+						pwdValidationStatusForSetting.css("display", "block");
+				 		pwdValidationStatusForSetting.text("비밀전호를 입력해주세요.");
 				 		pwdValidationStatusForSetting.css("color", "red");
-				 		isValidPwdForSetting = false;					 		
-				 	} else {
-				 		pwdValidationStatusForSetting.css("display", "block");
-				 		pwdValidationStatusForSetting.text("사용가능한 비밀번호입니다.");
-				 		pwdValidationStatusForSetting.css("color", "green");
-				 		isValidPwdForSetting= true;		
-				 	}
-				}
-		});//end of inputEvent			
-	});// end of ready document
+				 		isValidPwdForSetting = false;
+					}
+			});//end of inputEvent			
+		});// end of ready document
+		
+	}
 	
 	//pwd2 검사 
+	if (pwd2ForSettingElement) {
+		
 		$(document).ready(function() {
-		$("settingPw2").on("input", function() {
+		$("#settingPw2").on("input", function() {
 					pwd2ForSetting = $ (this).val();
 				var pwdValidationStatusForSetting2 = $("#pwdValidationStatusForSetting2");
-				
+			 if (pwdForSetting !== "") {	
 				 if (pwdForSetting !== pwd2ForSetting) {			 	
 					 pwdValidationStatusForSetting2.css("display", "block");
 					 pwdValidationStatusForSetting2.text("비밀번호가 일치하지 않습니다.");
 					 pwdValidationStatusForSetting2.css("color", "red");
-				 		isValidPwd2ForSetting = false;					 		
+				 	 isValidPwd2ForSetting = false;					 		
 				 } else {
-				 	pwdValidationStatus2ForSetting.css("display", "block");
-			 		pwdValidationStatus2ForSetting.text("일치합니다.");
-			 		pwdValidationStatus2ForSetting.css("color", "green");
-			 		isValidPwd2ForSetting = true;	
+					 pwdValidationStatusForSetting2.css("display", "block");
+					 pwdValidationStatusForSetting2.text("일치합니다.");
+					 pwdValidationStatusForSetting2.css("color", "green");
+			 		 isValidPwd2ForSetting = true;	
 				 }
+			 } else {
+				 pwdValidationStatusForSetting2.css("display", "block"); // 유효성 메시지 숨기기
+				 pwdValidationStatusForSetting2.text("비밀번호를 확인해주세요.");
+				 pwdValidationStatusForSetting2.css("color", "red");
+				 pwdValidationStatusForSetting2 = false;     
+			 }	 
 		});//end of inputEvent			
 	});// end of ready document
+		
+	}
 	
 	
 	//완료 버튼

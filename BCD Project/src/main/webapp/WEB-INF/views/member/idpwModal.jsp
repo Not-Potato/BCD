@@ -161,8 +161,7 @@
 		function hideIdDuplicationStatus() {			
 			idDuplicationStatus.css("display", "none");
 			}
-	
-	
+		
 	// pwd 검사
 		$(document).ready(function() {
 			$("#inputPw").on("input", function() {
@@ -199,7 +198,9 @@
 		         	 completeRegisterBtn.addEventListener("mouseleave", function() {
 		         	 completeRegisterBtn.setAttribute("data-tooltip", "");
 		        	 });
+		    	 	 
 		    	 return false;
+		    	 
 			 } else {
 				 document.getElementById("idPwForm").submit();	
 		    	 document.getElementById("modalIdPw").classList.add("d-none"); // modalIdPw 닫기
