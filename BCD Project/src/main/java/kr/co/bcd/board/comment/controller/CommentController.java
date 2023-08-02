@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.bcd.board.comment.model.dto.Comment;
 import kr.co.bcd.board.comment.model.service.CommentServiceImpl;
+import kr.co.bcd.common.controller.DataValidationController;
 import kr.co.bcd.common.controller.SessionManageController;
 
 @Controller
@@ -23,20 +24,33 @@ public class CommentController {
 	@Autowired
 	SessionManageController sessionManage;
 	
+	@Autowired
+	private DataValidationController dataValidation;
+	
 	@PostMapping("/insert.do")
 	public String insert(Comment comment, HttpSession session) {
-		// TODO: 로그인된 상태인지 확인
+		// 로그인된 상태인지 확인
 		if (session.getAttribute("memberIdx") == null) {
 			sessionManage.setSessionMsg("로그인 후 이용해 주시기 바랍니다!", "error", session);
 		} else {
-			// DB INSERT
-			comment.setMemIdx((int)session.getAttribute("memberIdx"));
-			int result = commentService.insert(comment);
-			if (result > 0) {
-				sessionManage.setSessionMsg("성공적으로 작성되었습니다!", "success", session);			
-			} else {
-				sessionManage.setSessionMsg("작성에 실패하였습니다.", "error", session);								
+			// Data null 체크 & 글자수 제한
+			boolean isContentNull = dataValidation.nullCheck(comment.getContent());
+			boolean isContentLength = dataValidation.LanguageCheck(comment.getContent(), 100);
+			
+			if (!isContentNull) {
+				sessionManage.setSessionMsg("내용이 입력되지 않았습니다!", "error", session);
+			} else if (!isContentLength) {
+				sessionManage.setSessionMsg("입력 가능한 범위를 초과하여 댓글 등록에 실패하였습니다.", "error", session);												
+			} else {				
+				comment.setMemIdx((int)session.getAttribute("memberIdx"));
+				int result = commentService.insert(comment);
+				if (result > 0) {
+					sessionManage.setSessionMsg("성공적으로 작성되었습니다!", "success", session);			
+				} else {
+					sessionManage.setSessionMsg("작성에 실패하였습니다.", "error", session);								
+				}
 			}
+			
 		}
 		return "redirect:/board/detail.do?idx=" + comment.getPostIdx();
 	}
@@ -44,21 +58,26 @@ public class CommentController {
 	@PostMapping("/edit.do")
 	@ResponseBody
 	public ResponseEntity<String> editComment(@RequestBody Comment comment, HttpSession session) {
-		// TODO: 현재 접속자 == 댓글 작성자 ck
+		// 현재 접속자 == 댓글 작성자 ck
 		int userIdx = (int)session.getAttribute("memberIdx");
 		int commentAuthorIdx = commentService.getCommentAuthor(comment.getIdx());
 		
-		// TODO: 수정 가능한 comment인지 (delect_date 존재하지 않는지) ck 
+		// 수정 가능한 comment인지 (delect_date 존재하지 않는지) ck 
 		int isValid = commentService.isCommentValid(comment.getIdx());
 		
-		// TODO: DB UPDATE 진행 (content update)
+		// DB UPDATE 진행 (content update)
 		if(userIdx == commentAuthorIdx && isValid == 1) {
-			int result = commentService.updateComment(comment);
-			
-			if(result > 0) {
-				return ResponseEntity.ok("success");
+			boolean contentLength = dataValidation.LanguageCheck(comment.getContent(), 100);
+			if (contentLength) {				
+				int result = commentService.updateComment(comment);
+				
+				if(result > 0) {
+					return ResponseEntity.ok("success");
+				} else {
+					return ResponseEntity.ok("error"); // 실패일 때도 ok로 넘기는 게 맞나?
+				}
 			} else {
-				return ResponseEntity.ok("error"); // 실패일 때도 ok로 넘기는 게 맞나?
+				return ResponseEntity.ok("error"); // 실패일 때도 ok로 넘기는 게 맞나?				
 			}
 		} else {			
 			return ResponseEntity.ok("error"); // 실패일 때도 ok로 넘기는 게 맞나?22
@@ -68,14 +87,14 @@ public class CommentController {
 	@PostMapping("/delete.do")
 	@ResponseBody
 	public ResponseEntity<String> deleteComment(Integer idx, HttpSession session) {
-		// TODO: 현재 접속자 == 댓글 작성자 ck
+		// 현재 접속자 == 댓글 작성자 ck
 		int userIdx = (int)session.getAttribute("memberIdx");
 		int commentAuthorIdx = commentService.getCommentAuthor(idx);
 		
-		// TODO: 수정 가능한 comment인지 (delect_date 존재하지 않는지) ck 
+		// 수정 가능한 comment인지 (delect_date 존재하지 않는지) ck 
 		int isValid = commentService.isCommentValid(idx);
 		
-		// TODO: DB UPDATE 진행 (content update)
+		// DB UPDATE 진행 (content update)
 		if(userIdx == commentAuthorIdx && isValid == 1) {
 			int result = commentService.markCommentAsDeleted(idx);
 			

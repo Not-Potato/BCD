@@ -124,11 +124,6 @@
 	<select id="detailBoard" resultMap="postResultSet">
 		SELECT * FROM POST
 			WHERE P_IDX = #{idx}
-	</select>
-	
-	<select id="selectPostStatus" resultType="string">
-		SELECT P_STATUS FROM POST
-			WHERE P_IDX = #{idx}
 			AND P_DELETE_DATE IS NULL
 	</select>
 	
@@ -149,7 +144,29 @@
 			WHERE P_IDX = #{idx}
 	</update>
 	
+	<select id="isNotDelPost" resultType="_int">
+		SELECT COUNT(*) FROM POST
+			WHERE P_IDX = #{idx}
+			AND P_DELETE_DATE IS NULL
+	</select>
 	
+	<select id="selectStatus" resultMap="postResultSet">
+		SELECT P_STATUS FROM POST
+			WHERE P_IDX = #{idx}
+	</select>
+	
+	<update id="updatePost" parameterType="Post">
+		UPDATE POST
+			SET P_TITLE = #{title},
+				P_CONTENT = #{content}
+			WHERE P_IDX = #{idx}
+	</update>
+
+	<update id="markPostAsDeleted">
+		UPDATE POST
+			SET P_DELETE_DATE = SYSDATE
+			WHERE P_IDX = #{idx}
+	</update>
 	
 	
 	
