@@ -155,27 +155,45 @@
 		const exitBtn = document.getElementById("exitBtn");
 	
 		socket.onopen = function(event){
-			console.log("WebSocket connected");
+			//console.log("WebSocket connected");
 		};
 		//서버로부터 받은 메시지(string타입) json형식으로 바꾸기
 		socket.onmessage = function(event){
 			let message = JSON.parse(event.data);
-			if(Array.isArray(message)){
-				for(const msg of message) {
-					const dbTime = msg.sendDate;
+		//	const previousChat = message.previousChat;
+			if(Array.isArray(message.previousChat)){
+				for(const chatMsg of message.previousChat) {
+					const dbTime = chatMsg.sendDate;
 					const formattedDbTime = convertDbTime(dbTime);
-					
-					msg.sendDate = formattedDbTime;
-					showMessage(msg);	
+					chatMsg.sendDate = formattedDbTime;
+					//console.log("dkdl"+chatMsg.senderIdx);
+					showMessage(chatMsg, "채팅이 있을 , 때 이전메시지");
 				}
-			}else {
-				console.log("Received WebSocket message:", message);
-				showMessage(message);	
 			}
+			if(Array.isArray(message.senderNicknameList)){
+			message.senderNicknameList.forEach(function(senderNickname) {
+				console.log("foreach 실행, showMessage 호출");
+				console.log("senderNickname : "+senderNickname);
+				showMessage(senderNickname, "보낸 사람");
+				});
+				/* for(const senderNickname of message.senderNicknameList) {
+					//console.log("닉네임 뭐야??: "+senderNickname );
+					showMessage(senderNickname);	
+				} */
+			}
+		   if(message.enterMessage){
+				showMessage(message.enterMessage, "입장 메시지");
+			}
+			
+			
+				//console.log("Received WebSocket message:", message);
+				showMessage(message, "실시간 채팅 메시지");	
+			
+			
 		};
 		
 		socket.onclose = function(event){
-			console.log("WebSocket disconnected");
+			//console.log("WebSocket disconnected");
 		};
 		
 		function getCurrentTime() {
@@ -206,7 +224,7 @@
 		
 		//메시지 출력
 	    let preSenderIdx = null;
-		function showMessage(message){
+		function showMessage(message, status){
 			scrollLatest();
 			//appendchild할 공간
 			const messageLiTag = document.getElementById("messageLiTag");
@@ -247,25 +265,34 @@
 					const receiveTime = document.createElement("div");
 					receiveTime.classList.add("message-data-time", "mb-0", "me-3");
 			
+					/* console.log("preSenderIdx : " + preSenderIdx);
+					console.log("senderIdx : " + message.senderIdx);
+					console.log("senderNickname : " + message.senderNickname);
+					console.log("message : " + message);
+					console.log("memberIdx : " + ${memberIdx});
+					console.log("--------------------------------------------------"); */
 			
 			//입장메시지
 			if(message.senderIdx == -1){
+				console.log("입장")
 				messageLiTag.appendChild(centerDiv);
 				centerDiv.textContent=message.content;
 			}
 			//퇴장메시지
 			else if (message.senderIdx == -2){
+				console.log("퇴장")
 				messageLiTag.appendChild(centerDiv);
 				centerDiv.textContent=message.content;
 			}
 			//내가 보낸 메시지 
 			else if(message.senderIdx == "${memberIdx}"){
+				console.log("내가보낸거")
 				if(preSenderIdx != message.senderIdx){
 					messageLiTag.appendChild(sendDiv);
 					sendDiv.appendChild(sendInfo);
 					sendDiv.appendChild(sendMsgDiv);
 						sendInfo.appendChild(sendNickname);
-							sendNickname.textContent="${memberNickname}";
+							sendNickname.textContent=message.senderNickname;
 						sendInfo.appendChild(sendImg);
 							sendImg.setAttribute("src", "https://bootdey.com/img/Content/avatar/avatar7.png");
 							sendImg.setAttribute("alt", "profile");
@@ -282,6 +309,7 @@
 				
 			//다른 사람이 보낸 메시지	
 			}else {
+				console.log("다른사람이보낸거")
 				if(preSenderIdx != message.senderIdx){
 					messageLiTag.appendChild(receiveDiv);
 					receiveDiv.appendChild(receiveInfo);
@@ -290,8 +318,11 @@
 							receiveImg.setAttribute("src", "https://bootdey.com/img/Content/avatar/avatar7.png");
 							receiveImg.setAttribute("alt", "profile");
 						receiveInfo.appendChild(receiveNickname);
-							receiveNickname.textContent="${memberNickname}";
+							console.log("보낸사람 닉네임 : " + message);
+							console.log("상태 : " + status);
+							receiveNickname.textContent=message;
 				}else {
+					console.log("else")
 					messageLiTag.appendChild(receiveDiv);
 					receiveDiv.appendChild(receiveMsgDiv);
 				}
@@ -301,9 +332,9 @@
 						receiveTime.textContent = message.sendDate;
 				
 			}
-			console.log("전:"+preSenderIdx);
+			//console.log("전:"+preSenderIdx);
 			preSenderIdx = message.senderIdx;
-			console.log("후:"+preSenderIdx);
+			//console.log("후:"+preSenderIdx);
 		}
 		
 		function sendMessage(){
@@ -350,7 +381,7 @@
 			
 			if(exitConfirm) {
 				socket.onclose;
-				console.log("연결해제");
+				//console.log("연결해제");
 				location.href="/chat/list.do";
 			}
 		});
@@ -400,14 +431,14 @@
 			const smallCategorySelect = document.getElementById("smallSelectGrid");
 			
 			if(bigCategorySelect.value == "basis" || bigCategorySelect.value == "" || bigCategorySelect.value == null ){
-				console.log(bigCategorySelect.value);
+				//console.log(bigCategorySelect.value);
 				smallCategorySelect.innerHTML = `
 		            <option value="basis" selected>세세한 분류</option>
 		        `;
 			}
 			
 			else if(bigCategorySelect.value == "value1") {
-				console.log(bigCategorySelect.value);
+				//console.log(bigCategorySelect.value);
 				smallCategorySelect.innerHTML = `
 					<option value="basis" selected>세세한 분류</option>
 	                <option value="진로">진로</option>
