@@ -47,5 +47,5 @@ public class Post {
 	private int probA;					// 투표 항목 1 카운트
 	private int probB;					// 투표 항목 2 카운트
 	
-	private String myPost;				// 작성져 여부 yes / no
+	private String myPost;				// 작성자 여부 yes / no
 }

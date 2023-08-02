@@ -34,10 +34,14 @@ public class CommentController {
 			sessionManage.setSessionMsg("로그인 후 이용해 주시기 바랍니다!", "error", session);
 		} else {
 			// Data null 체크 & 글자수 제한
-			boolean contentLength = dataValidation.LanguageCheck(comment.getContent(), 100);
+			boolean isContentNull = dataValidation.nullCheck(comment.getContent());
+			boolean isContentLength = dataValidation.LanguageCheck(comment.getContent(), 100);
 			
-			// DB INSERT
-			if (contentLength) {				
+			if (!isContentNull) {
+				sessionManage.setSessionMsg("내용이 입력되지 않았습니다!", "error", session);
+			} else if (!isContentLength) {
+				sessionManage.setSessionMsg("입력 가능한 범위를 초과하여 댓글 등록에 실패하였습니다.", "error", session);												
+			} else {				
 				comment.setMemIdx((int)session.getAttribute("memberIdx"));
 				int result = commentService.insert(comment);
 				if (result > 0) {
@@ -45,9 +49,8 @@ public class CommentController {
 				} else {
 					sessionManage.setSessionMsg("작성에 실패하였습니다.", "error", session);								
 				}
-			} else {
-				sessionManage.setSessionMsg("입력 가능한 범위를 초과하여 댓글 등록에 실패하였습니다.", "error", session);												
 			}
+			
 		}
 		return "redirect:/board/detail.do?idx=" + comment.getPostIdx();
 	}

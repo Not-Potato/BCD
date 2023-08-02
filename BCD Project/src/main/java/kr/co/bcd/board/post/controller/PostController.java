@@ -3,8 +3,10 @@ package kr.co.bcd.board.post.controller;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -67,7 +69,67 @@ public class PostController {
 		post.setMemIdx(2);
 		
 		System.out.println(post);
-		// TODO: 대분류, 소분류, 투표 제목, 마감일, 선택지1, 선택지 2, 제목, 내용 => null ck & 글자수 제한 ck
+		
+		// 대분류, 소분류, 투표 제목, 마감일, 선택지1, 선택지 2, 제목, 내용 => null ck & 글자수 제한 ck
+		boolean mainCategoryNullCk = dataValidation.nullCheck(post.getMainCategory());
+		boolean subCategoryNullCk = dataValidation.nullCheck(post.getSubCategory());
+		boolean voteTitleNullCk = dataValidation.nullCheck(post.getVoteTitle());
+		boolean deadlineNullCk = dataValidation.nullCheck(post.getDeadline());
+		boolean vote1STNullCk = dataValidation.nullCheck(post.getVote1ST());
+		boolean vote2NDNullCk = dataValidation.nullCheck(post.getVote2ND());
+		boolean titleNullCk = dataValidation.nullCheck(post.getTitle());
+		boolean contentNullCk = dataValidation.nullCheck(post.getContent());
+		
+		List<String> nullCkErrors = new ArrayList<>();
+		
+		if (!mainCategoryNullCk) nullCkErrors.add("대분류");
+		if (!subCategoryNullCk) nullCkErrors.add("소분류");
+		if (!voteTitleNullCk) nullCkErrors.add("투표 제목");
+		if (!deadlineNullCk) nullCkErrors.add("마감일");
+		if (!vote1STNullCk) nullCkErrors.add("선택지 1 항목");
+		if (!vote2NDNullCk) nullCkErrors.add("선택지 2 항목");
+		if (!titleNullCk) nullCkErrors.add("제목");
+		if (!contentNullCk) nullCkErrors.add("내용");
+		
+		if (nullCkErrors.size() > 0) {
+			StringJoiner joiner = new StringJoiner(", ");
+			for (String s : nullCkErrors) {
+				joiner.add(s);
+			}
+			String nullErrList = "[" + joiner.toString() + "]";
+			sessionManage.setSessionMsg(nullErrList + "이 입력되지 않았습니다.", "error", session);
+			return "redirect:/board/write.do";
+		}
+		
+		boolean mainCategoryLength = dataValidation.LanguageCheck(post.getMainCategory(), 300);
+		boolean subCategoryLength = dataValidation.LanguageCheck(post.getSubCategory(), 300);
+		boolean voteTitleLength = dataValidation.LanguageCheck(post.getVoteTitle(), 300);
+		boolean deadlineLength = dataValidation.LanguageCheck(post.getDeadline(), 300);
+		boolean vote1STLength = dataValidation.LanguageCheck(post.getVote1ST(), 90);
+		boolean vote2NDLength = dataValidation.LanguageCheck(post.getVote2ND(), 90);
+		boolean titleLength = dataValidation.LanguageCheck(post.getTitle(), 300);
+		boolean contentLength = dataValidation.LanguageCheck(post.getContent(), 9000);
+		
+		List<String> validationErrors = new ArrayList<>();
+		
+		if (!mainCategoryLength) validationErrors.add("대분류");
+		if (!subCategoryLength) validationErrors.add("소분류");
+		if (!voteTitleLength) validationErrors.add("투표 제목");
+		if (!deadlineLength) validationErrors.add("마감일");
+		if (!vote1STLength) validationErrors.add("선택지 1 항목");
+		if (!vote2NDLength) validationErrors.add("선택지 2 항목");
+		if (!titleLength) validationErrors.add("제목");
+		if (!contentLength) validationErrors.add("내용");
+		
+		if (validationErrors.size() > 0) {
+			StringJoiner joiner = new StringJoiner(", ");
+			for (String s : validationErrors) {
+				joiner.add(s);
+			}
+			String lenErrList = "[" + joiner.toString() + "]";
+			sessionManage.setSessionMsg(lenErrList + "이 입력 가능한 범위를 초과합니다.", "error", session);
+			return "redirect:/board/write.do";
+		}
 		
 		// 데드라인(투표 마감일) 데이터 정제
 		post.setDeadline(LocalDateTime.parse(post.getDeadline(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
@@ -128,7 +190,6 @@ public class PostController {
 	public String updateReview(Post post, HttpSession session,
 							   @RequestParam(value="reviewMode") String reviewMode) {
 		// 작성 OR 수정 체크 (alert 창 띄울 때 사용)
-		System.out.println(reviewMode);
 		String mode = reviewMode.equals("write") ? "작성" : reviewMode.equals("edit") ? "수정" : "삭제";
 		
 		// 작성자 현재 접속자 일치하는지 ck
@@ -141,13 +202,23 @@ public class PostController {
 		if (isNotDelPost == 1) {
 			// 진행 상태(투표 진행 상태) 가져오기
 			String status = postService.selectStatus(post.getIdx()).getStatus();
-			
-			if (status.equals("A") && postWriterIdx == (int)session.getAttribute("memberIdx")) {
+			if (!status.equals("A") && postWriterIdx == (int)session.getAttribute("memberIdx")) {
 				if (mode.equals("삭제")) {
 					post.setReview("");
 				} else {				
 					// TODO: 데이터 규격 검사
-					// 리뷰 => null ck & 글자수 제한 ck
+					boolean isContentNull = dataValidation.nullCheck(post.getReview());
+					boolean isContentLength = dataValidation.LanguageCheck(post.getReview(), 900);
+					
+					if (!isContentNull) {
+						sessionManage.setSessionMsg("내용이 입력되지 않았습니다!", "error", session);
+						return "redirect:/board/detail.do?idx=" + post.getIdx();
+					}
+
+					if (!isContentLength) {
+						sessionManage.setSessionMsg("내용이 입력되지 않았습니다!", "error", session);
+						return "redirect:/board/detail.do?idx=" + post.getIdx();
+					}
 				}
 				
 				// 작성, 수정, 삭제 => DB UPDATE 실행
