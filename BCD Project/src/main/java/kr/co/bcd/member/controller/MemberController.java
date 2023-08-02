@@ -27,10 +27,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -107,17 +109,41 @@ public class MemberController {
 	}
 	
 	
-	// 회원번호로 회원정보 조회 (profile 수정 시 활용)
+	// 마이페이지
 	@RequestMapping("/mypage.do")
-	public String settingProfile(HttpSession session, Model model) {
-		Member member = memberService.selectMember((int) session.getAttribute("memberIdx"));
-		model.addAttribute("member", member);
+	public String mypage(HttpSession session, Model model) {
+			
+		if (session.getAttribute("memberIdx") == null ) {
 		
-		sessionManage.setSessionMsg("로그인이 필요한 페이지입니다.", "error", session);
+			sessionManage.setSessionMsg("로그인이 필요한 페이지입니다.", "error", session);			
+			return "redirect:/member/home.do";
 		
-		return "member/setting";
-	}
+		} else {
+			
+			Member member = memberService.selectMember((int)session.getAttribute("memberIdx"));
+			System.out.println("memberContoroller mypage memberIdx:" + member.getIdx());			
+			model.addAttribute("member", member);	
+			return "member/setting";	
+		}	
+	}	
+	
+	// 마이페이지 (비로그인 회원 홈으로 이동)
+	@RequestMapping("/home.do")
+	public String home(HttpSession session, Model model) {
 
+		String msg = (String)session.getAttribute("msg");
+		String status = (String)session.getAttribute("status");
+
+		model.addAttribute("msg", msg);
+		model.addAttribute("status", status);
+
+		session.removeAttribute("msg");
+		session.removeAttribute("status");
+		
+		return "home";		
+	}	
+	
+	
 	// 회원정보 수정
 	@RequestMapping("/updateProfile.do")
 	public String updateProfile(HttpSession session, Model model, Member member) {	
@@ -125,16 +151,24 @@ public class MemberController {
 		return "member/mypage.do";
 	}
 
-	// 멤버로그인
-	@RequestMapping("/login.do")
-	public String login(HttpSession session, Model model) {
+	// 일반로그인
+	@GetMapping("/login.do")
+	public String login(HttpSession session) {
 		// 임시 회원번호 (test)
-		int m_idx = 6;
+		int m_idx = 17;
 		session.setAttribute("memberIdx", m_idx);
 		// 로그인서비스 구현중
 		// int m_idx = memberService.loginMember(id,pwd);
 		return "redirect:/member/mypage.do";
 	}
+	
+	// 로그아웃
+	@RequestMapping("/logout.do")
+	public String logout(HttpSession session, RedirectAttributes redirectAttributes) {
+		session.invalidate();		
+		return "forward:/board/list.do";
+	}
+	
 
 	// 휴대폰인증 BCD회원가입 
 	@RequestMapping("/phoneJoin.do")
@@ -157,28 +191,33 @@ public class MemberController {
 			member.setPwd(pwd);
 		
 			//회원가입
-		int result = memberService.memberPhoneJoin(member);
-			if (result > 0) {			
-				//회원가입 후 바로 회원번호 가져오기
-				int m_idx = member.getIdx();
-				session.setAttribute("memberIdx", m_idx);
-				// 이전페이지로 이동
-				String currentUrl = (String) session.getAttribute("currentUrl");
-				String withoutJsp = currentUrl.replace(".jsp", "");
-				String previousUrl = withoutJsp.substring(36); // 마지막으로부터 두 번째 슬래시까지 남기고 삭제
-				session.setAttribute("previousUrl", previousUrl);
-				model.addAttribute("welcomeModal", "welcomeModal");
-				return previousUrl;
+			int result = memberService.memberPhoneJoin(member);
+				if (result > 0) {			
+					//회원가입 후 바로 회원번호 가져오기
+					int m_idx = member.getIdx();
+					session.setAttribute("memberIdx", m_idx);
+					// 이전페이지로 이동
+					String currentUrl = (String) session.getAttribute("currentUrl");
+					String withoutJsp = currentUrl.replace(".jsp", "");
+					String previousUrl = withoutJsp.substring(36); // 마지막으로부터 두 번째 슬래시까지 남기고 삭제
+					session.setAttribute("previousUrl", previousUrl);
+					model.addAttribute("welcomeModal", "welcomeModal");
+					return previousUrl;
+					
+				}else {
 				
-			}else {
-			
-				return "common/error";
-			}	
+					return "common/error";
+				}	
 		}
 		
 		return "";  	
 	}
-	// 소셜로그인회원 BCD회원가입 (닉네임 포함 -> 가입완료)
+	
+	
+	
+	
+	
+// 소셜로그인회원 BCD회원가입 (닉네임 포함 -> 가입완료)
 	@RequestMapping("/snsJoin.do")
 	public String snsJoin(HttpSession session, Member member, Model model) {
 
@@ -209,15 +248,15 @@ public class MemberController {
 
 	}
 
-//네이버 로그인 API 구현부	
 
-	// 네이버 자동로그인 시 활용 (Json -> Map)
+	// 자동로그인 시 활용 (Json -> Map)
 	private final RestTemplate restTemplate;
 
 	public MemberController(RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
 	}
 
+		
 	// 네이버 로그인 access_token 발행 + 프로필 정보 가져오기
 	@RequestMapping("/loginResult")
 	public String naversuccess(HttpServletRequest request, Model model, HttpSession session) throws Exception {
@@ -241,11 +280,13 @@ public class MemberController {
 
 		// 네이버 API를 통해 사용자 프로필 정보 조회
 		Member member = getNaverProfile(accessToken);
-
+System.out.println("memberContoroller Naver:" + member.getSnsId());	
+System.out.println("memberContoroller Naver:" + member.getSnsType());	
 		// 가입여부 확인 (이메일로)
 		int result = memberService.checkEmail(member);
 		if (result <= 0) {
-			// 사용자 정보 보내주숴 나머지 회원가입 마무리 시키기
+System.out.println("memberContoroller Naver 겨과:" + result);	
+			// 사용자 정보 보내줘서 나머지 회원가입 마무리 시키기
 			model.addAttribute("member", member);
 
 			// 사용자 이전 URL 가져오기
@@ -258,6 +299,7 @@ public class MemberController {
 			model.addAttribute("snsLogin", "snsLogin");
 
 			return previousUrl; // BCD 닉네임 정하는 모달로 이동
+			
 		} else { // 이미 회원인 경우
 
 			String currentUrl = (String) session.getAttribute("currentUrl");
@@ -338,13 +380,16 @@ public class MemberController {
 		Map<String, Object> json = response.getBody();
 		String accessToken = (String) json.get("access_token");
 
-	
 		Member member = getKakaoProfile(accessToken);
+System.out.println("memberContoroller kakao:" + member.getSnsId());	
+System.out.println("memberContoroller kakao :" + member.getSnsType());			
 		int result = memberService.checkEmail(member);
+System.out.println("memberContoroller kakao 가입여부:" + result);		
+
 		if (result <= 0) {
 			// 사용자 정보 보내주숴 나머지 회원가입 마무리 시키기
 			model.addAttribute("member", member);
-
+System.out.println("memberContoroller kakao 가입여부:(reuslt <= 0 케이스)" + result);	
 			// 사용자 이전 URL 가져오기
 			String currentUrl = (String) session.getAttribute("currentUrl");
 			String withoutJsp = currentUrl.replace(".jsp", "");
@@ -358,6 +403,7 @@ public class MemberController {
 			
 		} else { // 이미 회원인 경우
 					// 이전페이지로 이동
+			System.out.println("memberContoroller kakao 가입여부:(reuslt <= 0 케이스)" + result);	
 			String currentUrl = (String) session.getAttribute("currentUrl");
 			String withoutJsp = currentUrl.replace(".jsp", "");
 			String previousUrl = withoutJsp.substring(36); // 마지막으로부터 두 번째 슬래시까지 남기고 삭제
@@ -392,7 +438,7 @@ public class MemberController {
 		    // Member 클래스에 사용자 프로필 정보 매핑
 		    Member member = new Member();
 		    member.setSnsId(kakaoId); // email
-		    member.setSnsType("Kakao"); // 카카오와 구분
+		    member.setSnsType("Kakao"); // 네이버와 구분
 
 		    return member;
 

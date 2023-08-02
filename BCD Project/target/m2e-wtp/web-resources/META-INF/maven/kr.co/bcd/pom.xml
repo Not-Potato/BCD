@@ -227,7 +227,14 @@
 	        <version>2.12.5</version>
 	    </dependency>
 		<!-- websocket 끝 -->
-			
+		
+		<!-- 쿨에스엠에스 문자인증 -->
+		<dependency>
+    		<groupId>net.nurigo</groupId>
+    		<artifactId>sdk</artifactId>
+    		<version>4.3.0</version>
+		</dependency>	
+		
 <!-- end of add -->		
 	</dependencies>
     <build>
