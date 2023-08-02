@@ -51,8 +51,10 @@ public class ChatRoomController {
 		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		
 		List<ChatRoom> list = chatRoomService.selectListAll(pi, category);
-		
 		List<Integer> participantsSizeList = new ArrayList<>(); 
+		List<String> roomOwnerList = new ArrayList<>();
+		
+		String roomOwner;
 		
 		for (ChatRoom chatRoom : list) {
 			String participants =chatRoom.getParticipants();
@@ -63,22 +65,36 @@ public class ChatRoomController {
 				List<String> participantsList = Arrays.asList(participants.split(","));
 				//참여자 수 구하기
 				participantsSize = participantsList.size();
+				roomOwner = participantsList.get(0);
 				System.out.println("tntn"+participantsSize);
 				
+			}else {
+				roomOwner = participants;
 			}	
 			System.out.println("tntn111"+participantsSize);
 		
 			//if밖에 있어야 순서대로 , 있으면 size 저장, 없으면 1로 저장
 			
 			participantsSizeList.add(participantsSize);
+			roomOwnerList.add(roomOwner);
 			
-		}
-		
-		int memberIdx = 1;
+		} 
+		//session null check 
+		Integer memberIdxObj = (Integer) session.getAttribute("memberIdx");
+		System.out.println("세션있니??"+memberIdxObj);
+		    if (memberIdxObj == null) {
+		    	sessionManage.setSessionMsg("로그인을 해 주세요!", "error", session);
+				System.out.println("세션있니 if들어옴??"+memberIdxObj);
+
+		        return "redirect:/"; 
+		    }
+
+		int memberIdx = memberIdxObj.intValue();
+	//	int memberIdx = (int) session.getAttribute("memberIdx");
 		String memberNickname = memberService.selectNickname(memberIdx);
 		System.out.println("닉네임 : " + memberNickname);
 		
-		
+		model.addAttribute("roomOwnerList", roomOwnerList);
 		model.addAttribute("participantsSizeList",participantsSizeList);
 		model.addAttribute("memberNickname",memberNickname);
 		model.addAttribute("list", list);
@@ -94,7 +110,8 @@ public class ChatRoomController {
 	public String createChatRoom (ChatRoom chatRoom, HttpSession session, Model model) {
 		
 		
-		int memberIdx = 1;
+//		int memberIdx = 1;
+		int memberIdx = (int) session.getAttribute("memberIdx");
 		String memberNickname = memberService.selectNickname(memberIdx);
 		
 		chatRoom.setParticipants(memberNickname);
@@ -132,9 +149,9 @@ public class ChatRoomController {
 			result.setIdx(idx);
 			
 			//test 사용
-			int memberIdx = 1;
+//			int memberIdx = 1;
 			//세션에 저장된 memberIdx로 참여자 목록에 닉네임 저장 
-//			int memberIdx = (int) session.getAttribute("memberIdx");
+			int memberIdx = (int) session.getAttribute("memberIdx");
 			String newParticipant = memberService.selectNickname(memberIdx);
 			System.out.println("뉴멤버"+newParticipant);
 
@@ -178,6 +195,7 @@ public class ChatRoomController {
 		model.addAttribute("memberIdx", memberIdx);
 		model.addAttribute("memberNickname", newParticipant);
 		model.addAttribute("participantsSize", participantsSize);
+
 		return "chat/chatRoom";
 		}
 			
@@ -220,5 +238,14 @@ public class ChatRoomController {
 		}
 		
 	}
+	
+//	@GetMapping("/toGetSession.do")
+//	public String toGetSession (HttpSession session, Model model) {
+//		sessionManage.getSessionMsg(session, model);
+//		
+//		return "redirect:/";
+//		
+//	}
+	
 	
 }
