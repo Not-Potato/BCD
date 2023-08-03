@@ -12,7 +12,7 @@ public interface MemberService {
 	int memberJoin(Member member);
 	
 	//신규회원등록 phone
-	int memberPhoneJoin(Member member);
+	int phoneJoin(Member member);
 	
 	//회원정보수정
 	void updateProfile(Member member);
@@ -24,13 +24,19 @@ public interface MemberService {
 	int checkEmail(Member member);
 	
 	//소셜로그인회원 가입 시 인덱스 번호 가져오기
-	int checkIdx(String email);
+	int checkIdx(Member member);
 
 	//소셜로그인회원 회원가입 (이메일)
 	int checkId(String snsId);
 
 	//휴대폰인증회원 회원가입 
 	int idCheck(String id);
+	
+	//휴대폰인증회원 가입여부 확인
+	int phoneCheck(String phoneNumber);
+
+	//휴대폰인증회원 로그인 (기존회원)
+	int phoneLogin(Member member);
 
 	
 

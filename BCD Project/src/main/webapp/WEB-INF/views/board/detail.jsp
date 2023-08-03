@@ -72,7 +72,7 @@
 						<div class="border-bottom mb-5">
 							<p class="fs-4 fw-bold d-flex align-items-center">
 			                    <i class="bi bi-check2-square"></i>
-			                    <span class="ms-2">골라 줘!</span>
+			                    <span class="ms-2">Please pick one!</span>
 		                	</p>
 						</div>
 						
@@ -157,7 +157,7 @@
 						<div class="border-bottom mb-5">
 							<p class="fs-4 fw-bold d-flex align-items-center">
 			                    <i class="bi bi-body-text"></i>
-			                    <span class="ms-2">투표 소개</span>
+			                    <span class="ms-2">About the vote</span>
 		                	</p>
 						</div>
 	                	

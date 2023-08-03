@@ -89,11 +89,6 @@ public class BoardController {
 		model.addAttribute("pi", pi);
 		
 		sessionManage.getSessionMsg(session, model);
-		// 댓글 수 불러오기
-		
-		// 투표자 수 불러오기
-		
-		// 작성자 닉네임 불러오기
 		
 		return "home";
 	}

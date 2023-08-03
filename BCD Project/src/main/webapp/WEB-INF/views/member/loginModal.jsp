@@ -56,7 +56,7 @@
 	                            	휴대전화 로그인
 	                        	</button>
 	                        	 -->
-	                        	<button class="btn btn-outline-dark rounded-3" type="submit" id="" style="height:70px; width:300px; background-color: gray; border: none;">
+	                        	<button class="btn btn-outline-dark rounded-3" type="submit" id="phoneRegisterBtn" style="height:70px; width:300px; background-color: gray; border: none;">
 	                            	<div style="width: 200px; display: flex; align-items: center; gap: 10px;  justify-content: space-between;">
 	                            		<div style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
 	                            		<i class="bi bi-phone-vibrate-fill" style="font-size: 30px;"></i>
@@ -124,11 +124,16 @@
      // location.reload();
   });
   
-  
+
   phoneRegisterBtn.addEventListener("click", function() {
 	 	modalSignin.classList.add("d-none"); //modalSignin 닫기
-	 	modalNickname.classList.remove("d-none"); // modalNickname 열기
+	 	modalPhone.classList.remove("d-none"); // modalPhone열기
 	 	});
+  
+/*   phoneRegisterBtn.addEventListener("click", function() {
+	 	modalSignin.classList.add("d-none"); //modalSignin 닫기
+	 	modalNickname.classList.remove("d-none"); // modalNickname 열기
+	 	}); */
 //end of page.1 로그인 형태 (phone vs naver vs kakao )       
 
 

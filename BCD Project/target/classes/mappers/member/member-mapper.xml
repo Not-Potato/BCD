@@ -94,16 +94,28 @@
 	
 	<select id="checkIdx" resultType="_int">
 		SELECT m_idx FROM MEMBER
-		WHERE sns_id = #{email}
+		WHERE sns_id = #{snsId} 
+		AND sns_type =#{snsType}
 	</select>	
 	
-	<select id="checkId" resultType="_int">
+<!-- 	<select id="checkId" resultType="_int">
 		SELECT COUNT(*) FROM MEMBER
 		WHERE sns_id = #{snsId}
-	</select>
+	</select> -->
 	
 	<select id="idCheck" resultType="_int">
 		SELECT COUNT(*) FROM MEMBER
 		WHERE m_id = #{id}
 	</select>		
+	
+	<select id="phoneCheck" resultType="_int">
+		SELECT COUNT(*) FROM MEMBER
+		WHERE m_phone = #{phoneNumber}
+	</select>	
+	
+	<select id="phoneLogin" resultType="_int">
+		SELECT COUNT(*) FROM MEMBER
+		WHERE m_id = #{id}
+		AND m_pwd = #{pwd}
+	</select>	
 </mapper>
