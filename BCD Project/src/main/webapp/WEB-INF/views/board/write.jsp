@@ -18,7 +18,7 @@
 	
 	<div class="container d-flex justify-content-center mt-5 mb-5">
         <div class="w-75 mt-5">
-        	<form action=${ post.idx == null || post.idx == "" ? '/post/insert.do' : '/post/update.do' } method="post" id="postForm" >
+        	<form enctype="multipart/form-data" action=${ post.idx == null || post.idx == "" ? '/post/insert.do' : '/post/update.do' } method="post" id="postForm" >
 	            <div class="mb-5">
 	                <p class="fs-4 fw-bold d-flex align-items-center">
 	                    <i class="bi bi-1-square-fill"></i>
@@ -137,11 +137,15 @@
 	                        <label for="vote1ST">선택지 1</label>
 	                        
 	                        <div class="input-group">
-	                            <label class="position-absolute end-0 bottom-0 pe-3 text-black-50" style="cursor: pointer;" for="upload1">
+	                            <label class="position-absolute text-black-50" style="bottom: -2px; right:12px; cursor: pointer;" for="file1">
 	                                <i class="bi bi-image fs-1"></i>
 	                            </label>
-	                            <input type="file" class="form-control d-none" id="upload1">
+	                            <div class="position-absolute translate-middle rounded d-none" id="img1Pre" style="bottom: -11px; right:-72px; width: 40px; height: 40px;" data-tooltip="클릭 시 선택이 취소됩니다!" role="button">
+	                            	<img src="" class="w-100 h-100 rounded" >
+	                            </div>
 	                        </div>
+                            <input type="file" name="file1" accept="image/*" class="form-control d-none" id="file1">
+                            <input type="hidden" name="img1Name">
 	                    </div>
 	
 	                    <div class="form-floating mb-3">
@@ -149,11 +153,15 @@
 	                        <label for="vote2ND">선택지 2</label>
 	
 	                        <div class="input-group">
-	                            <label class="position-absolute end-0 bottom-0 pe-3 text-black-50" style="cursor: pointer;" for="upload2">
+	                            <label class="position-absolute text-black-50" style="bottom: -2px; right:12px; cursor: pointer;" for="file2">
 	                                <i class="bi bi-image fs-1"></i>
 	                            </label>
-	                            <input type="file" class="form-control d-none" id="upload2">
+	                            <div class="position-absolute translate-middle rounded d-none" id="img2Pre" style="bottom: -11px; right:-72px; width: 40px; height: 40px;" data-tooltip="클릭 시 선택이 취소됩니다!" role="button">
+	                            	<img src="" class="w-100 h-100 rounded" >
+	                            </div>
 	                        </div>
+                            <input type="file" name="file2" class="form-control d-none" id="file2">
+                            <input type="hidden" name="img2Name">
 	                    </div>
 	                </div>
 		
@@ -180,6 +188,8 @@
 	                    <label for="floatingTextarea2">내용</label>
 	                </div>
 	            </div>
+	            
+	            
 	
 	            <div class="mt-3 d-flex justify-content-center">
 	                <button class="btn btn-outline-danger me-2 ps-3 pe-3" type="button" onclick="location.href='${ referer }'">취소</button>
@@ -191,7 +201,59 @@
 	
 	<%@ include file="../common/footer.jsp" %>
 	<script>
+		// 파일 업로드 시 파일명 가져오기 + 썸네일
+		function updateFileNameAndPre(fileInput, hiddenInputName, imgPre) {
+			$(fileInput).on("change", function() {
+				const file = this.files[0];
+				
+				if (file) {
+					const maxSize = 1048576; // 1MB
+					if (file.size > maxSize) {
+						Swal.fire({
+							icon: 'error',
+							title: 'error',
+							text: '최대 1MB까지만 허용됩니다!'
+						}).then(() => {
+							this.value = '';
+							$(imgPre).children('img').attr('src', '');
+							console.log($('input[name="' + hiddenInputName + '"]').val());
+							$('input[name="' + hiddenInputName + '"]').val('');
+							console.log($('input[name="' + hiddenInputName + '"]').val());
+						});
+						return;
+					}
+				}
+				
+				var fileName = $(this).val().split("\\").pop();
+				$('input[name="' + hiddenInputName + '"]').val(fileName);
+							console.log($('input[name="' + hiddenInputName + '"]').val());
+				
+				if (this.files && this.files[0]) {
+					var reader = new FileReader();
+					reader.onload = function(e) {
+						$(imgPre).children('img').attr('src', e.target.result);
+						$(imgPre).removeClass('d-none');
+					}
+					reader.readAsDataURL(this.files[0]);
+				} else {
+					$(imgPre).children('img').attr('src', '');
+					$(imgPre).addClass('d-none');
+				}
+			});
+			
+			// 썸네일 클릭 시 선택 취소되게끔 클릭 이벤트 추가
+			$(imgPre).on('click', function() {
+				$(fileInput).val('');
+				$('input[name="' + hiddenInputName + '"]').val('');
+				$(imgPre).children('img').attr('src', '');
+				$(imgPre).addClass('d-none');
+			});
+		}
 		
+		// 함수 호출
+		updateFileNameAndPre("#file1", "img1Name", "#img1Pre");
+		updateFileNameAndPre("#file2", "img2Name", "#img2Pre");
+
 		// SweetAlert 함수 선언
 		function showAlert(icon, title, message) {
 			Swal.fire({

@@ -1,6 +1,7 @@
 package kr.co.bcd.board.post.controller;
 
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -16,16 +17,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.bcd.board.comment.model.service.CommentServiceImpl;
 import kr.co.bcd.board.post.model.dto.Post;
 import kr.co.bcd.board.post.model.service.PostServiceImpl;
 import kr.co.bcd.board.vote.model.dto.Vote;
 import kr.co.bcd.board.vote.model.service.VoteServiceImpl;
+import kr.co.bcd.common.aws.S3UploadController;
 import kr.co.bcd.common.controller.DataValidationController;
 import kr.co.bcd.common.controller.SessionManageController;
 import kr.co.bcd.common.paging.model.PageInfo;
@@ -54,6 +59,9 @@ public class PostController {
 	@Autowired
 	private DataValidationController dataValidation;
 	
+	@Autowired
+	private S3UploadController uploadFile;
+	
 	@GetMapping("/write.do")
 	public String write(Model model, HttpSession session, HttpServletRequest request) {
 		sessionManage.getSessionMsg(session, model);
@@ -62,7 +70,7 @@ public class PostController {
 	}
 	
 	@PostMapping("/insert.do")
-	public String writing(Post post, HttpSession session) {
+	public String writing(MultipartFile file1, MultipartFile file2, Post post, HttpSession session) throws IllegalStateException, IOException  {
 //		세션에서 작성자 회원 고유번호 가져오기
 //		post.setMemIdx((int)session.getAttribute("memberIdx"));
 		// TODO: test code
@@ -133,6 +141,19 @@ public class PostController {
 		
 		// 데드라인(투표 마감일) 데이터 정제
 		post.setDeadline(LocalDateTime.parse(post.getDeadline(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+		
+		// img upload
+		if(!file1.isEmpty() || !file2.isEmpty()) {			
+			try {
+				post = uploadFile.uploadPostFile(file1, file2, post);
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		System.out.println("이미지 업로드 후: " + post);
 		
 		// DB insert
 		int result = postService.insertPost(post);
