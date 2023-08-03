@@ -42,28 +42,18 @@ public class ChatMsgHandler extends TextWebSocketHandler {
 		
 		int idx = extractIdx(session);
 		
-        //이전 대화 내역, 입장 메시지, 닉네임 담을 MAP
-		Map<String, Object> chatData = new HashMap<>();
-		
+ 
 		//이전 대화 가져오기
 	    List<ChatMsg> previousChat = chatRoomService.previousChat(idx);
-	    
-	    //닉네임 담을 리스트
-//	    List<ObjectNode> msgNnicknameList = new ArrayList<>();
-	    List<String> senderNicknameList = new ArrayList<>();
-	    
+
 	    for(ChatMsg chatMsg : previousChat) {
 	    	String senderNickname=memberService.selectNickname(chatMsg.getSenderIdx());
-	    	
+	    	chatMsg.setSenderNickname(senderNickname);
+	    }
+	    
 //	    	ObjectMapper objectMapper = new ObjectMapper();
 //	    	ObjectNode chatMsgJson = objectMapper.valueToTree(chatMsg);
 //	    	chatMsgJson.put("senderNickname", senderNickname);
-	    	
-	    	senderNicknameList.add(senderNickname);
-	    }
-	    
-	    chatData.put("previousChat", previousChat);
-	    chatData.put("senderNicknameList", senderNicknameList);
 	    
 	  
 	    
@@ -88,8 +78,7 @@ public class ChatMsgHandler extends TextWebSocketHandler {
 		//발신자 enterMsg로 해서 js가 senderIdx : enterMsg 받으면 입장메시지 출력하도록
 		enterMessage.setSenderIdx(-1);
 		enterMessage.setContent(memberNickname+ "님이 입장하셨습니다.");
-		chatData.put("enterMessage", enterMessage);
-
+		previousChat.add(enterMessage);
 //		//메시지 리스트 만들기
 //		List<ChatMsg> preNenterMsg = new ArrayList<>();
 //		//이전 대화 리스트 넣기
@@ -99,7 +88,7 @@ public class ChatMsgHandler extends TextWebSocketHandler {
 		
 		
 		ObjectMapper objectMapper = new ObjectMapper();
-	    String jsonMessage = objectMapper.writeValueAsString(chatData);
+	    String jsonMessage = objectMapper.writeValueAsString(previousChat);
 	    System.out.println("jsonmessage"+jsonMessage);
         
 		for (WebSocketSession webSession : sessionList) {

@@ -42,6 +42,7 @@ public class ChatRoomController {
 							   //@RequestParam(value="idx", defaultValue="")int idx,
 							   HttpSession session,
 							   Model model) {
+		
 		int listCount = chatRoomService.selectListCount(category);
 		int pageLimit = 10;
 		int boardLimit = 15;
@@ -206,10 +207,12 @@ public class ChatRoomController {
 		}
 		
 	}
-	@RequestMapping("/modify.do")
+	@PostMapping("/modify.do")
 	public String chatRoomModify(ChatRoom chatRoom ,Model model,HttpSession session){
+		System.out.println("들어왔니????");
 		
 		int idx = chatRoom.getIdx();
+		System.out.println("IDX:" +idx);
 		
 		if(chatRoom!=null) {
 			
