@@ -30,14 +30,13 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override 
-	public int memberPhoneJoin(Member member) {
-		return memberDao.memberPhoneJoin(sqlSession, member);	
+	public int phoneJoin(Member member) {
+		return memberDao.phoneJoin(sqlSession, member);	
 	}
 	
 	@Override
 	public Member selectMember(int memberIdx) {
-		return memberDao.selectMember(sqlSession, memberIdx);
-		
+		return memberDao.selectMember(sqlSession, memberIdx);		
 	}
 	
 	@Override
@@ -63,8 +62,8 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public int checkIdx(String email) {
-		return memberDao.checkIdx(sqlSession, email);
+	public int checkIdx(Member member) {
+		return memberDao.checkIdx(sqlSession, member);
 	}
 
 	@Override 
@@ -77,7 +76,17 @@ public class MemberServiceImpl implements MemberService {
 		return memberDao.idCheck(sqlSession, id);
 	}
 	
+	@Override
+	public int phoneCheck(String phoneNumber) {	
+		return memberDao.phoneCheck(sqlSession, phoneNumber);
+	}
 	
+	@Override
+	public int phoneLogin(Member member) {	
+		return memberDao.phoneLogin(sqlSession, member);
+	}
+	
+
 
 
 	

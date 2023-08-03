@@ -31,11 +31,13 @@ public class MemberDao {
 	}
 
 	public int checkEmail(SqlSessionTemplate sqlSession, Member member) {
+		System.out.println(member.getSnsId());
+		System.out.println(member.getSnsType());
 		return sqlSession.selectOne("memberMapper.checkEmail", member);
 	}
 
-	public int checkIdx(SqlSessionTemplate sqlSession, String email) {
-		return sqlSession.selectOne("memberMapper.checkIdx", email);
+	public int checkIdx(SqlSessionTemplate sqlSession, Member member) {
+		return sqlSession.selectOne("memberMapper.checkIdx", member);
 	}
 
 	public int checkId(SqlSessionTemplate sqlSession, String snsId) {
@@ -46,8 +48,16 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.idCheck", id);
 	}
 
-	public int memberPhoneJoin(SqlSessionTemplate sqlSession, Member member) {
-		return sqlSession.insert("memberMapper.memberPhoneJoin", member);
+	public int phoneJoin(SqlSessionTemplate sqlSession, Member member) {
+		return sqlSession.selectOne("memberMapper.phoneJoin", member);
+	}
+
+	public int phoneCheck(SqlSessionTemplate sqlSession, String phoneNumber) {
+		return sqlSession.selectOne("memberMapper.phoneCheck", phoneNumber);
+	}
+
+	public int phoneLogin(SqlSessionTemplate sqlSession, Member member) {
+		return sqlSession.selectOne("memberMapper.phoneLogin", member);
 	}
 
 
