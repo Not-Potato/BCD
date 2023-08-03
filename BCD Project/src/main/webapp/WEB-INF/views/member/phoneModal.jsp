@@ -22,17 +22,27 @@
  		   </div>
 
 		    <div class="modal-body p-5 pt-0 mt-4">
-		    <h1 class="fw-bold mt-5 mb-2 fs-2 text-center">안녕하세요. BCD입니다!</h1>
+		    <h1 class="fw-bold mt-5 mb-2 fs-2 text-center">환영합니다!</h1>
 	        
             	<h1 class="fw-bold mb-5 fs-2 text-center">본인 확인을 위해 휴대전화번호를 입력해주세요. </h1>
        
 	            <div class="d-flex justify-content-center mt-5" style="width: 100%;">
-	        	 	
-		        	 	<form class="centered text-center form-floating" style="width:75%;" action="/member/phoneJoin.do"  id="PhoneForm">		                   
-		                    	 <input type="tel" class="form-control" name="tel1" maxlength="3"/> -	
-					 			 <input type="tel" class="form-control" name="tel2" maxlength="4"/> -	
-					      		 <input type="tel" class="form-control" name="tel3" maxlength="4"/>				                    	  	                   
-		            	</form>
+	        	 			                    
+		        	 	<form class="text-center form-floating" style="width:75%;" action="/member/phoneJoin.do"  id="PhoneForm">		                   
+		                  <div class="row g-2">
+		                    <div class="col-md">
+		                    	 <input type="tel" class="form-control" id="tel1" maxlength="3"/>	
+					 		</div>	
+					 		<div class="col-md">
+					 			 <input type="tel" class="form-control" id="tel2" maxlength="4"/>	
+					      	</div>
+					      	<div class="col-md">	 
+					      		 <input type="tel" class="form-control" id="tel3" maxlength="4"/>				                    	  	                   
+		            		</div>
+		            		</div>
+		         	
+		            	</form>	            	
+		            
 		          </div>    	
 		            	<div class="row">
 		            		<p class="invalid-feedback text-center m-0" id="phoneValidation" style="display:none"></p><!--전화번호 유효성 -->	   
@@ -42,7 +52,7 @@
 
 
 	        	 <div class="d-flex justify-content-center mt-5" style="width: 100%;">
-	        		<button type="button" id="phoneNextBtn" class="btn btn-dark fs-5 pl-4 pr-4" onclick="return submitPhone()" data-tooltip="">다음</button>	      		
+	        		<button type="button" id="phoneNextBtn" class="btn btn-dark fs-5 pl-4 pr-4" onclick="return submitPhone()" data-tooltip="">확인</button>	      		
 	      		</div>	      		
 
 			</div>
@@ -51,13 +61,15 @@
 	</div>
 </div>
 
+<%@ include file="../member/idpwLoginModal.jsp" %>
+
 <script>
 //전호번호 
 	var isPhoneValidated = false;
-	var tel1 = $("#tel1").val();
-	var tel2 = $("#tel2").val();
-	var tel3 = $("#tel3").val();
-
+	var tel1;
+	var tel2;
+	var tel3;
+	var phoneNumber;
 //엔터 제출 방지 	     
 	function preventFormSubmission(event) {
 	    if (event.key === "Enter") {
@@ -74,9 +86,9 @@
 	//폰모달창 닫기
 	const closeModalPhone = document.getElementById("closeModalPhone");
 
- 	 closeModalNickname.addEventListener("click", function() {
-	 	  modalNickname.classList.add("d-none");
-	      location.reload(); 
+	closeModalPhone.addEventListener("click", function() {
+		closeModalPhone.classList.add("d-none");
+		 location.reload();
 	 });
   
 		//전화번호 유효성 검사
@@ -86,14 +98,20 @@
         	 tel2 = $("#tel2").val();
         	 tel3 = $("#tel3").val();
         	var phoneValidation = $("#phoneValidation"); // 닉네임 유효성 메시지 요소
-        
-	        if (tel1 !== "" && tel2 !== "" && tel3 !== ""}) {
-	        		
+        	 // 전화번호 합치기
+            
+
+	        if (tel1 !== "" && tel2 !== "" && tel3 !== "") {
+	        	
+	        	
+	        	
 	            if (/^\d+$/.test(tel1) && /^\d+$/.test(tel2) && /^\d+$/.test(tel3)) {
-	                // Check if the lengths of the inputs are correct (assumed to be 4 characters each)
-	                if (tel1.length === 4 && tel2.length === 4 && tel3.length === 4) {
+	                if (tel1.length === 3 && tel2.length === 4 && tel3.length === 4) {
 	                    phoneValidation.css("display", "none");
+	                    phoneNumber = tel1 + "-" + tel2 + "-" + tel3;
 	                    isPhoneValidated = true;
+	                  
+	                    
 	                } else {
 	                    phoneValidation.css("display", "block");
 	                    phoneValidation.text("전화번호를 확인해주세요.");
@@ -116,7 +134,8 @@
 		});
 	        	
 
-		 //다음버튼 클릭 시
+		
+		 //확인버튼 클릭 시
 		 function submitPhone() {		
     		 // 입력값이 비어있는 경우 서밋 막기
 		     if (!isPhoneValidated) {		    	 
@@ -125,33 +144,43 @@
 		    	 
 		    	 	 // 마우스가 버튼을 떼었을 때 툴팁을 숨김
 		         	 phoneNextBtn.addEventListener("mouseleave", function() {
-		         		phoneNextBtn.setAttribute("data-tooltip", "");
+		         	 phoneNextBtn.setAttribute("data-tooltip", "");
 		        	 });
 		    	 
 		    	 return false; // 폼의 기본 제출 동작 막기
 		    	 
-		     } else {
-		    	 
-		    	 var phoneNumber = tel1.concat(tel2, tel3);//전화번화 하나로 합치기
-		    	 submitPhone(phoneNumber); 
-		    	 return true;
-		     }
-		}	 
-		
-		 
-			function submitPhone(nickname) {
+		     } else {//유효성 검증된 전화번호 있음
+		    	   
 				 $.ajax({
 					 type :"post",
 					 async : true,
 				     url: '/member/phoneCheck.do', 
 				     data: { phoneNumber: phoneNumber }, 
 				     success: function(result) {
-				            if(result =="succeuss") {
-				             document.getElementById("modalPhone").classList.add("d-none");  //휴대전화 모달창 닫기
-				             document.getElementById("modalIdPw").classList.remove("d-none");  //IDPW 모달창 열기				             
-				           
-				            } else if (result =="failed") {
+				    	 	console.log(result);
+				            
+				    	 	if(result =="success") { //기존가입 
 				            	
+				            	document.getElementById("modalPhone").classList.add("d-none");  //휴대전화 모달창 닫기
+				             	document.getElementById("modalIdPwLogin").classList.remove("d-none");  //IDPW 모달창 열기				             
+				             	document.getElementById("passPhone").value = phoneNumber; // modalIdPwLogin에 전화번호 전달하기
+				            
+				            } else if (result =="failed") { //신규회원
+				                // 현재 모달에 문자 인증 입력 폼과 버튼 추가
+			                    var phoneForm = document.getElementById("PhoneForm");
+			                    var smsInput = document.createElement("input");
+			                    smsInput.setAttribute("type", "text");
+			                    smsInput.setAttribute("id", "smsInput");
+			                    smsInput.setAttribute("class", "form-control");
+			                    phoneForm.appendChild(smsInput);
+
+			                    var smsButton = document.createElement("button");
+			                    smsButton.setAttribute("type", "button");
+			                    smsButton.setAttribute("class", "btn btn-dark fs-5 pl-4 pr-4");
+			                    smsButton.setAttribute("onclick", "return submitSms()");
+			                    smsButton.innerText = "인증";
+			                    phoneForm.appendChild(smsButton);
+				            		
 				            }
 				        },
 				        error: function(error) {
@@ -161,8 +190,37 @@
 	    
 			  	}
 
+			 }
 
+		 
+		 
+		// 문자 인증 버튼 클릭 시
+		 function submitSms() {
+		     // 문자 인증 로직 추가
+		     // ...
 
+		     // 서버에 인증 요청
+		     $.ajax({
+		         type: "post",
+		         async: true,
+		         url: '/member/smsCheck.do',
+		         data: { smsCode: smsCode }, // 문자 인증 코드를 서버로 전달
+		         success: function(result) {
+		             console.log(result);
+		             if (result == "success") { // 인증 성공
+		                 // 모달 열기
+		                 document.getElementById("modalPhone").classList.add("d-none");
+		                 document.getElementById("modalIdPwLogin").classList.remove("d-none");
+		                 document.getElementById("passPhone").value = phoneNumber;
+		             } else if (result == "failed") { // 인증 실패
+		                 // 인증 실패 처리
+		             }
+		         },
+		         error: function(error) {
+		             return false;
+		         }
+		     });
+		 }
 </script>
 
 
