@@ -45,13 +45,13 @@
 							<a class="nav-link active text-primary" aria-current="true"  id=popularTab>인기항목</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link text-dark"  id="bigWorryTab">큰고민</a>
+							<a class="nav-link text-dark"  id="bigWorryTab">Venti Size</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link text-dark"  id="smallWorryTab">작은고민</a>
+							<a class="nav-link text-dark"  id="smallWorryTab">Tall Size</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link text-dark"  id="allCategoryTab">모두보기</a>
+							<a class="nav-link text-dark"  id="allCategoryTab">All</a>
 						</li>
 					</ul>
 				</div>
@@ -95,19 +95,19 @@
 				<div>
 					<ul class="d-flex ps-0">
 						<li class="me-3">
-							<a class="fs-4 text-decoration-none text-dark">
+							<a class="fs-4 text-decoration-none text-dark" role="button">
 								<i class="bi bi-check-all"></i>
 								전체
 							</a>
 						</li>
 						<li class="me-3">
-							<a class="fs-4 text-decoration-none text-dark">
+							<a class="fs-4 text-decoration-none text-dark" role="button">
 								<i class="bi bi-check"></i>
 								골라줘!
 							</a>
 						</li>
 						<li class="me-3">
-							<a class="fs-4 text-decoration-none text-dark">
+							<a class="fs-4 text-decoration-none text-dark" role="button">
 								<i class="bi bi-check"></i>
 								골랐어!
 							</a>
@@ -141,16 +141,32 @@
 	</c:when>
 	<c:otherwise>
 		<c:forEach var="item" items="${list}">
-				<div class="col-xl-3 col-sm-6" role="button" onclick="location.href='/board/detail.do?idx=${item.idx}';">
+				<div class="col-xl-3 col-sm-6 post" role="button" onclick="location.href='/board/detail.do?idx=${item.idx}';">
 				    <div class="card-shadow card">
 				        <div class="card-body">
 				            <div class="mb-2">
-				                <div class="badge bg-primary text-wrap rounded p-2 me-1 ps-3 pe-3">
-				                    골라줘!
+				            	<input type="hidden" value="${ item.createDate }" class="createDate">
+				            	<input type="hidden" value="${ item.deadline }" class="deadline">
+				            	<input type="hidden" value="${ item.status }" class="status">
+				            	<input type="hidden" value="${ item.review eq null ? 'no' : 'yes' }" class="review">
+				                <div class="badge bg-primary text-wrap rounded p-2 me-1 d-none new-label">
+				                    ✨New!
 				                </div>
-				                <div class="badge bg-success text-wrap rounded p-2 ps-3 pe-3">
-				                    골라줘!
+				                <div class="badge bg-primary bg-opacity-75 text-wrap rounded p-2 me-1 d-none ing-label">
+				                    ing
+				                </div>	                
+				                <div class="badge bg-danger bg-opacity-75 text-wrap rounded p-2 me-1 d-none deadline-label">
+				                    final
 				                </div>
+				                <div class="badge bg-secondary bg-opacity-75 text-wrap rounded p-2 me-1 d-none close-label">
+				                    closed
+				                </div>	                
+				                <div class="badge bg-secondary bg-opacity-75 text-wrap rounded p-2 me-1 d-none early-close-label">
+				                    early closed
+				                </div>	                
+				                <div class="badge bg-dark bg-opacity-75 text-wrap rounded p-2 me-1 d-none review-label">
+				                    review
+				                </div>	                
 				            </div>
 				
 				            <div class="fs-6 text-secondary mb-2">
@@ -161,7 +177,7 @@
 				                ${ item.title }
 				            </div>
 				
-				            <div class="badge border text-dark border-success text-wrap rounded p-2 me-2 ps-3 pe-3 mb-2">
+				            <div class="badge border border-primary border-opacity-50 text-dark text-wrap rounded p-2 me-2 mb-2">
 				                ${ item.subCategory }
 				            </div>
 				
@@ -179,7 +195,7 @@
 				            </div>
 				
 				            <div class="" style="font-size: 14px;">
-				                현재 <span class="text-primary">${ item.voteCount }</span>명이 투표에 참여했어요!
+				                현재 <span class="text-primary fw-bold">${ item.voteCount }</span>명이 투표에 참여했어요!
 				            </div>
 				        </div>
 				    </div>
@@ -341,6 +357,62 @@
 		}) 
 			
 		/*  카테고리 끝*/
+		
+		// 날짜 포매팅
+		function getToday(){
+			var date = new Date();
+			var year = date.getFullYear();
+			var month = ("0" + (1 + date.getMonth())).slice(-2);
+			var day = ("0" + date.getDate()).slice(-2);
+			
+			return year + "-" + month + "-" + day;
+		}
+		
+		// 로드 시
+$(document).ready(function() {
+		// 각 데이터를 처리하는 함수를 정의합니다.
+		function processPost(createDate, deadline, status, review) {
+			// createDate를 이용하여 처리하는 로직
+			const today = getToday();
+			
+			// 오늘 작성된 글이라면
+			if (today === createDate) {			    
+				$(this).find('.new-label').removeClass('d-none'); // "오늘 마감" 라벨을 보이게 합니다.
+			}
+			
+			// 투표 진행 상태에 따른 "진행 중" OR "마감" 라벨
+			if (status === "A") {
+				$(this).find('.ing-label').removeClass('d-none'); // "진행 중" 라벨을 보이게 합니다.				
+
+				// 진행 중 && 오늘 마감될 투표라면
+				if (deadline === today) {				
+					$(this).find('.deadline-label').removeClass('d-none'); // "오늘 마감" 라벨을 보이게 합니다.
+				}
+			} else if (status === "B") {
+				$(this).find('.close-label').removeClass('d-none'); // "마감" 라벨을 보이게 합니다.
+			} else {
+				$(this).find('.early-close-label').removeClass('d-none'); // "마감" 라벨을 보이게 합니다.				
+			}
+			
+			
+			// review가 존재한다면
+			if (review === "yes") {
+				$(this).find('.review-label').removeClass('d-none'); // "후기" 라벨을 보이게 합니다.
+			}
+		}
+
+		// 각 데이터를 처리하는 함수를 호출합니다.
+		$('.post').each(function() {
+			const createDate = $(this).find('.createDate').val();
+			const deadline = $(this).find('.deadline').val();
+			const status = $(this).find('.status').val();
+			const review = $(this).find('.review').val();
+			
+			console.log(createDate, deadline, status, review);
+			
+			processPost.call(this, createDate, deadline, status, review);
+		});
+	});
 	</script>
 </body>
 </html>

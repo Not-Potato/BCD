@@ -83,9 +83,8 @@
 	                        <div class="form-floating">
 	                            <select name="mainCategory" class="form-select" id="mainCategorySelect" aria-label="대분류 그룹">
 	                                <option value="" selected disabled>✧˳⁺⁎₊✧˚˳⁺⁎₊𝙋𝙡𝙚𝙖𝙨𝙚 𝙘𝙝𝙤𝙤𝙨𝙚₊⁎⁺˳˚✧₊⁎⁺˳✧</option>
-	                                <option value="메인카테고리1">One</option>
-	                                <option value="메인카테고리2">Two</option>
-	                                <option value="메인카테고리3">Three</option>
+	                                <option value="Venti Size">Venti Size</option>
+	                                <option value="Tall Size">Tall Size</option>
 	                            </select>
 	                            <label for="mainCategorySelect">대분류</label>
 	                        </div>
@@ -94,10 +93,20 @@
 	                    <div class="col-md">
 	                        <div class="form-floating">
 	                            <select name="subCategory" class="form-select" id="subCategorySelect" aria-label="소분류 그룹">
+	                            	<!-- 아무것도 선택하지 않았을 때 -->
 	                                <option value="" selected disabled>✧˳⁺⁎₊✧˚˳⁺⁎₊𝙋𝙡𝙚𝙖𝙨𝙚 𝙘𝙝𝙤𝙤𝙨𝙚₊⁎⁺˳˚✧₊⁎⁺˳✧</option>
-	                                <option value="서브카테고리1">One</option>
-	                                <option value="서브카테고리2">Two</option>
-	                                <option value="서브카테고리3">Three</option>
+									<!-- 
+									Venti Size를 선택했을 때
+	                                <option value="연애/결혼">연애/결혼</option>
+	                                <option value="가족/친구">가족/친구</option>
+	                                <option value="학교/직장">학교/직장</option>
+	                                <option value="사회/이슈">사회/이슈</option>
+	                                Tall Size를 선택했을 때
+	                                <option value="점메추">점메추</option>
+	                                <option value="깻잎논쟁">깻잎논쟁</option>
+	                                <option value="할? 말?">할까말까</option>
+	                                <option value="최애픽">최애픽</option>
+									 -->
 	                            </select>
 	                            <label for="subCategorySelect">소분류</label>
 	                        </div>
@@ -182,14 +191,6 @@
 	
 	<%@ include file="../common/footer.jsp" %>
 	<script>
-/* 		// error - sweetAlert 함수 선언
-		function errorAlert(message) {
-			Swal.fire({
-				icon: 'error',
-				title: 'error',
-				text: message
-			});
-		} */
 		
 		// SweetAlert 함수 선언
 		function showAlert(icon, title, message) {
@@ -220,6 +221,55 @@
 
 		
 		$(document).ready(function() {
+			
+			const subCategoryMap = {
+				'Venti Size': [
+					'연애/결혼',
+					'가족/친구',
+					'학교/직장',
+					'사회/이슈'
+				],
+				'Tall Size': [
+					'점메추',
+					'깻잎논쟁',
+					'할까말까',
+					'최애픽'
+				]
+			};
+			
+			// 대분류 선택이 변경되었을 때 소분류를 업데이트하는 함수를 정의합니다.
+			$('#mainCategorySelect').change(function() {
+				// 선택된 대분류 값을 가져옵니다.
+				const selectedMainCategory = $(this).val();
+			
+				// 선택된 대분류에 해당하는 소분류 배열을 가져옵니다.
+				const subCategories = subCategoryMap[selectedMainCategory] || [];
+				
+				// 기존의 모든 소분류 옵션을 제거합니다.
+				$('#subCategorySelect').empty();
+
+				// 아무것도 선택하지 않았을 때의 기본 옵션을 추가합니다.
+				$('#subCategorySelect').append($('<option>', {
+					value: '',
+					text: '✧˳⁺⁎₊✧˚˳⁺⁎₊𝙋𝙡𝙚𝙖𝙨𝙚 𝙘𝙝𝙤𝙤𝙨𝙚₊⁎⁺˳˚✧₊⁎⁺˳✧',
+					selected: true,
+					disabled: true
+				}));
+				
+				// 새로운 소분류 옵션을 추가합니다.
+				subCategories.forEach(function(subCategory) {
+					$('#subCategorySelect').append($('<option>', {
+						value: subCategory,
+						text: subCategory
+					}));
+				});
+			});
+			
+			// 페이지가 로드되면 초기 소분류 리스트를 설정하기 위해 한 번 실행합니다.
+			$('#mainCategorySelect').trigger('change');
+		        
+		        
+		        
 			// submitButton 변수에 할당
 			const $submitButton = $("#submitButton");
 			
@@ -252,68 +302,6 @@
 				$("#postForm").submit();
 			});
 		});
-		
-		
-/* 		// 폼 제출 시
-		$("#submitButton").click(function() {
-			const $submitButton = $("#submitButton");
-			
-			let mainCategory = $("#mainCategorySelect").val();
-			let subCategory = $("#subCategorySelect").val();
-			let voteTitle = $("#voteTitle").val();
-			let deadline = $("#datetime-local").val();
-			let vote1ST = $("#vote1ST").val();
-			let vote2ND = $("#vote2ND").val();
-			let title = $("#title").val();
-			let content = $("#content").val();
-			
-			// '작성'인 경우에만 투표 관련 필드 체크
-			if ($submitButton.text() === '작성') {
-				if (!mainCategory) {
-					errorAlert("대분류를 선택해 주세요.");
-					return;
-				}
-				
-				if (!subCategory) {
-					errorAlert("소분류를 선택해 주세요.");
-					return;
-				}
-				
-				if (!voteTitle) {
-					errorAlert("투표 제목을 입력해 주세요.");
-					return;
-				}
-				
-				if (!deadline) {
-					errorAlert("마감일을 입력해 주세요.");
-					return;
-				}
-				
-				if (!vote1ST) {
-					errorAlert("선택지 1을 입력해 주세요.");
-					return;
-				}
-				
-				if (!vote2ND) {
-					errorAlert("선택지 2를 입력해 주세요.");
-					return;
-				}
-			}
-
-			// title과 content 체크
-			if (!title) {
-				errorAlert("제목을 입력해 주세요.");
-				return;
-			}
-			
-			if (!content) {
-				errorAlert("내용을 입력해 주세요.");
-				return;
-			}
-			
-			// 모든 필드가 유효하면 폼 제출
-			$("#postForm").submit();
-		}); */
 	</script>
 </body>
 </html>
