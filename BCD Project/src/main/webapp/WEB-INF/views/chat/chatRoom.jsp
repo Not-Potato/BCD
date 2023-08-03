@@ -26,24 +26,25 @@
      		</div>
      		<!-- 모달 body -->
 	      	<div class="modal-body p-5 pt-0">
-		        <h1 class="fw-bold mt-5 mb-5 fs-2 text-center">채팅방 만들기</h1>
+		        <h1 class="fw-bold mt-5 mb-5 fs-2 text-center">채팅방 수정</h1>
 		        <form class="modifyChatRoomForm" onsubmit="return modifyChatRoom()" action="/chat/modify.do" method="post">
 			        <div class="form-floating mb-3">
-			            <input type="text" class="form-control rounded-3" id="floatingInput" placeholder="ff" name="title">
+			            <input type="text" class="form-control rounded-3" id="floatingInput" placeholder="ff" name="title" value=${result.title}>
 			            <label for="floatingInput">${result.title }</label>
+			            <input type="hidden" name="idx" value="${result.idx }">
 			        </div>
 		          	<h2 class="fs-5 mb-3 text-center">어떤 주제로 얘기하고 싶나요?</h2>
 			         <div class="form-floating mb-3">
 			            <select class="form-select" id="floatingSelectGrid" name="bigCategory" onchange="changeCategoryOptions()">
-			                <option value="basis" selected>큰 분류</option>
-			                <option value="value1">무거운 주제</option>
-			                <option value="value2">가벼운 주제</option>
+			                <option value="basis" disabled selected>큰 분류</option>
+			                <option value="value1" ${result.category == '진로' || result.category == '돈'? 'selected' : ''}>무거운 주제</option>
+			                <option value="value2" ${result.category == '옷' || result.category == '음식'? 'selected' : ''}>가벼운 주제</option>
 			            </select>
 			            <label for="floatingSelectGrid">크게</label>
 			         </div>
 			         <div class="form-floating mb-3">
 			          	<select class="form-select" id="smallSelectGrid" name="category">
-			                <option value="basis" selected>세세한 분류</option>
+			               <option value="${result.category}">${result.category}</option>
 			               
 			            </select>
 			            <label for="smallSelectGrid">작게</label>
@@ -161,16 +162,16 @@
 		socket.onmessage = function(event){
 			let message = JSON.parse(event.data);
 		//	const previousChat = message.previousChat;
-			if(Array.isArray(message.previousChat)){
-				for(const chatMsg of message.previousChat) {
+			if(Array.isArray(message)){
+				for(const chatMsg of message) {
 					const dbTime = chatMsg.sendDate;
 					const formattedDbTime = convertDbTime(dbTime);
 					chatMsg.sendDate = formattedDbTime;
-					//console.log("dkdl"+chatMsg.senderIdx);
+					console.log("senderIdx : "+chatMsg.senderIdx);
 					showMessage(chatMsg, "채팅이 있을 , 때 이전메시지");
 				}
 			}
-			if(Array.isArray(message.senderNicknameList)){
+		/*	if(Array.isArray(message.senderNicknameList)){
 			message.senderNicknameList.forEach(function(senderNickname) {
 				console.log("foreach 실행, showMessage 호출");
 				console.log("senderNickname : "+senderNickname);
@@ -179,16 +180,16 @@
 				/* for(const senderNickname of message.senderNicknameList) {
 					//console.log("닉네임 뭐야??: "+senderNickname );
 					showMessage(senderNickname);	
-				} */
-			}
-		   if(message.enterMessage){
-				showMessage(message.enterMessage, "입장 메시지");
-			}
+				} 
+			}*/
+		//   if(message.enterMessage){
+		//			showMessage(message.enterMessage, "입장 메시지");
+		//	}
 			
-			
+		else{
 				//console.log("Received WebSocket message:", message);
 				showMessage(message, "실시간 채팅 메시지");	
-			
+		}
 			
 		};
 		
@@ -309,7 +310,6 @@
 				
 			//다른 사람이 보낸 메시지	
 			}else {
-				console.log("다른사람이보낸거")
 				if(preSenderIdx != message.senderIdx){
 					messageLiTag.appendChild(receiveDiv);
 					receiveDiv.appendChild(receiveInfo);
@@ -320,7 +320,7 @@
 						receiveInfo.appendChild(receiveNickname);
 							console.log("보낸사람 닉네임 : " + message);
 							console.log("상태 : " + status);
-							receiveNickname.textContent=message;
+							receiveNickname.textContent=message.senderNickname;
 				}else {
 					console.log("else")
 					messageLiTag.appendChild(receiveDiv);
@@ -332,9 +332,9 @@
 						receiveTime.textContent = message.sendDate;
 				
 			}
-			//console.log("전:"+preSenderIdx);
+		//	console.log("전:"+preSenderIdx);
 			preSenderIdx = message.senderIdx;
-			//console.log("후:"+preSenderIdx);
+		//	console.log("후:"+preSenderIdx);
 		}
 		
 		function sendMessage(){
@@ -385,7 +385,7 @@
 				location.href="/chat/list.do";
 			}
 		});
-		
+	}
 		
  		/*  모달창  */ 
    		const modifyBtn = document.getElementById("modifyBtn");
@@ -401,53 +401,74 @@
 		//모달폼
 		const modifyChatRoomForm = document.querySelector(".modifyChatRoomForm"); 
 		function modifyChatRoom(){
-			//모달폼에서 입력한 값
-			const title = modifyChatRoomForm.title.value;
-			const bigCategory = modifyChatRoomForm.bigCategory.value;
-			const smallCategory = modifyChatRoomForm.smallCategory.value;
-			//DB 저장된 값
-			const originTitle = "${result.title}";
-			const originCategory = "${result.category}";
 			
-			const isTitleChange = (title != originTitle);
-			const isCategoryChange = (category != originCategory);
+			event.preventDefault();
+			console.log("모달에 들어왔니??");
+			//모달폼에서 입력한 값
+			let title = modifyChatRoomForm.title.value;
+			console.log("input title:"+title);
+			//let bigCategory = modifyChatRoomForm.bigCategory.value;
+			let category = modifyChatRoomForm.category.value;
+			console.log("input 카테:"+category);
+			//DB 저장된 값
+			let originTitle = "${result.title}";
+			let originCategory = "${result.category}";
+			console.log("origin카테 : "+ originTitle);
+			console.log("origin타이틀 : "+ originCategory);
+			
+	
+			if(category === "basis"){
+				category = originCategory;
+			} 
+			
+			let isTitleChange = (title != originTitle);
+			let isCategoryChange = (category != originCategory);
+			
+			console.log(" title:"+title);
+			console.log(" category:"+category);
+			console.log("타이틀 바뀌었나??"+isTitleChange);
+			console.log("타이틀 바뀌었나??"+isCategoryChange);
+			
 			
 			if(!isTitleChange && !isCategoryChange) {
 				alert("변경된 내용이 없습니다.");
 				return;
 			} 
-			if(!isTitleChange || title == "" || title == null){
-				title = originTitle;
-			}
-			if(!isCategoryChange || category == "" || category == null){
-				category = originCategory;
-			}
+		
 			
-			modifyChatRoomForm.submit();
+				console.log(" 제출전title:"+title);
+				console.log(" 제출전category:"+category);
+				console.log("폼 : "+modifyChatRoomForm.title.value);
+				console.log("폼 : "+modifyChatRoomForm.category.value);
+				modifyChatRoomForm.submit();
+			
+			
 		}
 		
 		function changeCategoryOptions(){
 			const bigCategorySelect = document.getElementById("floatingSelectGrid");
 			const smallCategorySelect = document.getElementById("smallSelectGrid");
+			const selectedCategory = "${result.category}";
+			
 			
 			if(bigCategorySelect.value == "basis" || bigCategorySelect.value == "" || bigCategorySelect.value == null ){
 				//console.log(bigCategorySelect.value);
 				smallCategorySelect.innerHTML = `
-		            <option value="basis" selected>세세한 분류</option>
+		            <option value="basis" disabled>${result.category}</option>
 		        `;
 			}
 			
-			else if(bigCategorySelect.value == "value1") {
+			 if(bigCategorySelect.value == "value1") {
 				//console.log(bigCategorySelect.value);
 				smallCategorySelect.innerHTML = `
-					<option value="basis" selected>세세한 분류</option>
+					<option value="basis" >세세한 분류</option>
 	                <option value="진로">진로</option>
 	                <option value="돈">돈</option>
 	            `;
 			}
 			else if(bigCategorySelect.value == "value2") {
 				smallCategorySelect.innerHTML = `
-					<option value="basis" selected>세세한 분류</option>
+					<option value="basis">세세한 분류</option>
 	                <option value="음식">음식</option>
 	                <option value="옷">옷</option>
 	            `;
@@ -459,7 +480,7 @@
 		/*  모달창 끝 */
 		
 		
-	}
+	
 
 		
 		
