@@ -45,13 +45,39 @@ public class ChatRoomController {
 		
 		int listCount = chatRoomService.selectListCount(category);
 		int pageLimit = 10;
-		int boardLimit = 15;
+		int boardLimit = 16;
 		
 		int row = listCount - (currentPage - 1)*boardLimit;
 		
 		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		
 		List<ChatRoom> list = chatRoomService.selectListAll(pi, category);
+		
+//			for(ChatRoom chatRoom : list) {
+//				if(chatRoom.getCategory().equals("c1")) {
+//					chatRoom.setCategory("카테고리1");
+//				}else if(chatRoom.getCategory().equals("c2")) {
+//					chatRoom.setCategory("카테고리2");
+//				}else if(chatRoom.getCategory().equals("c3")) {
+//					chatRoom.setCategory("카테고리3");
+//				}else if(chatRoom.getCategory().equals("c4")) {
+//					chatRoom.setCategory("카테고리4");
+//				}else if(chatRoom.getCategory().equals("c5")) {
+//					chatRoom.setCategory("카테고리5");
+//				}else if(chatRoom.getCategory().equals("c6")) {
+//					chatRoom.setCategory("카테고리6");
+//				}else if(chatRoom.getCategory().equals("c7")) {
+//					chatRoom.setCategory("카테고리7");
+//				}else if(chatRoom.getCategory().equals("c8")) {
+//					chatRoom.setCategory("카테고리8");
+//				}else if(chatRoom.getCategory().equals("c9")) {
+//					chatRoom.setCategory("카테고리9");
+//				}
+//			}
+//		
+		
+		
+		
 		List<Integer> participantsSizeList = new ArrayList<>(); 
 		List<String> roomOwnerList = new ArrayList<>();
 		
@@ -163,12 +189,16 @@ public class ChatRoomController {
 			System.out.println("맞니?"+getParticipants.contains(newParticipant));
 
 			int participantsSize;
+			String roomOwner;
 			
 			//참여자라면 -> db에 저장되어있는 닉네임이라면 개설자 (createChatRoom.do에서 저장하고 오기 때문)
 			if(!getParticipants.contains(newParticipant)) {
 				getParticipants += ("," + newParticipant);
 				//배열로 바꾸기
 				List<String> participantsList = Arrays.asList(getParticipants.split(","));
+				
+				roomOwner = participantsList.get(0);
+				
 				System.out.println("추가될 참여자 : " + newParticipant);
 				
 				result.setParticipants(getParticipants);
@@ -185,13 +215,14 @@ public class ChatRoomController {
 				}	
 			}	
 			else {
+				roomOwner = getParticipants;
 				participantsSize = 1;
 			}	
 			//DB 대화 목록 가져오기
 			
 			System.out.println("participantsSize사이즈"+participantsSize);
 		
-			
+		model.addAttribute("roomOwner",roomOwner);	
 		model.addAttribute("result", result);
 		model.addAttribute("memberIdx", memberIdx);
 		model.addAttribute("memberNickname", newParticipant);

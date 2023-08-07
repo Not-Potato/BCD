@@ -235,6 +235,23 @@
     		<version>4.3.0</version>
 		</dependency>	
 		
+		<!-- AWS -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-bom</artifactId>
+			<version>1.11.1000</version>
+			<type>pom</type>
+			<scope>import</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-s3</artifactId>
+			<version>1.12.513</version>
+		</dependency>
+		
+		
+		
 <!-- end of add -->		
 	</dependencies>
     <build>

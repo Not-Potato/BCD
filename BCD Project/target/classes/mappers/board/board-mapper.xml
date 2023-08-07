@@ -15,11 +15,8 @@
 		<result column="p_vote_1ST" property="vote1ST"></result>
 		<result column="p_vote_2nd" property="vote2ND"></result>
 		
-		<result column="p_vote_img_path" property="uploadPath"></result>
-		<result column="p_vote_1st_img" property="upload1st"></result>
-		<result column="p_vote_2nd_img" property="upload2nd"></result>
-		<result column="p_vote_1st_img_origin" property="upload1stOrigin"></result>
-		<result column="p_vote_2nd_img_origin" property="upload2ndOrigin"></result>
+		<result column="p_img1_URL" property="img1URL"></result>
+		<result column="p_img2_URL" property="img2URL"></result>
 		
 		<result column="p_title" property="title"></result>
 		<result column="p_content" property="content"></result>
@@ -91,11 +88,8 @@
 				 P_DEADLINE,
 				 P_VOTE_1ST,
 				 P_VOTE_2ND,
-				 P_VOTE_IMG_PATH,
-				 P_VOTE_1ST_IMG,
-				 P_VOTE_2ND_IMG,
-				 P_VOTE_1ST_IMG_ORIGIN,
-				 P_VOTE_2ND_IMG_ORIGIN,
+				 P_IMG1_URL,
+				 P_IMG2_URL,
 				 P_TITLE,
 				 P_CONTENT)
 		  VALUES(p_idx_sequence.NEXTVAL,
@@ -106,11 +100,8 @@
 		  		 #{deadline},
 		  		 #{vote1ST},
 		  		 #{vote2ND},
-		  		 #{uploadPath},
-		  		 #{upload1st},
-		  		 #{upload2nd},
-		  		 #{upload1stOrigin},
-		  		 #{upload2ndOrigin},
+		  		 #{img1URL},
+		  		 #{img2URL},
 		  		 #{title},
 		  		 #{content})
 	</insert>

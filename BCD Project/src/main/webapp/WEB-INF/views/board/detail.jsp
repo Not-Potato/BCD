@@ -78,6 +78,16 @@
 						
 						<form action="${vote == null ? '/vote/voted.do' : '/vote/cancle.do'}" method="post" id="voteForm">
 							<div class="d-flex flex-column">
+<c:if test="${ post.img1URL != null || post.img2URL != null }">
+								<div class="w-75 m-auto p-1 d-flex justify-content-between align-items-end mb-5">
+									<div class="" style="width: 40%"  data-tooltip="${ post.vote1ST }">
+										<img src="${ post.img1URL }" class="float-start img-fluid img-thumbnail rounded">
+									</div>
+									<div class="" style="width: 40%" data-tooltip="${ post.vote2ND }">
+										<img src="${ post.img2URL }" class="float-end img-fluid img-thumbnail rounded">
+									</div>
+								</div>
+</c:if>
 								<div class="w-75 m-auto p-1 d-flex justify-content-between">
 									<p class="mb-0 text-muted">현재까지 <span class="text-primary fw-bold">${ post.voteCount } 명</span>이 투표에 참여했어요!</p>
 <c:choose>
