@@ -119,7 +119,9 @@
 	                <div class="chat-history">
 	                    <ul class="m-b-0" >
 							<li class="clearfix" id="messageLiTag">
-								
+								<div class="d-none" id="preChatListDiv"></div>
+								<div class="text-center d-none" id ="preChatDiv"></div>
+						
 								
 								<!-- 메시지 공간 -->
 								
@@ -159,17 +161,60 @@
 			//console.log("WebSocket connected");
 		};
 		//서버로부터 받은 메시지(string타입) json형식으로 바꾸기
+		let preChatBtnCreated = false;
 		socket.onmessage = function(event){
 			let message = JSON.parse(event.data);
-		//	const previousChat = message.previousChat;
+		//이전 메시지 지금 보이나?
+			let isChatVisible = false;
+		//메시지가 배열형식이라면	
 			if(Array.isArray(message)){
-				for(const chatMsg of message) {
-					const dbTime = chatMsg.sendDate;
-					const formattedDbTime = convertDbTime(dbTime);
-					chatMsg.sendDate = formattedDbTime;
-					console.log("senderIdx : "+chatMsg.senderIdx);
-					showMessage(chatMsg, "채팅이 있을 , 때 이전메시지");
+				//입장메시지 포함 배열이니까 1이상
+				if(message.length>1 && !preChatBtnCreated){
+					preChatBtnCreated = true;
+					//이전 메시지 출력할 div
+					const preChatListDiv = document.getElementById("preChatListDiv");
+					//이전 메시지 버튼 
+					const preChatDiv = document.getElementById("preChatDiv");
+					preChatDiv.classList.remove("d-none");
+					const preChatBtn = document.createElement("button");
+					preChatBtn.classList.add("btn", "btn-link");
+					preChatBtn.innerText = "이전 대화 보기"; 
+					preChatDiv.appendChild(preChatBtn);
+					
+					for(const chatMsg of message) {
+						if(chatMsg.senderIdx == -1){
+							continue;
+						}else {
+							const dbTime = chatMsg.sendDate;
+							const formattedDbTime = convertDbTime(dbTime);
+							chatMsg.sendDate = formattedDbTime;
+							showMessage(chatMsg, "이전메시지" , preChatListDiv);
+						}
+					
+					}
+					preChatBtn.addEventListener("click",function(){
+						
+						if(isChatVisible){
+							preChatListDiv.classList.add("d-none");
+							isChatVisible=false;
+							
+						}else {
+							preChatListDiv.classList.remove("d-none");
+							isChatVisible=true;
+						}
+						
+					});
+					
+					
 				}
+				//입장 메시지 출력 (배열에 묶어서 받음)
+				for (const chatMsg of message) {
+	                if (chatMsg.senderIdx === -1) {
+	                    showMessage(chatMsg,  "입장 메시지");
+	                }
+	            }
+				
+				
 			}
 		/*	if(Array.isArray(message.senderNicknameList)){
 			message.senderNicknameList.forEach(function(senderNickname) {
@@ -187,8 +232,7 @@
 		//	}
 			
 		else{
-				//console.log("Received WebSocket message:", message);
-				showMessage(message, "실시간 채팅 메시지");	
+	        showMessage(message, "실시간 채팅 메시지");	
 		}
 			
 		};
@@ -265,13 +309,7 @@
 					receiveMsg.classList.add("message", "other-message");
 					const receiveTime = document.createElement("div");
 					receiveTime.classList.add("message-data-time", "mb-0", "me-3");
-			
-					/* console.log("preSenderIdx : " + preSenderIdx);
-					console.log("senderIdx : " + message.senderIdx);
-					console.log("senderNickname : " + message.senderNickname);
-					console.log("message : " + message);
-					console.log("memberIdx : " + ${memberIdx});
-					console.log("--------------------------------------------------"); */
+
 			
 			//입장메시지
 			if(message.senderIdx == -1){
@@ -284,6 +322,59 @@
 				console.log("퇴장")
 				messageLiTag.appendChild(centerDiv);
 				centerDiv.textContent=message.content;
+			}
+			//이전메시지
+			else if (status == "이전메시지"){
+				const preChatListDiv = document.getElementById("preChatListDiv");
+				//내가 보낸 메시지 
+					if(message.senderIdx == "${memberIdx}"){
+						console.log("내가보낸거")
+						if(preSenderIdx != message.senderIdx){
+							preChatListDiv.appendChild(sendDiv);
+							sendDiv.appendChild(sendInfo);
+							sendDiv.appendChild(sendMsgDiv);
+								sendInfo.appendChild(sendNickname);
+									sendNickname.textContent=message.senderNickname;
+								sendInfo.appendChild(sendImg);
+									sendImg.setAttribute("src", "https://bootdey.com/img/Content/avatar/avatar7.png");
+									sendImg.setAttribute("alt", "profile");
+								
+						}else {
+							preChatListDiv.appendChild(sendDiv);
+							sendDiv.appendChild(sendMsgDiv);
+						}
+								sendMsgDiv.appendChild(sendTime);
+									sendTime.textContent = message.sendDate;
+								sendMsgDiv.appendChild(sendMsg);
+									sendMsg.textContent = message.content;
+					
+					
+					//다른 사람이 보낸 메시지	
+					}else {
+						if(preSenderIdx != message.senderIdx){
+							preChatListDiv.appendChild(receiveDiv);
+							receiveDiv.appendChild(receiveInfo);
+							receiveDiv.appendChild(receiveMsgDiv);
+								receiveInfo.appendChild(receiveImg);
+									receiveImg.setAttribute("src", "https://bootdey.com/img/Content/avatar/avatar7.png");
+									receiveImg.setAttribute("alt", "profile");
+								receiveInfo.appendChild(receiveNickname);
+									console.log("보낸사람 닉네임 : " + message);
+									console.log("상태 : " + status);
+									receiveNickname.textContent=message.senderNickname;
+						}else {
+							console.log("else")
+							preChatListDiv.appendChild(receiveDiv);
+							receiveDiv.appendChild(receiveMsgDiv);
+						}
+							receiveMsgDiv.appendChild(receiveMsg);
+								receiveMsg.textContent = message.content;
+							receiveMsgDiv.appendChild(receiveTime);
+								receiveTime.textContent = message.sendDate;
+						
+					}
+					preSenderIdx = message.senderIdx;
+				
 			}
 			//내가 보낸 메시지 
 			else if(message.senderIdx == "${memberIdx}"){
@@ -377,21 +468,38 @@
 		
 		
 		exitBtn.addEventListener("click", function(){
-			const exitConfirm = confirm("채팅방을 나가시겠습니까?");
-			
-			if(exitConfirm) {
-				socket.onclose;
-				//console.log("연결해제");
-				location.href="/chat/list.do";
+			if("${result.participants}"=="${memberNickname}"){
+				const chatRoomClose = confirm ("*당신은 마지막 멤버* \n지금 나가시면 채팅방이 삭제됩니다. \n정말 나가시겠습니까?");
+				if(chatRoomClose) {
+					socket.onclose;
+					location.href="/chat/list.do";
+				}
+				
+				
+			}else{
+				
+				const exitConfirm = confirm("채팅방을 나가시겠습니까?");
+				
+				if(exitConfirm) {
+					socket.onclose;
+					location.href="/chat/list.do";
+				}
 			}
 		});
+		
+	
+		
 	}
 		
  		/*  모달창  */ 
    		const modifyBtn = document.getElementById("modifyBtn");
 		const closeModalBtn3 = document.getElementById("closeModalBtn3");
 		modifyBtn.addEventListener("click", function() {
-			modifyModal.classList.remove("d-none");
+			if("${memberNickname}"== "${roomOwner}"){
+				modifyModal.classList.remove("d-none");
+			}else {
+				alert("채팅방은 방장만 수정 가능합니다.");
+			}
 		});
 		closeModalBtn3.addEventListener("click", function() {
 			modifyBtn.classList.add("d-none");

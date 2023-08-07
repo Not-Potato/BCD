@@ -78,13 +78,13 @@
 							<a class="nav-link active text-primary" aria-current="true"  id=popularTab>인기항목</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link text-dark"  id="bigWorryTab">큰고민</a>
+							<a class="nav-link text-dark"  id="bigWorryTab">Venti Size</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link text-dark"  id="smallWorryTab">작은고민</a>
+							<a class="nav-link text-dark"  id="smallWorryTab">Tall Size</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link text-dark"  id="allCategoryTab">모두보기</a>
+							<a class="nav-link text-dark"  id="allCategoryTab">All</a>
 						</li>
 					</ul>
 				</div>
@@ -146,7 +146,7 @@
 				</div>
 			</div>
 			
-			<div class="row">
+			<div class="row" id="cardContainer">
 <c:choose>
 	<c:when test="${empty list}">
 					<tr>
@@ -170,9 +170,7 @@
 				
 				            <div class="d-flex">
 				                <div class="d-flex align-items-center me-3">
-				                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
-				                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
-				                    </svg>
+				                    <i class="bi bi-person-fill"></i>
 				                    <span class="ms-2">방장 | ${roomOwnerList[loop.index]}</span>
 				                </div>
 				
@@ -188,10 +186,12 @@
 </c:choose>			
 			</div>
 		</main>
-		
-		<div class="mb-3" style="text-align: right;">
-            <button class="btn btn-primary" data-bs-toggle="modal" id="createRoomBtn">방 만들기</button>
-        </div>
+			<div class="mb-3 d-flex justify-content-center">
+	        	<button type="button" class="btn btn-link" id="nextPageBtn" data-page="1">더보기</button>
+	        </div>
+	        <div class="mb-3 d-flex justify-content-end">	
+	            <button class="btn btn-primary" data-bs-toggle="modal" id="createRoomBtn">방 만들기</button>
+	        </div>
 	</div>
         
    <script>
@@ -401,9 +401,115 @@
 			selectedCount = 0;
 			resetBtnShow();
 			
-		}) 
+		});
 			
 		/*  카테고리 끝*/
+		
+		/* 더보기 */
+		$(document).ready(function() {
+    	const nextPageBtn = $("#nextPageBtn");
+		let nextPage = parseInt(nextPageBtn.data("page"));
+		
+		/* const nextPageBtn = document.getElementById("nextPageBtn");
+		nextPageBtn.addEventListener("click", showNextPage); */
+		
+	//	function showNextPage() {
+			//const nextPageBtn = ${"#nextPageBtn"}
+			
+		nextPageBtn.click(function(){
+			if(!nextPageBtn.data("load")){
+				nextPageBtn.data("load", true);
+				
+				$.ajax({
+					type : "GET",
+					url : `/chat/list.do?cpage=${nextPage}`,
+					dataType : "json",
+					data:{ },
+					success : function(data){
+						const cardContainer = $("#cardContainer");
+						
+						if(data.length>0){
+							for(const item of data){
+								const cardDiv = createCard(item,roomOwnerList, participantsSizeList);
+								cardContainer.append(cardDiv);
+							}
+							nextPageBtn.data("page", nextPage + 1);
+						}else{
+							nextPageBtn.hide();
+						}
+						nextPageBtn.data("load", false);
+					},
+					error:function (error){
+						nextPageBtn.data("load", false);
+					}
+				});
+				
+				}
+	
+			});	
+		
+			
+			
+	//	}
+		function createCard(item,roomOwnerList, participantsSizeList) {
+			
+			const cardDiv = document.createElement("div");
+			cardDiv.classList.add("col-xl-3", "col-sm-6");
+			
+				const cardShadow = document.createElement("div");
+				cardShadow.classList.add("card-shadow", "card");
+					
+					const cardBody = document.createElement("div");
+					cardBody.classList.add("card-body");
+			
+			cardDiv.appendChild(cardShadow);
+				cardShadow.appendChild(cardBody);
+						
+						const cardTitle = document.createElement("div");
+						cardTitle.classList.add("fw-bold", "fs-5", "mb-2", "col-12", "d-inline-block", "text-truncate");
+						cardTitle.textContent = item.title;
+						
+						const cardCategory = document.createElement("div");
+						cardCategory.classList.add("badge", "border", "text-dark", "border-success", "rounded", "p-2","me-2","ps-3","pe-3","mb-2");
+						cardCategory.textContent = item.cardCategory;
+						
+						const cardRoomOwner = document.createElement("div");
+						cardRoomOwner.classList.add("d-flex");
+						
+						const cardParticipantsSizeList = document.createElement("div");
+						cardParticipantsSizeList.style.fontSize = "14px";
+						
+							
+						const cardRoomOwnerInner = document.createElement("div");
+						cardRoomOwnerInner.classList.add("d-flex", "align-items-center", "me-3");
+						
+						cardRoomOwner.appendChild(cardRoomOwnerInner);
+						
+							const icon = document.createElement("i");
+							icon.classList.add("bi", "bi-person-fill");
+							
+							for (const owner of roomOwnerList) {
+							const span = document.createElement("span");
+							span.classList.add("ms-2");
+							span.textContent = "방장 | " + owner;
+							cardRoomOwnerInner.appendChild(span);	
+							}
+						cardRoomOwnerInner.appendChild(icon);	
+						
+							for (const participantsSize of participantsSizeList) {
+							const span2 = document.createElement("span");
+							span2.classList.add("text-primary");
+							span2.textContent = participantsSize + "명이 참여 중 이에요!";
+							cardRoomOwnerInner.appendChild(span2);
+							}
+						
+							 return cardDiv;
+			
+		}	
+		});
+		
+
+		/* 더보기 끝 */
 		
 	</script>
 	
