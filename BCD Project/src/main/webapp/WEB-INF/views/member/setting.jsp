@@ -23,23 +23,29 @@
 
 <div class="container pt-5 pb-5" style="width: 850px;">
 <main>
-<form method="post" class="image-form" enctype="multipart/form-data" name="proflieImgChange" id="proflieImgChange" action="/member/proflieImgChange"> <!-- 파일을 업로드 할 땐 항상 post방식 get은 사용 할 수 없다. -->
+<form method="post" class="image-form" enctype="multipart/form-data"  id="updateProfileForm" action="/member/updateProfile.do">
+  <div class="">
 	<div class="mb-5">
-		<h2 class="fw-bold mb-5">내 정보 수정</h2>
-            <div class="">
-                <div class="mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="100px" height="100" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
-                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
-                    </svg>
-                  
+		<h2 class="fw-bold">내 정보 수정</h2>
+			
+                <div class="ms-3 mb-3" style= "border-radius: 50%; width: 200px; height:200px; overflow:hidden">
+                  <!--  <i class="bi bi-person-fill" style="font-size: 120px; object-fit:cover;"></i> -->
+              	  <img src="../../resources/images/profile.svg" id="changeProfileImg" name="proflie" style="font-size: 120px; object-fit:cover; width: 100%; height: 100%;"> <!-- aws 기본 url -->						
+               	
                </div>
-                <div class="d-flex gap-2 pt-4">
-                    <input type="checkbox" class="btn-check" id="btn-check-outlined" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="btn-check-outlined">이미지 선택</label><br>
-                    <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" autocomplete="off">
-                    <label class="btn btn-outline-danger" for="danger-outlined">이미지 제거</label>
+                <div class="d-flex gap-2">
+					<div class="d-none">	                	
+	                	<input type="file" accept="image/*" id="file"  />				
+	                </div>
+	                
+	        		<input type="button" class="btn-check"  id="pic">
+                	<label class="btn btn-outline-primary" for="pic" onClick="openFileInput()">이미지 업로드</label>
+	                	
+                	
+                	<input type="button" class="btn-check" name="" id="deleteProfileImg">
+                    <label class="btn btn-outline-danger" for="deleteProfileImg">이미지 삭제</label>                 
                 </div>
-            </div>
+              
             <hr>
      </div>
 
@@ -78,14 +84,15 @@
      <c:otherwise>
      </c:otherwise> 
 </c:choose> 		        
+            </div>
 </form>
      <div class="row justify-content-center"> 
          <div class="col-1 p-0">  
-             <label class="btn btn-primary" for="btn-check-2">완료</label>
+             <label class="btn btn-primary" id= "updateSettingBtn" for="btn-check-2" onclick= "return submitUpdateSetting()" data-tooltip="">완료</label>
          </div>     
          <div class="col-1 p-0" style="white-space: nowrap;"> 
              <input type="checkbox" class="btn-check" id="btn-check-2" checked autocomplete="off">
-             <label class="btn btn-danger" for="btn-check-2">회원탈퇴</label>
+             <label class="btn btn-danger" for="btn-check-2" onclick="withdraw()">회원탈퇴</label>
          </div>
      </div>
      
@@ -256,6 +263,33 @@
 		
 	}
 	
+	//이미지 업로드 클릭  
+	function openFileInput() {
+		  const fileInput = document.getElementById('file');
+		  fileInput.click();
+		}
+	
+	
+	//파일업로드 미리보기 
+	var fileInput = document.getElementById('file');
+    var changeProfileImg = document.getElementById('changeProfileImg');
+
+    fileInput.addEventListener('change', function() {
+      const file = fileInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function() {
+        	changeProfileImg.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    //취소버튼 클릭 
+	document.getElementById("deleteProfileImg").addEventListener("click", function(){
+	    var defaultImagePath = "../../resources/images/profile.svg";
+	    changeProfileImg.src = defaultImagePath;
+	});
 	
 	//완료 버튼
 		function submitUpdateSetting() {
@@ -264,9 +298,37 @@
 			 updateSettingBtn.setAttribute("data-tooltip", "에러메세지를 확인해주세요");
 			 return false;
 		 } else {
-			 //document.getElementById("").submit();	
+			 document.getElementById("updateProfileForm").submit();	
 		 }
 	}
+
+	//수정 완료
+	
+	
+	
+	
+	//회원탈퇴 
+	function withdraw() {
+	  Swal.fire({
+	    title: '정말 탈퇴하시겠습니까?',
+	    text: '휴면계정으로 즉시 변경되며 30일 후 자동 탈퇴됩니다. ',
+	    icon: 'warning',
+	    showCancelButton: true,
+	    confirmButtonText: '탈퇴',
+	    cancelButtonText: '취소',
+	    reverseButtons: true
+	  }).then((result) => {
+	    if (result.isConfirmed) {	      
+	    	
+	     	location.href = '/member/withdraw.do';     
+	   
+	    } else {
+	    	location.href = '/member/mypage.do'; 
+	    }
+	  });
+}
+	
+	
 </script>
 </body>
 </html>

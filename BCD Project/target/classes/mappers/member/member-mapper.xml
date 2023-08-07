@@ -40,7 +40,7 @@
 							SYSDATE)		
 	</insert>
 	
-		<insert id="memberPhoneJoin" parameterType="Member">
+		<insert id="phoneJoin" parameterType="Member">
 		<selectKey keyProperty="idx" resultType="_int" order="AFTER">
         	SELECT M_IDX_SEQUENCE.CURRVAL FROM DUAL
 	    </selectKey>	
@@ -118,4 +118,12 @@
 		WHERE m_id = #{id}
 		AND m_pwd = #{pwd}
 	</select>	
+	
+	
+	<update id="withdraw" parameterType="_int">
+		UPDATE MEMBER
+		SET m_delete_date = SYSDATE 			
+		WHERE m_idx = #{memberIdx} 			
+	</update>
+	
 </mapper>
