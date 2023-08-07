@@ -99,7 +99,7 @@ public class BoardController {
 		session.setAttribute("memberIdx", 2);
 		
 		Post post = postService.detailBoard(idx);
-
+		
 		// DB 조회 성공 시
 		if (!Objects.isNull(post)) {		
 			// 댓글 가져오기
