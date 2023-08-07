@@ -41,7 +41,8 @@
 	                 	</div>	 
 	                   	   	
 	                     
-	                     <input type="hidden" id="passNickname" name="nickname" value=""/>	                          		      
+	                     <input type="hidden" id="passNickname" name="nickname" value=""/>	  
+	                     <input type="hidden" id="passPhone" name="phone" value=""/>	                              		      
 	            	</form>
 	        	</div> 
 	        	

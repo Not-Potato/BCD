@@ -38,6 +38,9 @@ public interface MemberService {
 	//휴대폰인증회원 로그인 (기존회원)
 	int phoneLogin(Member member);
 
+	//회원탈퇴
+	void withdraw(int memberIdx);
+
 	
 
 

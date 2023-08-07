@@ -35,9 +35,10 @@
 	        	 	
 		        	 	<form class="centered text-center form-floating" style="width:75%;" action="/member/snsJoin.do"  id="nicknameForm">
 		                    	<input type="text" class="form-control" id="inputNickname" name="nickname" placeholder="Nickname" style="margin: 0 auto;" pattern="[A-Za-z0-9ㄱ-ㅎㅏ-ㅣ가-힣]+";> 
-		                    	 <input type="hidden" name="snsId" value="${member.snsId}"/>	
-					 			 <input type="hidden" name="phoneNumber" value="${member.phone}">	
-					      		 <input type="hidden" name="snsType" value="${member.snsType}">		
+		                    	  <input type="hidden" name="snsId" value="${member.snsId}"/>	
+					 			  <input type="hidden" name="snsType" value="${member.snsType}">	
+					 			<!--  <input type="hidden" name="phone" id="passPhone" value=""> -->	
+					      			
 		                    	<label for="inputNickname">Nickname</label>   	                   
 		            	</form>
 		          </div>    	
@@ -203,7 +204,7 @@
 	    		document.getElementById("modalIdPw").classList.remove("d-none"); // modalIdPw 열기
 	    		
 	    		document.getElementById("passNickname").value = nickname; // modalIdPw에 닉네임 전달하기
-
+	    		
 			}
 
 			

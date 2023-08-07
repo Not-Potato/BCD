@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+
 <script>	
-	 
 		document.addEventListener("DOMContentLoaded", function() {	
 			const snsLogin = "${snsLogin}"; 
 			const modalNickname = document.getElementById("modalNickname");
@@ -17,7 +17,7 @@
 			// 소셜로그인 성공모달 	
 			if (welcomeModal !== "") {
 				modalWelcome.classList.remove("d-none"); // 모달 열기
-			} 	
+			} 	 
 		}); 
 </script>
 

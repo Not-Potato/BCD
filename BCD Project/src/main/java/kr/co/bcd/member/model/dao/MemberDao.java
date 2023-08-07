@@ -49,7 +49,7 @@ public class MemberDao {
 	}
 
 	public int phoneJoin(SqlSessionTemplate sqlSession, Member member) {
-		return sqlSession.selectOne("memberMapper.phoneJoin", member);
+		return sqlSession.insert("memberMapper.phoneJoin", member);
 	}
 
 	public int phoneCheck(SqlSessionTemplate sqlSession, String phoneNumber) {
@@ -60,6 +60,11 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.phoneLogin", member);
 	}
 
-
-
+	public void withdraw(SqlSessionTemplate sqlSession, int memberIdx) {
+		 sqlSession.update("memberMapper.withdraw", memberIdx);
+	}
 }
+
+
+
+

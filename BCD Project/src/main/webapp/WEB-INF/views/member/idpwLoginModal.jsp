@@ -40,10 +40,10 @@
 	                    	  <p class="invalid-feedback text-center m-0" id="pwdValidationStatusLogin" style="display:hidden"></p><!--pwd 유효성 검사 --> 
 	                 	</div>	 
 	                   	   		                   	                          		      
+	        	  
 	            	</form>
 	        	</div> 
 	        	
-	        	  <input type="hidden" id="passPhone" name="phone" value=""/>	      
 	        	  	   
 	        	 <div class="text-center mt-5">
 	        		<button type="button" id="loginFormSubmitBtn" class="btn btn-dark fs-5 pl-4 pr-4" onclick= "return submitIdpwLogin()">로그인</button>

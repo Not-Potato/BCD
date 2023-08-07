@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,6 +41,9 @@ import kr.co.bcd.common.controller.SessionManageController;
 import kr.co.bcd.member.model.dto.Member;
 import kr.co.bcd.member.model.service.MemberServiceImpl;
 
+import net.nurigo.sdk.message.response.SingleMessageSentResponse;
+import net.nurigo.sdk.message.service.MessageService;
+
 @Controller
 @RequestMapping("/member")
 public class MemberController {
@@ -53,6 +57,9 @@ public class MemberController {
 	@Autowired 
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+	@Autowired 
+	private MessageController messageController;
+	
 	
 	// 닉네임 중복여부 (ajax)
 	@RequestMapping("/nicknameCheck.do")
@@ -107,7 +114,7 @@ public class MemberController {
 		}	
 	}	
 	
-	// 마이페이지2
+	// 세센 삭제용 홈으로... 
 	@RequestMapping("/home.do")
 	public String home(HttpSession session, Model model) {	
 		sessionManage.getSessionMsg(session, model); // 로그인이 필요한 페이지입니다. 메세지 삭제
@@ -122,6 +129,7 @@ public class MemberController {
 		return "/";
 	}
 
+	
 	// 휴대전화회원 로그인
 	@RequestMapping("/phoneLogin.do")
 	public String phoneLogin(HttpServletRequest request, HttpSession session, Member member) {	
@@ -133,61 +141,87 @@ public class MemberController {
 			String previousUrl = request.getHeader("referer");
 			session.setAttribute("previousUrl", previousUrl);
 			return "redirect:" + previousUrl;	
-				
-			
+							
 		} else { //로그인 실패 
-			sessionManage.setSessionMsg("로그인에 실패했습니다.", "error", session);						
-			return "redirect:/member/phoneLoginFail.do";
+			sessionManage.setSessionMsg("로그인에 실패했습니다. 아이디와 패스워드를 확인해주세요.", "error", session);						
+			return "redirect:/member/home.do";
 		}
 	}
 	
-	// 휴대전화 로그인 실패 
-	@RequestMapping("/phoneLoginFail.do")
-	public String phoneLoginFail(HttpServletRequest request, HttpSession session, Model model) {	
-		
-		sessionManage.getSessionMsg(session, model);
-		String previousUrl = request.getHeader("referer");
-		session.setAttribute("previousUrl", previousUrl);
-		return "redirect:" + previousUrl;
-	}
-
-	// 로그아웃
-	@RequestMapping("/logout.do")
+	
+	
+	
+	@RequestMapping("/logout.do")// 로그아웃
 	public String logout(HttpSession session) {
 		session.invalidate();		
 		return "forward:/board/list.do";
 	}
 	
-	//휴대전화 중복 체크
-	@RequestMapping("/phoneCheck.do")
+	
+	
+	
+	@RequestMapping("/withdraw.do")// 로그아웃
+	public String withdraw(HttpSession session) {
+			int memberIdx = (int) session.getAttribute("memberIdx");
+			memberService.withdraw(memberIdx);	
+			session.invalidate();
+		return "redirect:/member/home.do";
+	}
+	
+	
+	
+	@RequestMapping("/phoneCheck.do")//휴대전화 중복 체크
 	@ResponseBody 
 	public String phoneCheck (@RequestParam("phoneNumber") String phoneNumber) {
 
 		 int isDuplicatePhoneNumber = memberService.phoneCheck(phoneNumber);
 		 if (isDuplicatePhoneNumber > 0) {
 	            return "success"; // 기존 가입자 (전화번호 중복)
-	        } else {
-	            return "failed"; // 신규 회원 (전화번호 중복 없음)
-	        }
-	    }
+	     } else {
+	            return "failed"; // 신규 회원 (전화번호 중복 없음 -> 휴대폰 인증)
+	     }
+	}
+	
+
 	
 	
-	// 휴대폰인증 BCD회원가입 
-	@RequestMapping("/phoneJoin.do")
-	public String phoneJoin(HttpSession session, Member member, Model model) {
+	@RequestMapping("/sendVerificationCode.do")//휴대폰본인인증 문자 발송
+	@ResponseBody 
+	public String sendVerificationCode (@RequestParam("phoneNumber") String phoneNumber) {	
+
+		//String result = messageController.sendOne(phoneNumber);
+		String result = "success";
+System.out.println("memberController result : " + result);
+		 if (result.equals("success") ) {
+			 	
+	            return "success"; 
+	     } else {
+	    	
+	            return "failed";
+	     }
+	}
+	
+
+	@RequestMapping("/phoneJoin.do") // 휴대폰인증 BCD회원가입
+	public String phoneJoin(HttpServletRequest request, RedirectAttributes redirectAttributes, HttpSession session, Member member, Model model) {
 		
 		String nickname = member.getNickname();
 		String id = member.getId();
 		String password = member.getPwd();
-				
+		String phone = member.getPhone();		
 					
 		String nicknameRegex = "^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,16}$"; 
 		String idRegex = "^(?=.*[a-zA-Z0-9])[a-zA-Z0-9]{2,16}$"; 
 		String passwordRegex = "^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$"; 
+
 		
-		// nickname 2차 검증
+		//2차 검증
 		String nicknameOverlapCheck = nicknameCheck(member);
-		if(password.matches(passwordRegex) && nicknameOverlapCheck.equals("success") && id.matches(idRegex) && nickname.matches(nicknameRegex)) {
+		int isExistPhone = memberService.phoneCheck(phone); 
+		int isExistId = memberService.idCheck(id);
+		System.out.println(isExistId);
+		//모든 검증 ok 일떄
+		if(password.matches(passwordRegex) && nicknameOverlapCheck.equals("success") && id.matches(idRegex) && nickname.matches(nicknameRegex) && isExistId <=0 && isExistPhone <= 0) {
 			//패스워드 암호화
 			String pwd = bCryptPasswordEncoder.encode(member.getPwd()); 
 			member.setPwd(pwd);
@@ -198,57 +232,47 @@ public class MemberController {
 					//회원가입 후 바로 회원번호 가져오기
 					int m_idx = member.getIdx();
 					session.setAttribute("memberIdx", m_idx);
-					// 이전페이지로 이동
-					String currentUrl = (String) session.getAttribute("currentUrl");
-					String withoutJsp = currentUrl.replace(".jsp", "");
-					String previousUrl = withoutJsp.substring(36); // 마지막으로부터 두 번째 슬래시까지 남기고 삭제
+								
+					String previousUrl = request.getHeader("referer");// 이전페이지로 이동
 					session.setAttribute("previousUrl", previousUrl);
-					model.addAttribute("welcomeModal", "welcomeModal");
-					return previousUrl;
-					
-				}else {
-				
-					return "common/error";
-				}	
+					redirectAttributes.addFlashAttribute("welcomeModal", "welcomeModal");
+					//model.addAttribute("welcomeModal", "welcomeModal");
+					return "redirect:" + previousUrl;	
+										
+				} else {	
+					sessionManage.setSessionMsg("회원가입 중 오류가 발생했습니다. 잠시 후 다시 진행해주세요.", "error", session);
+					return "redirect:/member/home.do";
+				}
+		} else {
+			
+			sessionManage.setSessionMsg("회원가입 중 오류가 발생했습니다. 잠시 후 다시 진행해주세요.", "error", session);
+			return "redirect:/member/home.do";
 		}
 		
-		return "";  	
+			
 	}
 	
-	
-	
-	
+		
 	
 // 소셜로그인회원 BCD회원가입 (닉네임 포함 -> 가입완료)
 	@RequestMapping("/snsJoin.do")
 	public String snsJoin(HttpServletRequest request, HttpSession session, Member member, Model model) {
 
-		// 닉네임 & ID(=email) 중복체크 (백엔드)
-		int nicknameOverlapCheck = memberService.nicknameCheck(member.getNickname());
-		//int idOverlapCheck = memberService.checkId(member.getSnsId()); // snsId는 이메일로 중복될수 있음..(카카오 & 네이버) 
-		//if (nicknameOverlapCheck == 0 && idOverlapCheck == 0) {
+		// 닉네임 중복체크 (백엔드)
+		int nicknameOverlapCheck = memberService.nicknameCheck(member.getNickname());	
+		
 		if (nicknameOverlapCheck == 0) {
-			memberService.memberJoin(member);
-
-			// db에서 만들자마자 keyProperty 가져와 session에 심어주기
-			int m_idx = member.getIdx();
-			session.setAttribute("memberIdx", m_idx);
-
-			// 이전페이지로 이동
-//			String currentUrl = (String) session.getAttribute("currentUrl");
-//			String withoutJsp = currentUrl.replace(".jsp", "");
-//			String previousUrl = withoutJsp.substring(36); // 마지막으로부터 두 번째 슬래시까지 남기고 삭제
-//			session.setAttribute("previousUrl", previousUrl);
-//			model.addAttribute("welcomeModal", "welcomeModal");
-//			return previousUrl;
 			
-			String previousUrl = request.getHeader("referer");
-			session.setAttribute("previousUrl", previousUrl);
-			return "redirect:" + previousUrl;	
-
+			memberService.memberJoin(member);			
+			int m_idx = member.getIdx(); // keyProperty idx 가져오기
+			session.setAttribute("memberIdx", m_idx);					
+			model.addAttribute("snsLogin", "snsLogin");// 소셜로그인(회원가입) 마무리 위한 닉네임 모달 띄우기용
+				
+			return "forward:/board/list.do";	//홈으로 이동 (이전페이지가 인증페이지로 이전페이지로 이동 시 500에러 뜸	
+			
 		} else {
-
 			return "common/error";
+			
 		}
 
 	}
@@ -391,15 +415,13 @@ public class MemberController {
 		String accessToken = (String) json.get("access_token");
 
 		Member member = getKakaoProfile(accessToken);
-System.out.println("memberContoroller kakao:" + member.getSnsId());	
-System.out.println("memberContoroller kakao :" + member.getSnsType());			
+	
 		int result = memberService.checkEmail(member);
-System.out.println("memberContoroller kakao 가입여부:" + result);		
+	
 
 		if (result <= 0) {
 			// 사용자 정보 보내주숴 나머지 회원가입 마무리 시키기
 			model.addAttribute("member", member);
-System.out.println("memberContoroller kakao 가입여부:(reuslt <= 0 케이스)" + result);	
 			// 사용자 이전 URL 가져오기
 			String currentUrl = (String) session.getAttribute("currentUrl");
 			String withoutJsp = currentUrl.replace(".jsp", "");
@@ -412,16 +434,21 @@ System.out.println("memberContoroller kakao 가입여부:(reuslt <= 0 케이스)
 			return previousUrl; // BCD 닉네임 정하는 모달로 이동
 			
 		} else { // 이미 회원인 경우
-					// 이전페이지로 이동
-			System.out.println("memberContoroller kakao 가입여부:(reuslt <= 0 케이스)" + result);	
+					// 이전페이지로 이동		
+			// 사용자 이전 URL 가져오기
 			String currentUrl = (String) session.getAttribute("currentUrl");
 			String withoutJsp = currentUrl.replace(".jsp", "");
-			String previousUrl = withoutJsp.substring(36); // 마지막으로부터 두 번째 슬래시까지 남기고 삭제
-			session.setAttribute("previousUrl", previousUrl);
-
+			String previousUrl = withoutJsp.substring(36); // 마지막으로부터 두 번째 슬래시까지 남기고 삭제		
+		
 			// 멤버 idx 가져오기
 			int m_idx = memberService.checkIdx(member);
 			session.setAttribute("memberIdx", m_idx);
+			
+			if(previousUrl != null && previousUrl.equals("home")) {
+				session.setAttribute("previousUrl", previousUrl);
+				return "forward:/board/list.do";
+			}
+			
 			return previousUrl;
 		}
 	}

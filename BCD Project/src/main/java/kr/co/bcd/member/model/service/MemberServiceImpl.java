@@ -85,6 +85,11 @@ public class MemberServiceImpl implements MemberService {
 	public int phoneLogin(Member member) {	
 		return memberDao.phoneLogin(sqlSession, member);
 	}
+	@Override
+	public void withdraw(int memberIdx) {
+		memberDao.withdraw(sqlSession, memberIdx);
+	
+	}
 	
 
 
