@@ -127,7 +127,7 @@ public class S3UploadController {
 			String url = uploadService.upload(file, fileName);
 			
 			// member 객체에 url 담아서
-			member.setProfileURL(url);
+			member.setProfilePath(url);
 		}
 		// member 리턴
 		return member;

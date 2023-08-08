@@ -22,8 +22,8 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.selectNickname", memberIdx);
 	}
 
-	public void updateProfile(SqlSessionTemplate sqlSession, Member member) {
-		sqlSession.update("memberMapper.updateProfile", member);
+	public int updateProfile(SqlSessionTemplate sqlSession, Member member) {
+		return sqlSession.update("memberMapper.updateProfile", member);
 	}
 
 	public int nicknameCheck(SqlSessionTemplate sqlSession, String nickname) {
