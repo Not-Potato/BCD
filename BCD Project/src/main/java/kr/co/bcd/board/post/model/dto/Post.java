@@ -50,6 +50,8 @@ public class Post {
 	
 	private String myPost;				// 작성자 여부 yes / no
 	
+	private String profile;				// 작성자 프로필 사진
+	
 	// ------------------- 새로 추가 ------------------------
 	// img upload 관련 => AWS S3 upload 기준으로 재구성! 
 	// DB 칼럼 추가

@@ -1,4 +1,6 @@
 package kr.co.bcd.member.model.service;
+import java.lang.invoke.StringConcatFactory;
+
 import kr.co.bcd.member.model.dto.Member;
 
 public interface MemberService {
@@ -41,7 +43,6 @@ public interface MemberService {
 	//회원탈퇴
 	void withdraw(int memberIdx);
 
-	
-
-
+	//프로필 사진 가져오기
+	String selectProfile(int memIdx);
 }

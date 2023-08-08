@@ -109,12 +109,12 @@ public class ChatRoomController {
 		//session null check 
 		Integer memberIdxObj = (Integer) session.getAttribute("memberIdx");
 		System.out.println("세션있니??"+memberIdxObj);
-		    if (memberIdxObj == null) {
-		    	sessionManage.setSessionMsg("로그인을 해 주세요!", "error", session);
-				System.out.println("세션있니 if들어옴??"+memberIdxObj);
-
-		        return "redirect:/"; 
-		    }
+//		    if (memberIdxObj == null) {
+//		    	sessionManage.setSessionMsg("로그인을 해 주세요!", "error", session);
+//				System.out.println("세션있니 if들어옴??"+memberIdxObj);
+//
+//		        return "redirect:/"; 
+//		    }
 
 		int memberIdx = memberIdxObj.intValue();
 	//	int memberIdx = (int) session.getAttribute("memberIdx");

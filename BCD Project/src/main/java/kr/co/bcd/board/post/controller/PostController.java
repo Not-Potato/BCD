@@ -71,12 +71,8 @@ public class PostController {
 	
 	@PostMapping("/insert.do")
 	public String writing(MultipartFile file1, MultipartFile file2, Post post, HttpSession session) throws IllegalStateException, IOException  {
-//		세션에서 작성자 회원 고유번호 가져오기
-//		post.setMemIdx((int)session.getAttribute("memberIdx"));
-		// TODO: test code
-		post.setMemIdx(2);
 		
-		System.out.println(post);
+		post.setMemIdx((int)session.getAttribute("memberIdx"));		
 		
 		// 대분류, 소분류, 투표 제목, 마감일, 선택지1, 선택지 2, 제목, 내용 => null ck & 글자수 제한 ck
 		boolean mainCategoryNullCk = dataValidation.nullCheck(post.getMainCategory());

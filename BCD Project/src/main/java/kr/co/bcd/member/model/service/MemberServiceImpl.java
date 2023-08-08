@@ -88,7 +88,11 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public void withdraw(int memberIdx) {
 		memberDao.withdraw(sqlSession, memberIdx);
-	
+	}
+
+	@Override
+	public String selectProfile(int memIdx) {
+		return memberDao.selectProfile(sqlSession, memIdx);
 	}
 	
 

@@ -52,11 +52,16 @@
 				<div class="border-bottom">
 					<h1 class="fw-bold fs-1 mt-5">${ post.title }</h1>
 					<h3 class="fs-6 mt-5 mb-5">
-						<span>@@프사@@</span>
+						<span class="me-2">
+							<img src="${ post.profile }" class="rounded-circle" style="width: 50px;">
+						</span>
 						<span class="me-3">${ post.writer }</span>
 						
+						<i class="bi bi-calendar2-date me-1"></i>
 						<span class="me-3">${ post.createDate }</span>
-						<span>${ post.views }</span>
+						
+						<i class="bi bi-eye me-1"></i>
+						<span> ${ post.views }</span>
 					</h3>
 				</div>
 				
@@ -128,9 +133,7 @@
 								
 								
 								<input type="hidden" name="postIdx" value="${ post.idx }">
-								<!-- TODO: 현재 접속자 idx from session -->
-								<input type="hidden" name="memIdx" value="2">
-								<!-- TODO: 게시글 작성자 idx from post (조기 마감 신청 시 현재 접속자 == 게시자 확인용) --> 
+								<!-- 게시글 작성자 idx from post (조기 마감 신청 시 현재 접속자 == 게시자 확인용) --> 
 								<input type="hidden" name="writerIdx" value="${ post.memIdx }">
 								<input type="hidden" name="seleted" id="selected" value="">
 								
@@ -258,7 +261,7 @@
 				<div class="mt-5 border-bottom pb-3 comment">
 					<div class="d-flex align-items-center justify-content-between">
 						<div class="d-flex align-items-center">
-							<img src="https://url.kr/rsihxp" class="rounded-circle" style="width: 50px;">
+							<img src="${ item.profile }" class="rounded-circle" style="width: 50px;">
 							<p class="m-0 fw-bold fs-5 lh-1 ms-2">
 								${ item.nickname }
 								<br>

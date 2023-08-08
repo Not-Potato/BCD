@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="Team.애쓰지워너비">
-<title>BCD Project</title>
+<title>🗳 BCD 🗳</title>
 
 <link href="../../../resources/css/common/reset.css" rel="stylesheet" >
 <link href="/resources/css/common/custom.css" rel="stylesheet" >

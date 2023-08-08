@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="ko" class="h-100">
 <head>
@@ -22,13 +23,15 @@
 
 	<!-- banner -->
 	<section id="visual">
-		<div class="swiper mySwiper">
-			<div class="swiper-wrapper">
-				<div class="swiper-slide bg-primary" style="width: 100%; height: 350px;">Slide 1</div>
-				<div class="swiper-slide bg-secondary" style="width: 100%; height: 350px;">Slide 2</div>
-				<div class="swiper-slide bg-info" style="width: 100%; height: 350px;">Slide 3</div>
+		<div class="inner">
+			<div class="swiper mySwiper">
+				<div class="swiper-wrapper">
+					<div class="swiper-slide"><img src="../../resources/images/main-banner-1.png"></div>
+					<div class="swiper-slide"><img src="../../resources/images/main-banner-2.png"></div>
+					<div class="swiper-slide"><img src="../../resources/images/main-banner-3.png"></div>
+				</div>
+				<div class="swiper-pagination"></div>
 			</div>
-			<div class="swiper-pagination"></div>
 		</div>
 	</section>
 
@@ -45,10 +48,10 @@
 							<a class="nav-link active text-primary" aria-current="true"  id=popularTab>인기항목</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link text-dark"  id="bigWorryTab">Venti Size</a>
+							<a class="nav-link text-dark"  id="ventiTab">Venti Size</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link text-dark"  id="smallWorryTab">Tall Size</a>
+							<a class="nav-link text-dark"  id="tallTab">Tall Size</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link text-dark"  id="allCategoryTab">All</a>
@@ -58,19 +61,28 @@
 				<div class="card-body ps-0">
 				 	<!-- 소분류 -->
 					<div class="mb-2 d-flex gap-1" id="smallCategories">
+<c:choose>
+	<c:when test="${empty popular}">
+						<a class="btn btn-outline-primary popular" data-category="Venti Size"  data-popular="yes" id="popular1">사회/이슈</a>
+						<a class="btn btn-outline-primary popular" data-category="Venti Size"  data-popular="yes" id="popular2">연애/결혼</a>
+						<a class="btn btn-outline-primary popular" data-category="Tall Size"  data-popular="yes" id="popular4">점메추</a>
+	</c:when>
+	<c:otherwise>
+		<c:forEach var="item" items="${ popular }" varStatus="status">
+						<a class="btn btn-outline-primary popular" data-category="${ item.value }" data-popular="yes" id="popular${ status.count }">${ item.key }</a>
+		</c:forEach>
+	</c:otherwise>
+</c:choose>
 						
-						<a class="btn btn-outline-primary" data-category="popular" id="popular1">카테고리1</a>
-						<a class="btn btn-outline-primary" data-category="popular" id="popular2">카테고리2</a>
-						<a class="btn btn-outline-primary" data-category="popular" id="popular3">카테고리3</a>
-						
-						<a class="btn btn-outline-primary" data-category="bigWorry" id="bigWorry1">카테고리4</a>
-						<a class="btn btn-outline-primary" data-category="bigWorry" id="bigWorry2">카테고리5</a>
-						<a class="btn btn-outline-primary" data-category="bigWorry" id="bigWorry3">카테고리6</a>
+						<a class="btn btn-outline-primary d-none" data-category="Venti Size" id="ventiSize1">연애/결혼</a>
+						<a class="btn btn-outline-primary d-none" data-category="Venti Size" id="ventiSize2">가족/친구</a>
+						<a class="btn btn-outline-primary d-none" data-category="Venti Size" id="ventiSize3">학교/직장</a>
+						<a class="btn btn-outline-primary d-none" data-category="Venti Size" id="ventiSize4">사회/이슈</a>
 					
-					
-						<a class="btn btn-outline-primary" data-category="smallWorry" id="smallWorry1">카테고리7</a>
-						<a class="btn btn-outline-primary" data-category="smallWorry" id="smallWorry2">카테고리8</a>
-						<a class="btn btn-outline-primary" data-category="smallWorry" id="smallWorry3">카테고리9</a>
+						<a class="btn btn-outline-primary d-none" data-category="Tall Size" id="tallSize1">점메추</a>
+						<a class="btn btn-outline-primary d-none" data-category="Tall Size" id="tallSize2">깻잎논쟁</a>
+						<a class="btn btn-outline-primary d-none" data-category="Tall Size" id="tallSize3">할까말까</a>
+						<a class="btn btn-outline-primary d-none" data-category="Tall Size" id="tallSize4">최애픽</a>
 						
 					</div>
 					
@@ -122,9 +134,9 @@
 							전체
 						</button>
 						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="#">참여도 순</a></li>
-							<li><a class="dropdown-item" href="#">박빙 순</a></li>
-							<li><a class="dropdown-item" href="#">댓글 순</a></li>
+							<li><a class="dropdown-item" href="#">최신순</a></li>
+							<li><a class="dropdown-item" href="#">참여도순</a></li>
+							<li><a class="dropdown-item" href="#">댓글 많은 순</a></li>
 						</ul>
 					</div>
 				</div>
@@ -183,7 +195,7 @@
 				
 				            <div class="d-flex  mb-2">
 				                <div class="d-flex align-items-center me-3">
-				                    <i class="bi bi-person-fill fs-5"></i>
+				                    <img src="${ item.profile }" class="rounded-circle" style="width: 28px;">
 				                    <span class="ms-2">${ item.writer }</span>
 				                </div>
 				
@@ -221,65 +233,53 @@
 		});
 		
 		/*  카테고리  */
-		const popularTab = document.getElementById("popularTab");
-		const bigWorryTab = document.getElementById("bigWorryTab");
-		const smallWorryTab = document.getElementById("smallWorryTab");
-		const allCategoryTab = document.getElementById("allCategoryTab");
-		const bigCategories= document.getElementById("bigCategories").getElementsByTagName("a");
-		const smallCategories= document.getElementById("smallCategories").getElementsByTagName("a");
-		const selectedBtnTag= document.querySelector(".selectedBtn").getElementsByTagName("a");
+		const popularTab = $("#popularTab");
+		const ventiTab = $("#ventiTab");
+		const tallTab = $("#tallTab");
+		const allCategoryTab = $("#allCategoryTab");
+		
+		const popularCategories = $(".popular");
+		const bigCategories=  $("#bigCategories a");
+		const smallCategories = $("#smallCategories a");
+		 
+		const selectedBtnTag= $(".selectedBtn a");
 		
 		let selectedCount = 0;
 		
-		//active class 없애기
+ 		// active class 없애기
 		function removeActive(){
 			console.log("removeActive() 실행됨");
 			for(const activeClass of bigCategories) {
 				activeClass.classList.remove("active");
 			}
 		}
+
+		const categoryTabs = {
+			'popularTab': 'popular',
+			'ventiTab': 'Venti Size',
+			'tallTab': 'Tall Size'
+		};
 		
-		popularTab.addEventListener("click", function() {
+		$('#allCategoryTab').click(function() {
 			removeActive();
-			popularTab.classList.add("active");
-			selectedCategory = "popular"
-			showCategories(selectedCategory);
-		});
-		bigWorryTab.addEventListener("click", function() {
-			removeActive();
-			bigWorryTab.classList.add("active");
-			selectedCategory = "bigWorry"
-			showCategories(selectedCategory);
-		});
-		smallWorryTab.addEventListener("click", function() {
-			removeActive();
-			smallWorryTab.classList.add("active");
-			selectedCategory = "smallWorry"
-			showCategories(selectedCategory);
-		});
-		allCategoryTab.addEventListener("click", function() {
-			removeActive();
-			allCategoryTab.classList.add("active");
-			for(const category of smallCategories){
-	      		category.style.display = "block"; 
-			}
+			$('#allCategoryTab').addClass('active');
+			$('#smallCategories a').removeClass('d-none');
 		});
 		
-		window.onload = function() {
-			popularTab.click();
-	    };
-		
-		//대분류에 맞는 카테고리 가져오기
-		function showCategories(selectedCategory){
-			for(const category of smallCategories){
-				if (category.getAttribute("data-category") == selectedCategory) {
-	      			category.style.display = "block"; 
-				}else {
-					category.style.display = "none"; 
+		$.each(categoryTabs, function(tabId, category) {
+			$('#' + tabId).click(function() {
+				removeActive();
+				$('#' + tabId).addClass('active');
+				$('#smallCategories a').addClass('d-none');
+				$('#smallCategories a[data-category="' + category + '"]').removeClass('d-none');
+		    
+				// 추가 기능: 인기 카테고리 탭일 때만 해당 내용 추가
+				if (category === 'popular') {
+					$('#smallCategories a[data-popular="yes"]').removeClass('d-none');
+					$('#smallCategories a[data-popular!="yes"]').addClass('d-none');
 				}
-				console.log("카테고리 : "+category.getAttribute("data-category"));
-			}
-		}	
+			});
+		});
 		
 		//선택된 카테고리 표시
 		
@@ -368,8 +368,24 @@
 			return year + "-" + month + "-" + day;
 		}
 		
-		// 로드 시
-$(document).ready(function() {
+	// 최초에 화면 로드 시
+	$(document).ready(function() {
+		// 인기 카테고리 중복 건 삭제
+		const duplicateElements = {};
+		
+		const allElements = $('#smallCategories a');
+		
+		allElements.each(function() {
+			const text = $(this).text(); // 요소의 내용 가져오기
+			if (duplicateElements[text]) {
+				// 중복된 요소가 이미 있는 경우 삭제
+				$(this).remove();
+			} else {
+				// 중복되지 않은 경우 객체에 추가
+				duplicateElements[text] = true;
+			}
+		});
+		
 		// 각 데이터를 처리하는 함수를 정의합니다.
 		function processPost(createDate, deadline, status, review) {
 			// createDate를 이용하여 처리하는 로직

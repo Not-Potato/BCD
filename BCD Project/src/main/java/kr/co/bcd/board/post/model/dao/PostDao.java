@@ -72,5 +72,8 @@ public class PostDao {
 	public int markPostAsDeleted(SqlSessionTemplate sqlSession, int idx) {
 		return sqlSession.update("boardMapper.markPostAsDeleted", idx);
 	}
-	
+
+	public List<Post> selectPopularCategory(SqlSessionTemplate sqlSession) {
+		return sqlSession.selectList("boardMapper.selectPopularCategory");
+	}
 }

@@ -27,22 +27,17 @@ public class VoteController {
 	
 	@PostMapping("voted.do")
 	public String voted(Vote vote, HttpSession session) {
-		// TODO: 로그인한 유저인지 확인
 		vote.setMemIdx((int)session.getAttribute("memberIdx"));
-
-		System.out.println(vote);
 		
 		// 선택된 항목 존재하는지 ck
 		if (vote.getSeleted() != null) {	
 			// DB POST 테이블에서 delete_date 칼럼에 데이터 없는 글인지 확인
 			int isNotDelPost = postService.isNotDelPost(vote.getPostIdx());
-			System.out.println(isNotDelPost);
 			
 			// 존재하는(삭제되지 않은 상태의) 글이라면
 			if (isNotDelPost == 1) {
 				// 진행 상태(투표 진행 상태) 가져오기
 				String status = postService.selectStatus(vote.getPostIdx()).getStatus();
-				System.out.println(status);
 				
 				// 진행중인 투표라면
 				if (status.equals("A")) {
@@ -77,7 +72,8 @@ public class VoteController {
 	
 	@PostMapping("cancle.do")
 	public String cancle(Vote vote, HttpSession session) {
-
+		vote.setMemIdx((int)session.getAttribute("memberIdx"));
+		
 		// DB POST 테이블에서 delete_date 칼럼에 데이터 없는 글인지 확인
 		int isNotDelPost = postService.isNotDelPost(vote.getPostIdx());
 

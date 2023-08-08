@@ -26,4 +26,32 @@
 	<!-- File Upload -->
 	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"></beans:bean>
 	
+	<!-- interceptor -->
+	<beans:bean id="loginCheckInterceptor" class="kr.co.bcd.common.interceptor.LoginInterceptor"></beans:bean>
+	<beans:bean id="accessInterceptor" class="kr.co.bcd.common.interceptor.AccessInterceptor"></beans:bean>
+	
+	<interceptors>
+		<interceptor>
+			<mapping path="/**" />			
+			<exclude-mapping path="/" />
+			<exclude-mapping path="/redirect.do" />
+			<exclude-mapping path="/board/list.do" />
+			<exclude-mapping path="/board/detail.do" />
+			<exclude-mapping path="/member/**" />
+			<exclude-mapping path="/**/*.css" />
+			<exclude-mapping path="/**/*.js" />
+			<exclude-mapping path="/**/*.png" />
+			<exclude-mapping path="/**/*.svg" />
+			<beans:ref bean="loginCheckInterceptor" />
+		</interceptor>
+		<interceptor>
+			<mapping path="/**" />
+			<exclude-mapping path="/**/*.css" />
+			<exclude-mapping path="/**/*.js" />
+			<exclude-mapping path="/**/*.png" />
+			<exclude-mapping path="/**/*.svg" />
+			<beans:ref bean="accessInterceptor" />
+		</interceptor>
+	</interceptors>
+	
 </beans:beans>

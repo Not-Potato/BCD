@@ -126,4 +126,9 @@
 		WHERE m_idx = #{memberIdx} 			
 	</update>
 	
+	<select id="selectProfile" resultType="String">
+		SELECT m_profile_path FROM MEMBER
+		WHERE m_idx = #{idx}
+	</select>
+	
 </mapper>

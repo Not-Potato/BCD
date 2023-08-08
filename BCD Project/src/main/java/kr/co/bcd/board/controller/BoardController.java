@@ -1,6 +1,8 @@
 package kr.co.bcd.board.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +24,6 @@ import kr.co.bcd.board.vote.model.service.VoteServiceImpl;
 import kr.co.bcd.common.controller.SessionManageController;
 import kr.co.bcd.common.paging.model.PageInfo;
 import kr.co.bcd.common.paging.template.Pagination;
-import kr.co.bcd.member.model.dto.Member;
 import kr.co.bcd.member.model.service.MemberServiceImpl;
 
 @Controller
@@ -49,7 +50,7 @@ public class BoardController {
 							@RequestParam(value = "cpage", defaultValue = "1") int currentPage,
 							HttpSession session, 
 							Model model){
-							
+		
 		// 전체 게시글 수 구하기
 		int listCount = postService.selectListCount(category, keyword);
 		int pageLimit = 10;		// 보여질 페이지 수
@@ -66,12 +67,9 @@ public class BoardController {
 		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		// 페이징 처리 끝
 		
-		
 		// 목록 불러오기
 		List<Post> list = postService.selectListAll(pi, category, keyword);
 		
-		Member m = new Member();
-
 		// 1. 작성일 날짜까지만 가져오도록 문자열 자르기
 		// 2. 댓글 수 가져오기
 		// 3. 투표 참여자 수 가져오기
@@ -82,7 +80,20 @@ public class BoardController {
 			p.setCommentCount( commentService.selectCommentCount(p.getIdx()) );
 			p.setVoteCount( voteService.selectVoteCount(p.getIdx()) );			
 			p.setWriter( memberService.selectNickname(p.getMemIdx()) );
+			p.setProfile( memberService.selectProfile(p.getMemIdx()) );
 		}
+		
+		// 인기 항목 가져오기 (게시글 많은 순으로 3개)
+		List<Post> popularCategory = postService.selectPopularCategory();
+		Map<String, String> popular = new HashMap();
+		
+		for (Post p : popularCategory) {
+			popular.put(p.getSubCategory(), p.getMainCategory());
+		}
+		
+		System.out.println(popular);
+		
+		model.addAttribute("popular", popular);
 		
 		model.addAttribute("list", list);
 		model.addAttribute("row", row);
@@ -95,13 +106,15 @@ public class BoardController {
 	
 	@GetMapping("/detail.do")
 	public String board(@RequestParam(value = "idx") int idx, Model model, HttpSession session, HttpServletRequest request) {
-		// TODO: test용 code!! 현재 2번 회원이 접속 중인 것으로 setting
-		session.setAttribute("memberIdx", 2);
-		
 		Post post = postService.detailBoard(idx);
+		
+		System.out.println(post);
 		
 		// DB 조회 성공 시
 		if (!Objects.isNull(post)) {		
+			// 프로필 사진 가져오기
+			post.setProfile( memberService.selectProfile(post.getMemIdx()) );
+			
 			// 댓글 가져오기
 			List<Comment> commentList = commentService.detailComment(idx);
 			
@@ -109,6 +122,7 @@ public class BoardController {
 			if (!Objects.isNull(commentList)) {
 				for (Comment comment : commentList) {
 					comment.setNickname( memberService.selectNickname(comment.getMemIdx()) );
+					comment.setProfile( memberService.selectProfile(comment.getMemIdx()) );
 					comment.setCreateDate(comment.getCreateDate().substring(0, 19));
 				}
 			}
@@ -142,26 +156,29 @@ public class BoardController {
 					if (voteService.selectVoteCountOne(vote) > 0) {
 						model.addAttribute("vote", voteService.selectVoterStatus(vote));
 					}
+					
+					int memIdx = (int)session.getAttribute("memberIdx");
+					
+					// 본인 게시글 여부 체크
+					post.setMyPost(post.getMemIdx() == memIdx ? "yes" : "no");
+					
+					// 현재 접속자 본인 idx를 유저에 심음 (test code, 진행 완료 시 login 진행 시점에 발동)
+					model.addAttribute("user", memIdx);
+				
+				// 비회원이라면
+				} else {
+					post.setMyPost("no");					
 				}
 			// 참여자가 없는 경우 50 대 50으로 표시
 			} else {
 				post.setProbA(0);
 				post.setProbB(0);
 			}
-
-			// TODO: 본인 게시글 여부 체크
-//			post.setMyPost(post.getMemIdx() == (int)session.getAttribute("memberIdx") ? "yes" : "no");
-			post.setMyPost("yes");
-			
-			// TODO: 첨부 img 있으면...
 			
 			// 바인딩 
 			model.addAttribute("referer", (String)request.getHeader("REFERER"));
 			model.addAttribute("post", post);
 			model.addAttribute("comment", commentList);
-			
-			// TODO: 현재 접속자 본인 idx를 유저에 심음 (test code, 진행 완료 시 login 진행 시점에 발동)
-			model.addAttribute("user", session.getAttribute("memberIdx"));
 			
 			sessionManage.getSessionMsg(session, model);
 			

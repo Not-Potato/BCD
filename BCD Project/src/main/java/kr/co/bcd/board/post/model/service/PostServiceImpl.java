@@ -83,4 +83,8 @@ public class PostServiceImpl implements PostService {
 		return postDao.markPostAsDeleted(sqlSession, idx);
 	}
 	
+	@Override
+	public List<Post> selectPopularCategory() {
+		return postDao.selectPopularCategory(sqlSession);
+	}
 }

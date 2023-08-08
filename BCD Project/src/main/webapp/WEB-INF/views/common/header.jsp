@@ -22,11 +22,11 @@
 </script>
 
 <header>
-	<div class="container mt-3 mb-4">
-		<div class="d-flex flex-wrap align-items-center justify-content-between">
+	<div class="container mt-3 mb-4 ">
+		<div class="row d-flex align-items-center">
 		
 			<!-- LOGO -->
-			<a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
+			<a href="/" class="col-md-3 col-12 text-center text-md-left mb-3 mb-md-0">
 				<img src="../../../resources/images/logo.svg" alt="BCD LOGO" style="width: 130px;" />
 			</a>
 
@@ -34,7 +34,7 @@
 <!--             <form class="col-4">
 				<input type="search" class="form-control" placeholder="검색어를 입력해 주세요!">
             </form> -->
-            <div class="col-4">
+            <div class="col-md-5 col-12 text-md-center text-center mb-3 mb-md-0">
 				<div class="input-group">
 					<input type="text" class="form-control" placeholder="검색어를 입력해 주세요!" >
 					<button class="btn btn-outline-secondary d-flex align-items-center " type="button" id="button-addon2">
@@ -44,31 +44,33 @@
             </div>
 
 			<!-- MENU -->
-            <ul class="nav justify-content-center mb-md-0 ">
-				<li class="me-3">
+            <ul class="col-md-4 col-12 d-flex justify-content-center justify-content-md-end align-items-center mb-0">
+				<li class="me-2">
 					<button type="button" onclick="location.href='/post/write.do'" class="d-flex align-items-center btn btn-outline-primary" >
 						<i class="bi bi-pencil-square"></i>
-						<span class="ms-1">새 글 쓰기</span>
+						<span class="ms-1">새 글</span>
 					</button>
                 </li>
 <c:choose>     
 	<c:when test="${ !empty memberIdx}">     
-		<!-- 로그인 상태일때 -->      
-           <div class="dropdown-center">
-  				<button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-	   				<i class="bi bi-door-closed-fill"></i>
-	   				<span class="ms-1">내 정보</span>
-  				</button>
-				  <ul class="dropdown-menu">
-				    <li><a class="dropdown-item" href="#">활동내역</a></li>
-				    <li><a class="dropdown-item" href="/member/mypage.do">마이페이지</a></li>
-				    <li><a class="dropdown-item" href="/member/logout.do">로그아웃</a></li>
-				  </ul>
-				</div>			
+			<!-- 로그인 상태일때 -->      
+				<li class="">
+		           <div class="dropdown-center">
+		  				<button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+			   				<i class="bi bi-door-closed-fill"></i>
+			   				<span class="ms-1">내 정보</span>
+		  				</button>
+						  <ul class="dropdown-menu">
+						    <li><a class="dropdown-item" href="#">활동내역</a></li>
+						    <li><a class="dropdown-item" href="/member/mypage.do">마이페이지</a></li>
+						    <li><a class="dropdown-item" href="/member/logout.do">로그아웃</a></li>
+						  </ul>
+					</div>			
+				</li>
     </c:when>
     <c:otherwise>      
-    	<!-- 비로그인 상태일때 -->            
-				<li>
+	    	<!-- 비로그인 상태일때 -->            
+				<li class="">
 					<button type="button" class="d-flex align-items-center btn btn-primary" id="loginBtn">
 						<i class="bi bi-door-open"></i>
 						<span class="ms-1">로그인</span>		
@@ -76,7 +78,7 @@
                 </li>
     </c:otherwise>
 </c:choose>                
-            </ul>
+           	</ul>
         </div>
     </div>
 

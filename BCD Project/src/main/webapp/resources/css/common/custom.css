@@ -5,3 +5,30 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     top: -6px;
     right: 5px;
 }
+
+.swiper {
+    width: 100%;
+    height: 100%;
+}
+
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: left; /* 이미지를 왼쪽에 수납 */
+}
+
+#visual .inner {
+	padding-bottom: 0;
+	box-sizing: border-box;
+}

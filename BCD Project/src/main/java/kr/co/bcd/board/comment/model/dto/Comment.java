@@ -21,4 +21,5 @@ public class Comment {
 	
 	// -------- 추가 사항 ------------
 	private String nickname;		// 작성자 닉네임
+	private String profile;
 }

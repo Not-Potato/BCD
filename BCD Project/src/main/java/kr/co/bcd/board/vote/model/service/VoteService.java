@@ -9,10 +9,10 @@ public interface VoteService {
 	// 각 항목 투표자 수 구하기
 	int selectVoteCount(int idx, String AorB);
 	
-	// 투표 여부 확인하기
+	// 투표 여부 확인하기 ( 참여 여부 => COUNT(*) )
 	int selectVoteCountOne(Vote vote);
 	
-	// 투표 여부 확인하기
+	// 투표 여부 확인하기 ( 어떤 것에 투표했는지 )
 	Vote selectVoterStatus(Vote vote);
 	
 	// 투표하기

@@ -43,4 +43,7 @@ public interface PostService {
 	
 	// 게시글 삭제하기 (delete_date)
 	int markPostAsDeleted(int idx);
+	
+	// 인기 카테고리 가져오기
+	List<Post> selectPopularCategory();
 }

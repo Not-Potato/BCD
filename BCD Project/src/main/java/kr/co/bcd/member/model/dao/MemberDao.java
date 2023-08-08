@@ -63,6 +63,11 @@ public class MemberDao {
 	public void withdraw(SqlSessionTemplate sqlSession, int memberIdx) {
 		 sqlSession.update("memberMapper.withdraw", memberIdx);
 	}
+
+	public String selectProfile(SqlSessionTemplate sqlSessionTemplate, int memIdx) {
+		return sqlSessionTemplate.selectOne("memberMapper.selectProfile", memIdx) == null ? 
+				"https://bcd-project.s3.ap-northeast-2.amazonaws.com/default_profile_img.png" : sqlSessionTemplate.selectOne("memberMapper.selectProfile", memIdx);
+	}
 }
 
 

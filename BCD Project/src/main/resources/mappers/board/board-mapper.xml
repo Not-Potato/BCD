@@ -159,6 +159,14 @@
 			WHERE P_IDX = #{idx}
 	</update>
 	
+	<select id="selectPopularCategory" resultMap="postResultSet">
+		SELECT P_MAIN_CATEGORY, P_SUB_CATEGORY
+		FROM POST
+		WHERE P_DELETE_DATE IS NULL
+		GROUP BY P_MAIN_CATEGORY, P_SUB_CATEGORY
+		ORDER BY COUNT(*) DESC
+		FETCH FIRST 3 ROWS ONLY
+	</select>
 	
 	
 	
