@@ -10,9 +10,9 @@
 		<result column="m_join_date" property="joinDate"></result>
 		<result column="m_delete_date" property="deleteDate"></result>
 
-		<!-- <result column="m_profile" property="profile"></result> -->
+	<!-- 	<result column="m_profile" property="profile"></result> -->
 		<result column="m_profile_path" property="profilePath"></result>
-		<!-- <result column="m_profile_origin" property="profileOrigin"></result> -->
+	<!-- 	<result column="m_profile_origin" property="profileOrigin"></result> -->
 		
 		<result column="m_id" property="id"></result>
 		<result column="m_pwd" property="pwd"></result>
@@ -72,12 +72,10 @@
 	
 	<update id="updateProfile" parameterType="Member">
 		UPDATE MEMBER
-		SET m_nickname = #{nickname}, 
-			m_profile = #{profile}, 
+		SET m_nickname = #{nickname}, 			
 			m_profile_path = #{profilePath}, 
-			m_profile_origin = #{profileOrigin}, 
 			m_pwd = #{pwd}
-		WHERE m_idx = #{memberIdx} 	
+		WHERE m_idx = #{idx} 	
 		
 	</update>
 	

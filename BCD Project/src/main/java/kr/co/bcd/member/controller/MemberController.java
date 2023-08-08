@@ -33,10 +33,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kr.co.bcd.common.aws.S3UploadController;
 import kr.co.bcd.common.controller.SessionManageController;
 import kr.co.bcd.member.model.dto.Member;
 import kr.co.bcd.member.model.service.MemberServiceImpl;
@@ -60,6 +62,8 @@ public class MemberController {
 	@Autowired 
 	private MessageController messageController;
 	
+	@Autowired
+	private S3UploadController uploadFile;
 	
 	// 닉네임 중복여부 (ajax)
 	@RequestMapping("/nicknameCheck.do")
@@ -101,15 +105,15 @@ public class MemberController {
 	public String mypage(HttpSession session, Model model) {
 			
 		if (session.getAttribute("memberIdx") == null ) {
-		
 			sessionManage.setSessionMsg("로그인이 필요한 페이지입니다.", "error", session);			
 			return "redirect:/member/home.do";
 		
 		} else {
-			
-			Member member = memberService.selectMember((int)session.getAttribute("memberIdx"));
-			System.out.println("memberContoroller mypage memberIdx:" + member.getIdx());			
-			model.addAttribute("member", member);	
+			Member member = memberService.selectMember((int)session.getAttribute("memberIdx"));				
+System.out.println("memberController mypage memberIdx:" + session.getAttribute("memberIdx"));
+			model.addAttribute("member", member);
+System.out.println("memberController mypage memberNickname:" + member.getNickname()); 			
+			sessionManage.getSessionMsg(session, model);
 			return "member/setting";	
 		}	
 	}	
@@ -124,23 +128,56 @@ public class MemberController {
 	
 	// 회원정보 수정
 	@RequestMapping("/updateProfile.do")
-	public String updateProfile(HttpSession session, Model model, Member member) {	
-		 //memberService.updateProfile(member);
-		return "/";
+	public String updateProfile(MultipartFile file, HttpSession session, Member member) {	
+		
+System.out.println("updateProfile.do:" + file);
+System.out.println("updateProfile.do(수정):" + member.getProfilePath());
+System.out.println("updateProfile.do:" + member.getNickname());
+
+		//img upload
+				if(!file.isEmpty()) {			
+					try {
+						member = uploadFile.uploadProfile(file, member);
+					} catch (IllegalStateException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				//사용자 idx 가져와 member에 넣기
+				member.setIdx((int)session.getAttribute("memberIdx"));			
+				
+				int result = memberService.updateProfile(member);
+System.out.println("memberController result:" + result);
+
+				if (result > 0) {
+					sessionManage.setSessionMsg("성공적으로 수정되었습니다.", "success", session);
+				} else {
+					sessionManage.setSessionMsg("수정에 실패하였습니다", "error", session);
+				}
+				return "redirect:/member/mypage.do";
+			
+	
+	
 	}
 
 	
 	// 휴대전화회원 로그인
 	@RequestMapping("/phoneLogin.do")
 	public String phoneLogin(HttpServletRequest request, HttpSession session, Member member) {	
-		int m_idx = memberService.phoneLogin(member);
-		
-		if (m_idx > 0) {// 로그인 성공
-			session.setAttribute("memberIdx", m_idx);
+		int result = memberService.phoneLogin(member);
+	
+
+		if (result > 0) {// 로그인 성공
 			
-			String previousUrl = request.getHeader("referer");
-			session.setAttribute("previousUrl", previousUrl);
-			return "redirect:" + previousUrl;	
+			//String previousUrl = request.getHeader("referer");
+			//session.setAttribute("previousUrl", previousUrl);
+			
+			//session.setAttribute("memberIdx", m_idx);
+// test code
+			session.setAttribute("memberIdx", 50);		
+			//return "redirect:" + previousUrl;	
+			return "redirect:/member/home.do";
 							
 		} else { //로그인 실패 
 			sessionManage.setSessionMsg("로그인에 실패했습니다. 아이디와 패스워드를 확인해주세요.", "error", session);						
@@ -189,8 +226,8 @@ public class MemberController {
 	@ResponseBody 
 	public String sendVerificationCode (@RequestParam("phoneNumber") String phoneNumber) {	
 
-		//String result = messageController.sendOne(phoneNumber);
-		String result = "success";
+		String result = messageController.sendOne(phoneNumber);
+		//String result = "success";
 System.out.println("memberController result : " + result);
 		 if (result.equals("success") ) {
 			 	
