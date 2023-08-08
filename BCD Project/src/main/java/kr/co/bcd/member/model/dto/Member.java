@@ -21,7 +21,7 @@ public class Member {
 	
 	// 프로필 사진 관련 사항
 //	private String profile;				// 프로필 사진 변경된 파일명
-//	private String profilePath;			// 프로필 사진 저장 경로
+	private String profilePath;			// 프로필 사진 저장 경로
 //	private String profileOrigin;		// 프로필 사진 원본 파일명
 	
 	//  ------------------------ 일반 회원 입력 사항 ----------------------------
@@ -37,9 +37,9 @@ public class Member {
 	private String pwdChk;
 	
 	// -------------------------- profile img URL --------------------------------
-	private String profileURL;				// AWS 업로드 URL (DB 저장)
+//	private String profileURL;				// AWS 업로드 URL (DB 저장)
 	
-	private String profileOrigin;			// 프로필 사진 원본 파일명 (DB 저장 X)
+//	private String profileOrigin;			// 프로필 사진 원본 파일명 (DB 저장 X)
 	// TODO: 
 	// 1. profile 관련 기존 컬럼 삭제
 	// 2. profile 관련 새로운 컬럼 추가 (DB => profileURL)

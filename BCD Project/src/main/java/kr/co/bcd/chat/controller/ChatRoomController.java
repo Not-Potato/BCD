@@ -2,19 +2,26 @@ package kr.co.bcd.chat.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.co.bcd.chat.model.dto.ChatRoom;
 import kr.co.bcd.chat.model.service.ChatRoomServiceImpl;
@@ -39,9 +46,10 @@ public class ChatRoomController {
 	@GetMapping("/list.do")
 	public String chatRoomList(@RequestParam(value="category", defaultValue="" )String category,
 							   @RequestParam(value="cpage", defaultValue = "1") int currentPage,
-							   //@RequestParam(value="idx", defaultValue="")int idx,
+							   @RequestParam(value="searchTxt", defaultValue = "") String searchTxt,
 							   HttpSession session,
-							   Model model) {
+							   HttpServletResponse response,
+							   Model model)throws Exception {
 		
 		int listCount = chatRoomService.selectListCount(category);
 		int pageLimit = 10;
@@ -51,35 +59,10 @@ public class ChatRoomController {
 		
 		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		
-		List<ChatRoom> list = chatRoomService.selectListAll(pi, category);
-		
-//			for(ChatRoom chatRoom : list) {
-//				if(chatRoom.getCategory().equals("c1")) {
-//					chatRoom.setCategory("카테고리1");
-//				}else if(chatRoom.getCategory().equals("c2")) {
-//					chatRoom.setCategory("카테고리2");
-//				}else if(chatRoom.getCategory().equals("c3")) {
-//					chatRoom.setCategory("카테고리3");
-//				}else if(chatRoom.getCategory().equals("c4")) {
-//					chatRoom.setCategory("카테고리4");
-//				}else if(chatRoom.getCategory().equals("c5")) {
-//					chatRoom.setCategory("카테고리5");
-//				}else if(chatRoom.getCategory().equals("c6")) {
-//					chatRoom.setCategory("카테고리6");
-//				}else if(chatRoom.getCategory().equals("c7")) {
-//					chatRoom.setCategory("카테고리7");
-//				}else if(chatRoom.getCategory().equals("c8")) {
-//					chatRoom.setCategory("카테고리8");
-//				}else if(chatRoom.getCategory().equals("c9")) {
-//					chatRoom.setCategory("카테고리9");
-//				}
-//			}
-//		
-		
-		
-		
+		List<ChatRoom> list = chatRoomService.selectListAll(pi, category, searchTxt);
 		List<Integer> participantsSizeList = new ArrayList<>(); 
 		List<String> roomOwnerList = new ArrayList<>();
+		
 		
 		String roomOwner;
 		
@@ -107,17 +90,8 @@ public class ChatRoomController {
 			
 		} 
 		//session null check 
-		Integer memberIdxObj = (Integer) session.getAttribute("memberIdx");
-		System.out.println("세션있니??"+memberIdxObj);
-		    if (memberIdxObj == null) {
-		    	sessionManage.setSessionMsg("로그인을 해 주세요!", "error", session);
-				System.out.println("세션있니 if들어옴??"+memberIdxObj);
-
-		        return "redirect:/"; 
-		    }
-
-		int memberIdx = memberIdxObj.intValue();
-	//	int memberIdx = (int) session.getAttribute("memberIdx");
+		
+		int memberIdx = (int) session.getAttribute("memberIdx");
 		String memberNickname = memberService.selectNickname(memberIdx);
 		System.out.println("닉네임 : " + memberNickname);
 		
@@ -127,6 +101,7 @@ public class ChatRoomController {
 		model.addAttribute("list", list);
 		model.addAttribute("row", row);
 		model.addAttribute("pi", pi);
+		
 		
 		System.out.println("채팅방 몇 개 : "+listCount);
 		return "chat/chatRoomList";

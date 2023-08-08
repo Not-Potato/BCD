@@ -9,7 +9,7 @@ import kr.co.bcd.common.paging.model.PageInfo;
 public interface ChatRoomService {
 	
 	int selectListCount(String category);
-	List<ChatRoom> selectListAll(PageInfo pi, String category);
+	List<ChatRoom> selectListAll(PageInfo pi, String category, String searchTxt);
 	//String getParticipants(int idx);
 	int createChatRoom(ChatRoom chatRoom);
 	ChatRoom enterChatRoom(int idx);

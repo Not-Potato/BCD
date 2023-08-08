@@ -44,18 +44,18 @@
 		          	<h2 class="fs-5 mb-3 text-center">어떤 주제로 얘기하고 싶나요?</h2>
 			         <div class="form-floating mb-3">
 			            <select class="form-select" id="floatingSelectGrid" name="bigCategory" onchange="changeCategoryOptions()">
-			                <option value="basis" selected>큰 분류</option>
-			                <option value="value1">무거운 주제</option>
-			                <option value="value2">가벼운 주제</option>
+			                <option value="basis" selected disabled>✧˳⁺⁎₊✧˚˳⁺⁎₊𝙋𝙡𝙚𝙖𝙨𝙚 𝙘𝙝𝙤𝙤𝙨𝙚₊⁎⁺˳˚✧₊⁎⁺˳✧</option>
+			                <option value="value1">Venti Size</option>
+			                <option value="value2">Tall Size</option>
 			            </select>
-			            <label for="floatingSelectGrid">크게</label>
+			           <label for="floatingSelectGrid">Worry Size</label>
 			         </div>
 			         <div class="form-floating mb-3">
 			          	<select class="form-select" id="smallSelectGrid" name="category">
-			                <option value="basis" selected>세세한 분류</option>
+			                <option value="basis" selected disabled>✧˳⁺⁎₊✧˚˳⁺⁎₊𝙋𝙡𝙚𝙖𝙨𝙚 𝙘𝙝𝙤𝙤𝙨𝙚₊⁎⁺˳˚✧₊⁎⁺˳✧</option>
 			               
 			            </select>
-			            <label for="smallSelectGrid">작게</label>
+			            <label for="smallSelectGrid">Detail</label>
 			         </div>
 		          	  <hr class="my-4">
 		              <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary">입장하기</button>
@@ -96,14 +96,16 @@
 						<a class="btn btn-outline-primary" data-category="popular" id="popular2">카테고리2</a>
 						<a class="btn btn-outline-primary" data-category="popular" id="popular3">카테고리3</a>
 						
-						<a class="btn btn-outline-primary" data-category="bigWorry" id="bigWorry1">카테고리4</a>
-						<a class="btn btn-outline-primary" data-category="bigWorry" id="bigWorry2">카테고리5</a>
-						<a class="btn btn-outline-primary" data-category="bigWorry" id="bigWorry3">카테고리6</a>
+						<a class="btn btn-outline-primary" data-category="bigWorry" id="bigWorry1">연애/결혼</a>
+						<a class="btn btn-outline-primary" data-category="bigWorry" id="bigWorry2">가족/친구</a>
+						<a class="btn btn-outline-primary" data-category="bigWorry" id="bigWorry3">학교/직장</a>
+						<a class="btn btn-outline-primary" data-category="bigWorry" id="bigWorry4">사회/이슈</a>
 					
 					
-						<a class="btn btn-outline-primary" data-category="smallWorry" id="smallWorry1">카테고리7</a>
-						<a class="btn btn-outline-primary" data-category="smallWorry" id="smallWorry2">카테고리8</a>
-						<a class="btn btn-outline-primary" data-category="smallWorry" id="smallWorry3">카테고리9</a>
+						<a class="btn btn-outline-primary" data-category="smallWorry" id="smallWorry1">점메추</a>
+						<a class="btn btn-outline-primary" data-category="smallWorry" id="smallWorry2">깻잎논쟁</a>
+						<a class="btn btn-outline-primary" data-category="smallWorry" id="smallWorry3">할까말까</a>
+						<a class="btn btn-outline-primary" data-category="smallWorry" id="smallWorry4">최애픽</a>
 						
 					</div>
 					
@@ -138,9 +140,8 @@
 							전체
 						</button>
 						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="#">참여도 순</a></li>
-							<li><a class="dropdown-item" href="#">박빙 순</a></li>
-							<li><a class="dropdown-item" href="#">댓글 순</a></li>
+							<li><a class="dropdown-item" href="#">최신순</a></li>
+							<li><a class="dropdown-item" href="#">참여자순</a></li>
 						</ul>
 					</div>
 				</div>
@@ -183,17 +184,20 @@
 				</div>
 		</c:forEach>
 	</c:otherwise>
-</c:choose>			
+</c:choose>		
 			</div>
 		</main>
 			<div class="mb-3 d-flex justify-content-center">
-	        	<button type="button" class="btn btn-link" id="nextPageBtn" data-page="1">더보기</button>
+<!--            	<button type="button" class="btn btn-link" href="list.do?cpage=${pi.currentPage+1 }" >더보기</button>-->
+<!--      	        	<button type="button" class="btn btn-link" id=nextPageBtn data-page=1 >더보기</button>  -->
+     	        	<button type="button" class="btn btn-link" id="nextPageBtn">더보기</button> 
+     	        	<input type="hidden" value="${pi.endPage}" id="endPage">
 	        </div>
 	        <div class="mb-3 d-flex justify-content-end">	
 	            <button class="btn btn-primary" data-bs-toggle="modal" id="createRoomBtn">방 만들기</button>
 	        </div>
 	</div>
-        
+
    <script>
 		
    		/*  모달창  */ 
@@ -224,13 +228,16 @@
 				chatModalForm.bigCategory.focus();
 				return false;
 			}
-			if(chatModalForm.smallCategory.value.length == 0 || chatModalForm.category.value == "basis"){
+			if(chatModalForm.category.value.length == 0 || chatModalForm.category.value == "basis"){
 				alert('작은 카테고리를 선택해 주세요.');
 				//title창에 focus
-				chatModalForm.smallCategory.focus();
+				chatModalForm.category.focus();
 				return false;
 			}
 			
+			
+			console.log("smallvalue");
+			console.log("smallvalue"+chatModalForm.category.value);
 			chatModalForm.submit();
 		}
 		
@@ -241,23 +248,27 @@
 			if(bigCategorySelect.value == "basis" || bigCategorySelect.value == "" || bigCategorySelect.value == null ){
 				console.log(bigCategorySelect.value);
 				smallCategorySelect.innerHTML = `
-		            <option value="basis" selected>세세한 분류</option>
+		            <option value="basis" selected>detail</option>
 		        `;
 			}
 			
 			else if(bigCategorySelect.value == "value1") {
 				console.log(bigCategorySelect.value);
 				smallCategorySelect.innerHTML = `
-					<option value="basis" selected>세세한 분류</option>
-	                <option value="진로">진로</option>
-	                <option value="돈">돈</option>
+					<option value="basis" selected>detail</option>
+	                <option value="연애/결혼">연애/결혼</option>
+	                <option value="가족/친구">가족/친구</option>
+	                <option value="학교/직장">학교/직장</option>
+	                <option value="사회/이슈">사회/이슈</option>
 	            `;
 			}
 			else if(bigCategorySelect.value == "value2") {
 				smallCategorySelect.innerHTML = `
-					<option value="basis" selected>세세한 분류</option>
-	                <option value="음식">음식</option>
-	                <option value="옷">옷</option>
+					<option value="basis" selected>detail</option>
+	                <option value="음식">점메추</option>
+	                <option value="깻잎논쟁">깻잎논쟁</option>
+	                <option value="할까말까">할까말까</option>
+	                <option value="최애픽">최애픽</option>
 	            `;
 			}
 			
@@ -406,108 +417,39 @@
 		/*  카테고리 끝*/
 		
 		/* 더보기 */
-		$(document).ready(function() {
-    	const nextPageBtn = $("#nextPageBtn");
-		let nextPage = parseInt(nextPageBtn.data("page"));
 		
-		/* const nextPageBtn = document.getElementById("nextPageBtn");
-		nextPageBtn.addEventListener("click", showNextPage); */
+		$(document).ready(function(){
+	 	const nextPageBtn = $("#nextPageBtn");
+	   
+		let	page = 1;
 		
-	//	function showNextPage() {
-			//const nextPageBtn = ${"#nextPageBtn"}
-			
 		nextPageBtn.click(function(){
-			if(!nextPageBtn.data("load")){
-				nextPageBtn.data("load", true);
-				
-				$.ajax({
-					type : "GET",
-					url : `/chat/list.do?cpage=${nextPage}`,
-					dataType : "json",
-					data:{ },
-					success : function(data){
-						const cardContainer = $("#cardContainer");
-						
-						if(data.length>0){
-							for(const item of data){
-								const cardDiv = createCard(item,roomOwnerList, participantsSizeList);
-								cardContainer.append(cardDiv);
-							}
-							nextPageBtn.data("page", nextPage + 1);
-						}else{
-							nextPageBtn.hide();
-						}
-						nextPageBtn.data("load", false);
-					},
-					error:function (error){
-						nextPageBtn.data("load", false);
+//			
+			page++;
+			console.log("page"+page);
+			//location.href="/chat/list.do?cpage="+page;
+			
+			$.ajax({
+				url:"/chat/list.do?cpage="+page,
+				method:"GET",
+				success: function(response){
+					//page++;
+					const content = $(response).find("#cardContainer").html();
+				    endPage = $("#endPage").val();
+				 	console.log("endPage:"+endPage);
+					if(endPage == page){
+						nextPageBtn.hide();
 					}
-				});
-				
-				}
-	
-			});	
-		
-			
-			
-	//	}
-		function createCard(item,roomOwnerList, participantsSizeList) {
-			
-			const cardDiv = document.createElement("div");
-			cardDiv.classList.add("col-xl-3", "col-sm-6");
-			
-				const cardShadow = document.createElement("div");
-				cardShadow.classList.add("card-shadow", "card");
+					//previousNextPage = nextPage;
+					$("#cardContainer").append(content);
+						
 					
-					const cardBody = document.createElement("div");
-					cardBody.classList.add("card-body");
+				}
+				
+			})
 			
-			cardDiv.appendChild(cardShadow);
-				cardShadow.appendChild(cardBody);
-						
-						const cardTitle = document.createElement("div");
-						cardTitle.classList.add("fw-bold", "fs-5", "mb-2", "col-12", "d-inline-block", "text-truncate");
-						cardTitle.textContent = item.title;
-						
-						const cardCategory = document.createElement("div");
-						cardCategory.classList.add("badge", "border", "text-dark", "border-success", "rounded", "p-2","me-2","ps-3","pe-3","mb-2");
-						cardCategory.textContent = item.cardCategory;
-						
-						const cardRoomOwner = document.createElement("div");
-						cardRoomOwner.classList.add("d-flex");
-						
-						const cardParticipantsSizeList = document.createElement("div");
-						cardParticipantsSizeList.style.fontSize = "14px";
-						
-							
-						const cardRoomOwnerInner = document.createElement("div");
-						cardRoomOwnerInner.classList.add("d-flex", "align-items-center", "me-3");
-						
-						cardRoomOwner.appendChild(cardRoomOwnerInner);
-						
-							const icon = document.createElement("i");
-							icon.classList.add("bi", "bi-person-fill");
-							
-							for (const owner of roomOwnerList) {
-							const span = document.createElement("span");
-							span.classList.add("ms-2");
-							span.textContent = "방장 | " + owner;
-							cardRoomOwnerInner.appendChild(span);	
-							}
-						cardRoomOwnerInner.appendChild(icon);	
-						
-							for (const participantsSize of participantsSizeList) {
-							const span2 = document.createElement("span");
-							span2.classList.add("text-primary");
-							span2.textContent = participantsSize + "명이 참여 중 이에요!";
-							cardRoomOwnerInner.appendChild(span2);
-							}
-						
-							 return cardDiv;
-			
-		}	
 		});
-		
+		});
 
 		/* 더보기 끝 */
 		
@@ -518,3 +460,6 @@
  
 </body>
 </html>
+
+		
+

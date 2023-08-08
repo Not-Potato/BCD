@@ -34,6 +34,9 @@
 		<if test="category != null and category != ''">
 		AND cr_category = #{category}
 		</if>
+		<if test="searchTxt != null and searchTxt != ''">
+		AND cr_title LIKE '%'||#{searchTxt}||'%'
+		</if>
 		ORDER BY cr_idx DESC
 	</select>
 	
