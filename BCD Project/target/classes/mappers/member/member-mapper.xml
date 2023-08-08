@@ -13,7 +13,7 @@
 	<!-- 	<result column="m_profile" property="profile"></result> -->
 		<result column="m_profile_path" property="profilePath"></result>
 	<!-- 	<result column="m_profile_origin" property="profileOrigin"></result> -->
-		
+    
 		<result column="m_id" property="id"></result>
 		<result column="m_pwd" property="pwd"></result>
 		

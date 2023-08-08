@@ -36,8 +36,8 @@
             </form> -->
             <div class="col-4">
 				<div class="input-group">
-					<input type="text" class="form-control" placeholder="검색어를 입력해 주세요!" >
-					<button class="btn btn-outline-secondary d-flex align-items-center " type="button" id="button-addon2">
+					<input type="text" class="form-control" placeholder="검색어를 입력해 주세요!" id="searchInput">
+					<button class="btn btn-outline-secondary d-flex align-items-center " type="button" id="searchBtn">
 						<i class="bi bi-search"></i>
 					</button>
 				</div>
@@ -92,6 +92,65 @@
 	  		modalSignin.classList.remove("d-none"); //modalSignin 열기
     	}); 
   	 }
+  	 
+  	 <!-- search -->
+  	 
+  	$(document).ready(function(){
+  	 const searchInput = $("#searchInput");
+  	 const searchBtn = $("#searchBtn");
+  	 
+  	 searchBtn.click(function(){
+  		 console.log("search버튼 ");
+  		 
+  		const searchTxt = searchInput.val();
+  		console.log("txt:"+searchTxt);
+
+  		
+  		if(searchTxt == "" || searchTxt == null ){
+  			return;
+  		}
+  		
+  		let url;
+  		const currentUrl = window.location.href;
+  		console.log("currentUrl:"+currentUrl);
+  		console.log("currentUrl??:"+currentUrl.includes("/chat/"));
+  		
+  		
+  		if(currentUrl.includes("/chat/")){
+  			url = "http://localhost:8080//chat/list.do?searchTxt="
+  					console.log("url:"+url+searchTxt);
+  		}else {
+  			url = "http://localhost:8080//board/list.do?searchTxt="
+  		}
+  		
+  		$.ajax({
+  			url : url+searchTxt,
+  			method:"GET",
+  			
+  			success:function(response){
+  				console.log("성공");
+  				$("#cardContainer").empty();
+  				const searchContent = $(response).find("#cardContainer").html();
+  				console.log(searchContent);
+  				$("#cardContainer").append(searchContent);
+  			}
+  		});
+  		 
+  		 
+  	 });
+  	 
+  	});
+  	 
+  	 
+  	 
+  	 
+  	 
+  	 
+  	 
+  	 
+  	 
+  	 
+  	 
 </script>
  
 </header>

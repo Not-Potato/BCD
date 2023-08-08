@@ -12,6 +12,7 @@ import kr.co.bcd.chat.model.dto.ChatMsg;
 import kr.co.bcd.chat.model.dto.ChatRoom;
 import kr.co.bcd.common.paging.model.PageInfo;
 
+
 @Service
 public class ChatRoomServiceImpl implements ChatRoomService{
 	
@@ -25,8 +26,8 @@ public class ChatRoomServiceImpl implements ChatRoomService{
 	public int selectListCount(String category) {
 		return chatRoomDao.selectListCount(category, sqlSession);
 	}
-	public List<ChatRoom> selectListAll(PageInfo pi, String category) {
-		return chatRoomDao.selectListAll(pi,category, sqlSession);
+	public List<ChatRoom> selectListAll(PageInfo pi, String category, String searchTxt) {
+		return chatRoomDao.selectListAll(pi,category,searchTxt, sqlSession);
 	}
 	public int createChatRoom(ChatRoom chatRoom) {
 		return chatRoomDao.createChatRoom(chatRoom, sqlSession);

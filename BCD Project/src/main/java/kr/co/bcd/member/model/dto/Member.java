@@ -40,6 +40,7 @@ public class Member {
 	//private String profileURL;				// AWS 업로드 URL (DB 저장)
 	
 	//private String profileOrigin;			// 프로필 사진 원본 파일명 (DB 저장 X)
+
 	// TODO: 
 	// 1. profile 관련 기존 컬럼 삭제
 	// 2. profile 관련 새로운 컬럼 추가 (DB => profileURL)

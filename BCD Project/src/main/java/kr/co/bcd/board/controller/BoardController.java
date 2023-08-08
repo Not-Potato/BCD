@@ -55,7 +55,7 @@ public class BoardController {
 		int pageLimit = 10;		// 보여질 페이지 수
 //		int boardLimit = 15;	// 한 페이지에 들어갈 게시글 수
 // TODO: TEST CODE
-		int boardLimit = 30;	// test 중이라 개수 늘림
+		int boardLimit = 16;	// test 중이라 개수 늘림
 		
 		// 글 번호 뒤에서부터 출력해 주는 변수
 		// 1p --> row = 전체 게시글 수

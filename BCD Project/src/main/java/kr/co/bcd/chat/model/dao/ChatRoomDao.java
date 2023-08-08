@@ -21,11 +21,11 @@ public class ChatRoomDao {
 		return sqlSession.selectOne("chatMapper.selectListCount",paramMap);
 	}
 
-	public List<ChatRoom> selectListAll(PageInfo pi, String category, SqlSessionTemplate sqlSession) {
+	public List<ChatRoom> selectListAll(PageInfo pi, String category, String searchTxt, SqlSessionTemplate sqlSession) {
 		Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("category", category);
+        paramMap.put("searchTxt", searchTxt);
 		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
-		
 		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
 		return sqlSession.selectList("chatMapper.selectListAll", paramMap, rowBounds);
 	}

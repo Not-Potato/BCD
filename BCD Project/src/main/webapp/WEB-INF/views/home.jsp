@@ -130,7 +130,7 @@
 				</div>
 			</div>
 			
-			<div class="row">
+			<div class="row" id=cardContainer>
 <c:choose>
 	<c:when test="${empty list}">
 					<tr>
@@ -205,6 +205,10 @@
 </c:choose>			
 			</div>
 		</main>
+		<div class="mb-3 d-flex justify-content-center">
+   	        <button type="button" class="btn btn-link" id="nextPageBtn">더보기</button> 
+        	<input type="hidden" value="${pi.endPage}" id="endPage">
+	    </div>
 	</div>
 	
 	<%@ include file="./common/footer.jsp" %>
@@ -394,7 +398,6 @@ $(document).ready(function() {
 				$(this).find('.early-close-label').removeClass('d-none'); // "마감" 라벨을 보이게 합니다.				
 			}
 			
-			
 			// review가 존재한다면
 			if (review === "yes") {
 				$(this).find('.review-label').removeClass('d-none'); // "후기" 라벨을 보이게 합니다.
@@ -412,7 +415,45 @@ $(document).ready(function() {
 			
 			processPost.call(this, createDate, deadline, status, review);
 		});
+		
+		// 더보기 버튼
+		const nextPageBtn = $("#nextPageBtn");
+		   
+		let	page = 1;
+		
+		nextPageBtn.click(function(){
+			page++;
+			console.log("page"+page);
+			
+			$.ajax({
+				url:"/board/list.do?cpage="+page,
+				method:"GET",
+				success: function(response){
+					//page++;
+					const content = $(response).find("#cardContainer").html();
+				    endPage = $("#endPage").val();
+				 	console.log("endPage:"+endPage);
+					if(endPage == page){
+						nextPageBtn.hide();
+					}
+					$("#cardContainer").append(content);
+					
+					// 각 데이터를 처리하는 함수를 호출합니다.
+					$('.post').each(function() {
+						const createDate = $(this).find('.createDate').val();
+						const deadline = $(this).find('.deadline').val();
+						const status = $(this).find('.status').val();
+						const review = $(this).find('.review').val();
+						
+						console.log(createDate, deadline, status, review);
+						
+						processPost.call(this, createDate, deadline, status, review);
+					});
+				}
+			})
+		});
 	});
+	
 	</script>
 </body>
 </html>
