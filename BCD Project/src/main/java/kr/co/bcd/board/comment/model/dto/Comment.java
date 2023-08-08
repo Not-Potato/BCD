@@ -18,4 +18,8 @@ public class Comment {
 	private String content;			// 댓글 내용
 	private String createDate;		// 댓글 작성일
 	private String deleteDate;		// 댓글 삭제일
+	
+	// -------- 추가 사항 ------------
+	private String nickname;		// 작성자 닉네임
+	private String profile;
 }

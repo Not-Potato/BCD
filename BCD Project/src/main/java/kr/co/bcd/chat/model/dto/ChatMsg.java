@@ -17,4 +17,7 @@ public class ChatMsg {
 	private int senderIdx;				// 발신자 고유 번호
 	private String content;				// 메시지 내용
 	private String sendDate;			// 메시지 발신 시각
+	
+	//-----------DB에 없는 필드-------------------
+	private String senderNickname;
 }

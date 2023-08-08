@@ -10,9 +10,9 @@
 		<result column="m_join_date" property="joinDate"></result>
 		<result column="m_delete_date" property="deleteDate"></result>
 
-		<result column="m_profile" property="uploadName"></result>
-		<result column="m_profile_path" property="uploadPath"></result>
-		<result column="m_profile_origin" property="uploadOriginName"></result>
+	<!-- 	<result column="m_profile" property="profile"></result> -->
+		<result column="m_profile_path" property="profilePath"></result>
+	<!-- 	<result column="m_profile_origin" property="profileOrigin"></result> -->
 		
 		<result column="m_id" property="id"></result>
 		<result column="m_pwd" property="pwd"></result>
@@ -20,4 +20,113 @@
 		<result column="sns_id" property="snsId"></result>
 		<result column="sns_type" property="snsType"></result>
 	</resultMap>
+	
+	<insert id="memberJoin" parameterType="Member">
+		<selectKey keyProperty="idx" resultType="_int" order="AFTER">
+        	SELECT M_IDX_SEQUENCE.CURRVAL FROM DUAL
+	    </selectKey>	
+	    
+		INSERT INTO MEMBER (m_idx, 
+							m_phone,
+							m_nickname,
+							sns_id,
+							sns_type,
+							m_join_date)
+					VALUES (m_idx_sequence.nextval,
+							#{phone},
+							#{nickname},
+							#{snsId},
+							#{snsType},
+							SYSDATE)		
+	</insert>
+	
+		<insert id="phoneJoin" parameterType="Member">
+		<selectKey keyProperty="idx" resultType="_int" order="AFTER">
+        	SELECT M_IDX_SEQUENCE.CURRVAL FROM DUAL
+	    </selectKey>	
+	    
+		INSERT INTO MEMBER (m_idx, 
+							m_phone,
+							m_nickname,
+							m_id,
+							m_pwd,
+							m_join_date)
+					VALUES (m_idx_sequence.nextval,
+							#{phone},
+							#{nickname},
+							#{id},
+							#{pwd},
+							SYSDATE)		
+	</insert>
+	
+	
+	<select id="selectMember" resultMap="memberResultSet">
+		SELECT * FROM MEMBER
+		WHERE m_idx = #{memberIdx}
+	</select>
+		
+	<select id="selectNickname" resultType="String">
+		SELECT m_nickname FROM MEMBER
+		WHERE m_idx = #{memberIdx}
+	</select>	
+	
+	<update id="updateProfile" parameterType="Member">
+		UPDATE MEMBER
+		SET m_nickname = #{nickname}, 			
+			m_profile_path = #{profilePath}, 
+			m_pwd = #{pwd}
+		WHERE m_idx = #{idx} 	
+		
+	</update>
+	
+	<select id="nicknameCheck" resultType="_int">
+		SELECT COUNT(*) FROM MEMBER
+		WHERE m_nickname = #{nickname}
+	</select>
+		
+	<select id="checkEmail" resultType="_int">
+		SELECT COUNT(*) FROM MEMBER
+		WHERE sns_id = #{snsId} 
+		AND sns_type =#{snsType}
+	</select>	
+	
+	<select id="checkIdx" resultType="_int">
+		SELECT m_idx FROM MEMBER
+		WHERE sns_id = #{snsId} 
+		AND sns_type =#{snsType}
+	</select>	
+	
+<!-- 	<select id="checkId" resultType="_int">
+		SELECT COUNT(*) FROM MEMBER
+		WHERE sns_id = #{snsId}
+	</select> -->
+	
+	<select id="idCheck" resultType="_int">
+		SELECT COUNT(*) FROM MEMBER
+		WHERE m_id = #{id}
+	</select>		
+	
+	<select id="phoneCheck" resultType="_int">
+		SELECT COUNT(*) FROM MEMBER
+		WHERE m_phone = #{phoneNumber}
+	</select>	
+	
+	<select id="phoneLogin" resultType="_int">
+		SELECT COUNT(*) FROM MEMBER
+		WHERE m_id = #{id}
+		AND m_pwd = #{pwd}
+	</select>	
+	
+	
+	<update id="withdraw" parameterType="_int">
+		UPDATE MEMBER
+		SET m_delete_date = SYSDATE 			
+		WHERE m_idx = #{memberIdx} 			
+	</update>
+	
+	<select id="selectProfile" resultType="String">
+		SELECT m_profile_path FROM MEMBER
+		WHERE m_idx = #{idx}
+	</select>
+	
 </mapper>

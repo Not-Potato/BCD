@@ -1,5 +1,9 @@
 package kr.co.bcd.chat.model.dao;
 
-public class ChatMsgDao {
+import org.springframework.stereotype.Repository;
 
+@Repository
+public class ChatMsgDao {
+	
+	
 }
