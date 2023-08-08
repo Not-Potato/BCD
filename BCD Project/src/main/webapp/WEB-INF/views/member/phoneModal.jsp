@@ -200,7 +200,7 @@ function requestPhoneAuth() {
 			}
 		},
 		error: function(error) {
-			alert("인증문자 발송에 실패하였습니다. 다시 시도해주세요.");
+			alert("인증문자 인증에 실패하였습니다. 다시 시도해주세요.");
 		}
 	});
 }
