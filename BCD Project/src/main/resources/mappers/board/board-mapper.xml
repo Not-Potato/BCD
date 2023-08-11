@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="boardMapper">
+	<resultMap type="post" id="postResultSet">
+		<result column="p_idx" property="idx"></result>
+		<result column="m_idx" property="memIdx"></result>
+		
+		<result column="p_status" property="status"></result>
+		<result column="p_main_category" property="mainCategory"></result>
+		<result column="p_sub_category" property="subCategory"></result>
+		<result column="p_vote_title" property="voteTitle"></result>
+		<result column="p_deadline" property="deadline"></result>
+		<result column="p_vote_1ST" property="vote1ST"></result>
+		<result column="p_vote_2nd" property="vote2ND"></result>
+		
+		<result column="p_img1_URL" property="img1URL"></result>
+		<result column="p_img2_URL" property="img2URL"></result>
+		
+		<result column="p_title" property="title"></result>
+		<result column="p_content" property="content"></result>
+		<result column="p_review" property="review"></result>
+		<result column="p_views" property="views"></result>
+		<result column="p_create_date" property="createDate"></result>
+		<result column="p_delete_date" property="deleteDate"></result>
+	</resultMap>
+	
+	<resultMap type="vote" id="voteResultSet">
+		<result column="v_idx" property="idx"></result>
+		<result column="p_idx" property="postIdx"></result>
+		<result column="m_idx" property="memIdx"></result>
+		<result column="v_select" property="seleted"></result>
+	</resultMap>
+	
+	<resultMap type="comment" id="commentResultSet">
+		<result column="c_idx" property="idx"></result>
+		<result column="p_idx" property="postIdx"></result>
+		<result column="m_idx" property="memIdx"></result>
+		<result column="c_content" property="content"></result>
+		<result column="c_create_date" property="createDate"></result>
+		<result column="c_delete_date" property="deleteDate"></result>
+	</resultMap>
+	
+	<select id="selectListCount" resultType="_int">
+		SELECT COUNT(*) FROM POST
+		WHERE P_DELETE_DATE IS NULL
+		<if test="category != null and category != ''">
+		AND P_SUB_CATEGORY = #{category}
+		</if>
+		<if test="keyword != null and keyword != ''">
+		AND {
+			p_title LIKE '%' || #{keyword} || '%'
+         OR p_content LIKE '%' || #{keyword} || '%'
+         OR p_review LIKE '%' || #{keyword} || '%'
+         OR p_vote_title LIKE '%' || #{keyword} || '%'
+         OR p_vote_1ST LIKE '%' || #{keyword} || '%'
+         OR p_vote_2ND LIKE '%' || #{keyword} || '%'
+		}
+		</if>
+	</select>
+	
+	<select id="selectListAll" resultMap="postResultSet">
+		SELECT * FROM POST
+		WHERE P_DELETE_DATE IS NULL 
+		<if test="category != null and category != ''">
+		AND P_SUB_CATEGORY = #{category}
+		</if>
+		<if test="keyword != null and keyword != ''">
+		AND {
+			p_title LIKE '%' || #{keyword} || '%'
+         OR p_content LIKE '%' || #{keyword} || '%'
+         OR p_review LIKE '%' || #{keyword} || '%'
+         OR p_vote_title LIKE '%' || #{keyword} || '%'
+         OR p_vote_1ST LIKE '%' || #{keyword} || '%'
+         OR p_vote_2ND LIKE '%' || #{keyword} || '%'
+		}
+		</if>
+		ORDER BY p_create_date DESC
+	</select>
+	
+	<insert id="insertPost" parameterType="Post">
+		INSERT INTO POST(P_IDX,
+				 M_IDX,
+				 P_MAIN_CATEGORY,
+				 P_SUB_CATEGORY,
+				 P_VOTE_TITLE,
+				 P_DEADLINE,
+				 P_VOTE_1ST,
+				 P_VOTE_2ND,
+				 P_IMG1_URL,
+				 P_IMG2_URL,
+				 P_TITLE,
+				 P_CONTENT)
+		  VALUES(p_idx_sequence.NEXTVAL,
+		  		 #{memIdx},
+		  		 #{mainCategory},
+		  		 #{subCategory},
+		  		 #{voteTitle},
+		  		 #{deadline},
+		  		 #{vote1ST},
+		  		 #{vote2ND},
+		  		 #{img1URL},
+		  		 #{img2URL},
+		  		 #{title},
+		  		 #{content})
+	</insert>
+	
+	<update id="viewsUpdate" parameterType="Post">
+		UPDATE POST
+			SET P_VIEWS = #{views}
+			WHERE P_IDX = #{idx}
+	</update>
+	
+	<select id="detailBoard" resultMap="postResultSet">
+		SELECT * FROM POST
+			WHERE P_IDX = #{idx}
+			AND P_DELETE_DATE IS NULL
+	</select>
+	
+	<update id="updateStatus" parameterType="Post">
+		UPDATE POST
+			SET P_STATUS = #{status}
+			WHERE P_IDX = #{idx}
+	</update>
+	
+	<select id="selectWriterIdx" resultType="_int">
+		SELECT M_IDX FROM POST
+			WHERE P_IDX = #{idx}
+	</select>
+	
+	<update id="updateReview" parameterType="Post">
+		UPDATE POST
+			SET P_REVIEW = #{review}
+			WHERE P_IDX = #{idx}
+	</update>
+	
+	<select id="isNotDelPost" resultType="_int">
+		SELECT COUNT(*) FROM POST
+			WHERE P_IDX = #{idx}
+			AND P_DELETE_DATE IS NULL
+	</select>
+	
+	<select id="selectStatus" resultMap="postResultSet">
+		SELECT P_STATUS FROM POST
+			WHERE P_IDX = #{idx}
+	</select>
+	
+	<update id="updatePost" parameterType="Post">
+		UPDATE POST
+			SET P_TITLE = #{title},
+				P_CONTENT = #{content}
+			WHERE P_IDX = #{idx}
+	</update>
+
+	<update id="markPostAsDeleted">
+		UPDATE POST
+			SET P_DELETE_DATE = SYSDATE
+			WHERE P_IDX = #{idx}
+	</update>
+	
+	<select id="selectPopularCategory" resultMap="postResultSet">
+		SELECT P_MAIN_CATEGORY, P_SUB_CATEGORY
+		FROM POST
+		WHERE P_DELETE_DATE IS NULL
+		GROUP BY P_MAIN_CATEGORY, P_SUB_CATEGORY
+		ORDER BY COUNT(*) DESC
+		FETCH FIRST 3 ROWS ONLY
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="selectCommentCount" resultType="_int">
+		SELECT COUNT(*) FROM "COMMENT"
+			WHERE C_DELETE_DATE IS NULL 
+			AND P_IDX = #{idx}
+	</select>
+
+	<select id="detailComment" resultMap="commentResultSet">
+		SELECT * FROM "COMMENT"
+			WHERE C_DELETE_DATE IS NULL 
+			AND P_IDX = #{idx}
+			ORDER BY c_create_date DESC
+	</select>
+
+	<insert id="insertComment"  parameterType="Comment">
+		INSERT INTO "COMMENT"(c_idx, 
+							  p_idx, 
+							  m_idx, 
+							  c_content, 
+							  c_create_date)
+					   VALUES(c_idx_sequence.NEXTVAL, 
+					   		  #{postIdx}, 
+					   		  #{memIdx}, 
+					   		  #{content}, 
+					   		  SYSDATE)
+	</insert>
+	
+	<select id="getCommentAuthor" resultType="_int">
+		SELECT m_idx FROM "COMMENT"
+			WHERE c_idx = #{idx}
+	</select>
+	
+	<select id="isCommentValid" resultType="_int">
+		SELECT COUNT(*) FROM "COMMENT"
+			WHERE C_DELETE_DATE IS NULL 
+			AND C_IDX = #{idx}
+	</select>
+	
+	<update id="updateComment" parameterType="Comment">
+		UPDATE "COMMENT"
+			SET c_content = #{content}
+			WHERE c_idx = #{idx}
+	</update>
+	
+	<update id="markCommentAsDeleted">
+		UPDATE "COMMENT"
+			SET c_delete_date = SYSDATE
+			WHERE c_idx = #{idx}
+	</update>
+
+
+
+
+
+
+
+
+
+
+
+
+	<select id="selectVoteCount" resultType="_int">
+		SELECT COUNT(*) FROM VOTE
+		WHERE P_IDX = #{postIdx}
+		<if test="seleted != null">
+		AND V_SELECT = #{seleted}
+		</if>
+	</select>
+
+	<select id="selectVoteCountOne" resultType="_int">
+		SELECT COUNT(*) FROM VOTE
+		WHERE P_IDX = #{postIdx}
+		AND M_IDX = #{memIdx}
+	</select>
+	
+	<select id="selectVoterStatus" resultMap="voteResultSet">
+		SELECT * FROM VOTE
+			WHERE P_IDX = #{postIdx}
+			AND M_IDX = #{memIdx}
+	</select>
+
+
+	<insert id="insertVote" parameterType="Vote">
+		INSERT INTO VOTE(v_idx, 
+						 p_idx, 
+						 m_idx, 
+						 v_select)
+				  VALUES(v_idx_sequence.NEXTVAL, 
+						 #{postIdx},
+						 #{memIdx},
+						 #{seleted})
+	</insert>
+	
+	<delete id="deleteVote">
+		DELETE FROM VOTE
+		WHERE P_IDX = #{postIdx}
+		AND M_IDX = #{memIdx}
+	</delete>
+</mapper>
