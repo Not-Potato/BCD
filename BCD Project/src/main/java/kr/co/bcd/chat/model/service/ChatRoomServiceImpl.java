@@ -23,8 +23,8 @@ public class ChatRoomServiceImpl implements ChatRoomService{
 	private SqlSessionTemplate sqlSession;
 
 	
-	public int selectListCount(String category) {
-		return chatRoomDao.selectListCount(category, sqlSession);
+	public int selectListCount(String searchTxt, String category) {
+		return chatRoomDao.selectListCount(searchTxt, category, sqlSession);
 	}
 	public List<ChatRoom> selectListAll(PageInfo pi, String category, String searchTxt) {
 		return chatRoomDao.selectListAll(pi,category,searchTxt, sqlSession);

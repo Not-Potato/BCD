@@ -216,6 +216,7 @@
 		</main>
 		<div class="mb-3 d-flex justify-content-center">
    	        <button type="button" class="btn btn-link" id="nextPageBtn">더보기</button> 
+     	    <button type="button" class="btn btn-link" id="searchNextPageBtn">더보기</button> 
         	<input type="hidden" value="${pi.endPage}" id="endPage">
 	    </div>
 	</div>
@@ -371,21 +372,6 @@
 		
 	// 최초에 화면 로드 시
 	$(document).ready(function() {
-		// 인기 카테고리 중복 건 삭제
-		const duplicateElements = {};
-		
-		const allElements = $('#smallCategories a');
-		
-		allElements.each(function() {
-			const text = $(this).text(); // 요소의 내용 가져오기
-			if (duplicateElements[text]) {
-				// 중복된 요소가 이미 있는 경우 삭제
-				$(this).remove();
-			} else {
-				// 중복되지 않은 경우 객체에 추가
-				duplicateElements[text] = true;
-			}
-		});
 		
 		// 각 데이터를 처리하는 함수를 정의합니다.
 		function processPost(createDate, deadline, status, review) {
@@ -431,6 +417,8 @@
 		
 		// 더보기 버튼
 		const nextPageBtn = $("#nextPageBtn");
+		const searchNextPageBtn = $("#searchNextPageBtn");
+	 	searchNextPageBtn.hide();
 		   
 		let	page = 1;
 		
@@ -446,7 +434,7 @@
 					const content = $(response).find("#cardContainer").html();
 				    endPage = $("#endPage").val();
 				 	console.log("endPage:"+endPage);
-					if(endPage == page){
+					if(endPage <= page){
 						nextPageBtn.hide();
 					}
 					$("#cardContainer").append(content);

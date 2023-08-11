@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class S3UploadService {
 	private final AmazonS3 amazonS3;
 	
-//	@Value("${aws.bucketName}")
+	@Value("${aws.bucketName}")
 	private String bucket;
 
 	// upload

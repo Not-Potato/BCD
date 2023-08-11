@@ -49,11 +49,12 @@ public class BoardController {
 	public String boardList(@RequestParam(value="category", defaultValue="") String category, 
 							@RequestParam(value = "keyword", defaultValue = "") String keyword,
 							@RequestParam(value = "cpage", defaultValue = "1") int currentPage,
+							@RequestParam(value = "searchTxt", defaultValue = "") String searchTxt,
 							HttpSession session, 
 							Model model){
 							
 		// 전체 게시글 수 구하기
-		int listCount = postService.selectListCount(category, keyword);
+		int listCount = postService.selectListCount(category, keyword, searchTxt);
 		int pageLimit = 10;		// 보여질 페이지 수
 //		int boardLimit = 15;	// 한 페이지에 들어갈 게시글 수
 // TODO: TEST CODE
@@ -70,7 +71,7 @@ public class BoardController {
 		
 		
 		// 목록 불러오기
-		List<Post> list = postService.selectListAll(pi, category, keyword);
+		List<Post> list = postService.selectListAll(pi, category, keyword, searchTxt);
 		
 		Member m = new Member();
 
@@ -111,7 +112,7 @@ public class BoardController {
 	@GetMapping("/detail.do")
 	public String board(@RequestParam(value = "idx") int idx, Model model, HttpSession session, HttpServletRequest request) {
 		// TODO: test용 code!! 현재 2번 회원이 접속 중인 것으로 setting
-		session.setAttribute("memberIdx", 2);
+		//session.setAttribute("memberIdx", 2);
 		
 		Post post = postService.detailBoard(idx);
 		
@@ -204,4 +205,59 @@ public class BoardController {
 		}
 		
 	}
+	
+
+	//활동 내역
+	@GetMapping("/myList.do")
+	public String myPostList(@RequestParam(value = "cpage", defaultValue = "1") int currentPage,
+							HttpSession session, Model model){
+		
+		int memberIdx = (int) session.getAttribute("memberIdx");
+		System.out.println("memidx:"+memberIdx);
+		
+		// 전체 게시글 수 구하기
+		int listCount = postService.selectMyListCount(memberIdx);
+		int pageLimit = 10;		// 보여질 페이지 수
+		//int boardLimit = 15;	// 한 페이지에 들어갈 게시글 수
+		//TODO: TEST CODE
+		int boardLimit = 16;	// test 중이라 개수 늘림
+		
+		// 글 번호 뒤에서부터 출력해 주는 변수
+		// 1p --> row = 전체 게시글 수
+		// 2p --> row = 전체 게시글 수 - boardLimit
+		// 3p --> row = 전체 게시글 수 - boardLimit * 2
+		int row = listCount - (currentPage - 1) * boardLimit;
+		
+		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+		// 페이징 처리 끝
+		
+		
+		// 목록 불러오기
+		List<Post> list = postService.selectMyListAll(pi, memberIdx);
+		
+		Member m = new Member();
+		
+		// 1. 작성일 날짜까지만 가져오도록 문자열 자르기
+		// 2. 댓글 수 가져오기
+		// 3. 투표 참여자 수 가져오기
+		// 4. 작성자 닉네임 가져오기
+		for (Post p : list) {
+		p.setCreateDate(p.getCreateDate().substring(0, 10));
+		p.setDeadline(p.getDeadline().substring(0, 10));
+		p.setCommentCount( commentService.selectCommentCount(p.getIdx()) );
+		p.setVoteCount( voteService.selectVoteCount(p.getIdx()) );			
+		p.setWriter( memberService.selectNickname(p.getMemIdx()) );
+		p.setProfile( memberService.selectProfile(p.getMemIdx()) );
+		}
+		
+		model.addAttribute("list", list);
+		model.addAttribute("row", row);
+		model.addAttribute("pi", pi);
+		
+		sessionManage.getSessionMsg(session, model);
+		
+		
+			return "member/myList";
+		}
+
 }

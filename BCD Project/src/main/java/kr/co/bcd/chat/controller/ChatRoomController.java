@@ -51,7 +51,7 @@ public class ChatRoomController {
 							   HttpServletResponse response,
 							   Model model)throws Exception {
 		
-		int listCount = chatRoomService.selectListCount(category);
+		int listCount = chatRoomService.selectListCount(searchTxt,category);
 		int pageLimit = 10;
 		int boardLimit = 16;
 		

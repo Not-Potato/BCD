@@ -191,6 +191,7 @@
 <!--            	<button type="button" class="btn btn-link" href="list.do?cpage=${pi.currentPage+1 }" >더보기</button>-->
 <!--      	        	<button type="button" class="btn btn-link" id=nextPageBtn data-page=1 >더보기</button>  -->
      	        	<button type="button" class="btn btn-link" id="nextPageBtn">더보기</button> 
+     	        	<button type="button" class="btn btn-link" id="searchNextPageBtn">더보기</button> 
      	        	<input type="hidden" value="${pi.endPage}" id="endPage">
 	        </div>
 	        <div class="mb-3 d-flex justify-content-end">	
@@ -420,11 +421,13 @@
 		
 		$(document).ready(function(){
 	 	const nextPageBtn = $("#nextPageBtn");
-	   
+	 	const searchNextPageBtn = $("#searchNextPageBtn");
+	 	searchNextPageBtn.hide();
 		let	page = 1;
+		let endPage = 1;
+		
 		
 		nextPageBtn.click(function(){
-//			
 			page++;
 			console.log("page"+page);
 			//location.href="/chat/list.do?cpage="+page;
@@ -437,7 +440,7 @@
 					const content = $(response).find("#cardContainer").html();
 				    endPage = $("#endPage").val();
 				 	console.log("endPage:"+endPage);
-					if(endPage == page){
+					if(endPage <= page){
 						nextPageBtn.hide();
 					}
 					//previousNextPage = nextPage;

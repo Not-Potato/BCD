@@ -15,9 +15,10 @@ import kr.co.bcd.common.paging.model.PageInfo;
 @Repository
 public class ChatRoomDao {
 
-	public int selectListCount(String category, SqlSessionTemplate sqlSession) {
+	public int selectListCount(String searchTxt, String category, SqlSessionTemplate sqlSession) {
 		Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("category", category);
+        paramMap.put("searchTxt", searchTxt);
 		return sqlSession.selectOne("chatMapper.selectListCount",paramMap);
 	}
 

@@ -74,7 +74,7 @@ public class PostController {
 //		세션에서 작성자 회원 고유번호 가져오기
 		post.setMemIdx((int)session.getAttribute("memberIdx"));
 		// TODO: test code
-		post.setMemIdx(2);
+	//	post.setMemIdx(2);
 		
 		System.out.println(post);
 		

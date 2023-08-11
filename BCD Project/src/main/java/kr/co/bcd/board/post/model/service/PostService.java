@@ -8,10 +8,10 @@ import kr.co.bcd.common.paging.model.PageInfo;
 
 public interface PostService {
 	// 전체 게시글 수 구하기
-	int selectListCount(String category, String keyword);
+	int selectListCount(String category, String keyword, String searchTxt);
 	
 	// 게시글 목록 가져오기
-	List<Post> selectListAll(PageInfo pi, String category, String keyword);
+	List<Post> selectListAll(PageInfo pi, String category, String keyword, String searchTxt);
 	
 	// 게시글 작성하기
 	int insertPost(Post post);
@@ -46,4 +46,11 @@ public interface PostService {
 	
 	// 인기 카테고리 가져오기
 	List<Post> selectPopularCategory();
+	
+	//내가 쓴 글 수 구하기
+	int selectMyListCount(int memIdx);
+	
+	//내가 쓴 글 가져오기
+	List<Post> selectMyListAll(PageInfo pi, int memIdx);
+	
 }

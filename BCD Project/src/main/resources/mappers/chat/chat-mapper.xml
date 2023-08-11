@@ -26,6 +26,9 @@
 		<if test="category != null and category != ''">
 		AND cr_category = #{category}
 		</if>
+		<if test="searchTxt != null and searchTxt != ''">
+		AND UPPER(cr_title) LIKE '%'||#{searchTxt}||'%'
+		</if>
 	</select>
 	
 	<select id="selectListAll" resultMap="chatRoomResultSet">
@@ -35,7 +38,7 @@
 		AND cr_category = #{category}
 		</if>
 		<if test="searchTxt != null and searchTxt != ''">
-		AND cr_title LIKE '%'||#{searchTxt}||'%'
+		AND UPPER(cr_title) LIKE '%'||#{searchTxt}||'%'
 		</if>
 		ORDER BY cr_idx DESC
 	</select>

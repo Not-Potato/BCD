@@ -61,7 +61,7 @@
 			   				<span class="ms-1">내 정보</span>
 		  				</button>
 						  <ul class="dropdown-menu">
-						    <li><a class="dropdown-item" href="#">활동내역</a></li>
+						    <li><a class="dropdown-item" href="/board/myList.do">활동내역</a></li>
 						    <li><a class="dropdown-item" href="/member/mypage.do">마이페이지</a></li>
 						    <li><a class="dropdown-item" href="/member/logout.do">로그아웃</a></li>
 						  </ul>
@@ -100,57 +100,109 @@
   	$(document).ready(function(){
   	 const searchInput = $("#searchInput");
   	 const searchBtn = $("#searchBtn");
+  	 const searchNextPageBtn = $("#searchNextPageBtn");
+  	 const nextPageBtn = $("#nextPageBtn");
   	 
-  	 searchBtn.click(function(){
-  		 console.log("search버튼 ");
-  		 
-  		const searchTxt = searchInput.val();
-  		console.log("txt:"+searchTxt);
 
+  	  let searchPage = 1;
+  	  let searchEndPage = 1; // endPage 초기화
+
+  	
+  	 
+  	 //엔터 검색
+  	 searchInput.on("keydown", (event)=>{
+  		 if(event.key == "Enter"){
+  			 searchPage = 1;
+  			 search();
+  			 
+  		 }
+  	 })
+  	 //버튼 검색 
+  	  searchBtn.click (function(){
+  	    searchPage = 1;
+  	 	search();
+  	 	
+  	 	
+  	  });
+  	 
+  	  //더보기 버튼
+	  searchNextPageBtn.click(function(){
+		 searchPage++;
+		 console.log("눌렸지:"+searchPage);
+		 search();
+		 console.log("location:" + window.location.href);
+		 
+	 }); 
+  	 
+  	 
+  	function search(){
   		
+  		nextPageBtn.hide();
+  		
+  		const searchTxt = searchInput.val().toUpperCase();
+  		//page = 1;
   		if(searchTxt == "" || searchTxt == null ){
   			return;
   		}
-  		
-  		let url;
+  		//현재 경로 가져오기
+  		let searchUrl;
   		const currentUrl = window.location.href;
-  		console.log("currentUrl:"+currentUrl);
-  		console.log("currentUrl??:"+currentUrl.includes("/chat/"));
   		
-  		
+  		//chat에서 검색
   		if(currentUrl.includes("/chat/")){
-  			url = "http://localhost:8080//chat/list.do?searchTxt="
-  					console.log("url:"+url+searchTxt);
-  		}else {
-  			url = "http://localhost:8080//board/list.do?searchTxt="
+  			searchUrl = "http://localhost:8080/chat/list.do";
+  			nextPageBtn.hide();
+  				
+		//board에서 검색
+  		}else if (currentUrl.includes("/board/") || currentUrl == "http://localhost:8080/"){
+  			searchUrl = "http://localhost:8080/board/list.do";
+  			nextPageBtn.hide();
   		}
   		
   		$.ajax({
-  			url : url+searchTxt,
+  			url : searchUrl,
   			method:"GET",
-  			
+  			data:{searchTxt : searchTxt,
+  				  cpage : searchPage},
   			success:function(response){
-  				console.log("성공");
-  				$("#cardContainer").empty();
+  				console.log("url:"+window.location.href);
+  				console.log(searchPage+"searchPage");
+  				if(!currentUrl.includes("/list.do")) {
+  	  				location.href = searchUrl+"?searchTxt="+searchTxt;
+  	  			}
+  				console.log("진짜:"+searchUrl+"?searchTxt="+searchTxt);
+  				const searchEndPage = $(response).find("#endPage").val();
   				const searchContent = $(response).find("#cardContainer").html();
-  				console.log(searchContent);
+  				if(searchPage==1){
+	  				$("#cardContainer").empty();
+  				}
+  				if(searchEndPage<=searchPage){
+  					searchNextPageBtn.hide();
+  				} else {
+  					searchNextPageBtn.show(); // 다음 페이지가 있을 때는 더보기 버튼을 보여줌
+  				}
   				$("#cardContainer").append(searchContent);
+  				console.log("ajaxendPage:"+searchEndPage);
+  				console.log("ajaxpage:"+searchPage);
+  				
+  			// 각 데이터를 처리하는 함수를 호출합니다.
+				$('.post').each(function() {
+					const createDate = $(this).find('.createDate').val();
+					const deadline = $(this).find('.deadline').val();
+					const status = $(this).find('.status').val();
+					const review = $(this).find('.review').val();
+					
+					console.log(createDate, deadline, status, review);
+					
+					processPost.call(this, createDate, deadline, status, review);
+				});
   			}
   		});
-  		 
-  		 
-  	 });
+  		  
+  	 };
+  	
   	 
   	});
-  	 
-  	 
-  	 
-  	 
-  	 
-  	 
-  	 
-  	 
-  	 
   	 
   	 
 </script>
