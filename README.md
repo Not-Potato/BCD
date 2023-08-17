@@ -6,12 +6,15 @@
 <br />   
 
 ### 사용된 기술 스택
-- Spring
-- MyBatis
-- Maven
-- JSTL
-- JDBC
-- Oracle
+<p dir="auto">
+ <img src="https://img.shields.io/badge/Spring-6DB33F?style=flat&logo=Spring&logoColor=black"/>
+ <img src="https://img.shields.io/badge/MyBatis-000000?style=flat&logo=&logoColor=white"/>
+ <img src="https://img.shields.io/badge/Maven-C71A36?style=flat&logo=Apache Maven&logoColor=black"/>
+ <img src="https://img.shields.io/badge/JSTL-0099E5?style=flat&logo=&logoColor=black"/>
+ <img src="https://img.shields.io/badge/JDBC-000000?style=flat&logo=&logoColor=black"/>
+ <img src="https://img.shields.io/badge/Oracle-F80000?style=flat&logo=Oracle&logoColor=black"/>
+</p>
+
 
 <br />   
 
@@ -66,7 +69,31 @@
   1. 업데이트 예정입니다.
 
 ----
-#### [회원 관련] `이형주`  
+#### [회원 관련] `이형주`
+> 회원가입
+  1. 회원은 "일반 회원가입"과 "소셜 회원가입" 중 선택하여 가입할 수 있습니다.
+  2. 소셜 회원가입    
+  2-1. 소셜로그인회원의 경우 추가 본인확인 없이 회원가입이 가능합니다.(Naver/Kakao)  
+  2-2. 소셜로그인회원의 경우 엑세스토큰 발급을 위한 소셜로그인링크 클릭 시 인증서버로 이동됩니다.  
+  2-3. 사용자 필수정보이용 동의 후 엑세스토큰발행, BCD에서 이 토큰을 이용해 Naver(or Kakao)에 사용자 정보를 받아와 회원가입을 마무리합니다.  
+  3. 일반 회원가입  
+  3-1. 일반회원의 경우 휴대전화 본인인증 후 회원가입이 가능합니다.(coolsms)  
+  3-2. 랜덤숫자 4자리 인증번호가 휴대전화로 발송됩니다.  
+  3-3. 인증번호 일치 시에만 회원가입 진행이 가능합니다.  
+  3-4. 닉네임과 PW/ID는 BCD정책에 따라 유효성검증이 필요하며 비동기통신으로 진행됩니다.  
+ 
+> 로그인 / 로그아웃
+  1. "소셜로그인"을 이용해 가입한 회원은 네이버or카카오 로그인 정보를 이용해 바로 로그인이 가능합니다!
+  2. 사용자 소셜로그인 버튼 클릭 시 해당 사용자 이메일주소(snsId)를 이용해 DB 조회합니다.
+  3. 조회 결과 일치하는 이메일이 있을 경우, 해당 사용자의  회원번호를 반환하며 로그인을 종료합니다. (로그인완료) 
+  4. "문자인증"을 이용해 가입한 회원은 전화번호 입력 시 바로 ID/PW 입력창으로 이동 후 정보 일치 시 로그인이 가능합니다.
+  5. 사용자의 비밀번호는 암호화 되어 관리됩니다.
+  6. 세션만료로 로그아웃이 가능합니다.
+
+> 회원정보수정 / 탈퇴
+  1. 마이페이지는 로그인 한 사용자만 접근 가능하도록 session 내 회원번호 유무를 확인해 마이페이지 버튼 활성화를 조정합니다.
+  2. 마이페이지에서 사용자는 닉네임(일반회원의 경우 비밀번호도 변경 가능)을 변경할 수 있습니다.
+  3. 회원탈퇴 시 고객계정을 휴면계정으로 변경(복구가능)되며 30일도래 시점에 DB에서 자동삭제됩니다.(복구불가능) 
 
 
 ----
