@@ -170,9 +170,7 @@ public class MemberController {
 	public String phoneLogin(HttpServletRequest request, HttpSession session, Member member) {	
 		Member memberResult = memberService.phoneLogin(member);
 		if (!Objects.isNull(memberResult) && bCryptPasswordEncoder.matches(member.getPwd(), memberResult.getPwd())) {
-		
-			//String previousUrl = request.getHeader("referer");
-			//session.setAttribute("previousUrl", previousUrl);			
+				
 			session.setAttribute("memberIdx",memberResult.getIdx());		
 			return "redirect:/";
 							
@@ -412,9 +410,9 @@ System.out.println(isExistId);
 
 		if (result <= 0) {
 			// 사용자 정보 보내주숴 나머지 회원가입 마무리 시키기
-			//model.addAttribute("member", member);
 			session.setAttribute("member", member);
-			// 사용자 이전 URL 가져오기
+			//----------- 사용자 이전 URL 가져오기로 사용자 페이지 이동 시 ----------
+			//-----------Error : Oauth 2.0 비정상적 경로 에러뜸 -----------
 //			String currentUrl = (String) session.getAttribute("currentUrl");
 //			String withoutJsp = currentUrl.replace(".jsp", "");
 //			String previousUrl = withoutJsp.substring(36); // 마지막으로부터 두 번째 슬래시까지 남기고 삭제
@@ -426,7 +424,7 @@ System.out.println(isExistId);
 			return "redirect:/board/list.do"; // BCD 닉네임 정하는 모달로 이동
 			
 		} else { // 이미 회원인 경우
-					// 이전페이지로 이동		
+					
 			// 사용자 이전 URL 가져오기
 //			String currentUrl = (String) session.getAttribute("currentUrl");
 //			String withoutJsp = currentUrl.replace(".jsp", "");
