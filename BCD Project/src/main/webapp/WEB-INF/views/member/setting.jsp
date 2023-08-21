@@ -36,7 +36,8 @@
      </c:when>
      <c:otherwise>				
                 <div class="ms-3 mb-3" style= "border-radius: 50%; width: 200px; height:200px; overflow:hidden" id="changeProfileImg">          
-              	  <img src="${ member.profilePath }" style="font-size: 120px; object-fit:cover; width: 100%; height: 100%;"> <!-- aws 기본 url -->						               	
+              	<%--   <img src="${ member.profilePath }" style="font-size: 120px; object-fit:cover; width: 100%; height: 100%;"> <!-- aws 기본 url -->		 --%>				               	
+              	  <img src="../../resources/images/quokka.jpg" style="font-size: 120px; object-fit:cover; width: 100%; height: 100%;"> <!-- aws 기본 url -->						               	
                </div>
      </c:otherwise>
 </c:choose>               

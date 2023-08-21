@@ -41,7 +41,8 @@ public class MessageController {
 	String smsCode = "";
     public MessageController() {
         // 반드시 계정 내 등록된 유효한 API 키, API Secret Key를 입력해주셔야 합니다!
-    	this.messageService = NurigoApp.INSTANCE.initialize("NCSPAKCQTQWKRZK1", "AGENNSFII4QVEB4TCDDUT9TH5PI1JD30", "https://api.coolsms.co.kr");
+    	this.messageService = NurigoApp.INSTANCE.initialize("", "", "https://api.coolsms.co.kr");
+
     }
 
 	
@@ -84,7 +85,7 @@ System.out.println("messageController response.getStatus()"+ response.getStatusC
 System.out.println("memberController 사용자 입력 Code: "+ code);
 System.out.println("memberController 랜덤값 smsCode: "+ smsCode);
 
-smsCode = "1234";
+//smsCode = "1234";
 
 			  if(smsCode.equals(code)) { 
 				  System.out.println("여기로 들어와야해!!"); 

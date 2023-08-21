@@ -28,7 +28,7 @@
 		
 			<!-- LOGO -->
 			<a href="/" class="col-md-3 col-12 text-center text-md-left mb-3 mb-md-0">
-				<img src="../../../resources/images/logo.svg" alt="BCD LOGO" style="width: 130px;" />
+				<img src="../../../resources/images/BCD.svg" alt="BCD LOGO" style="width: 130px;" />
 			</a>
 
 			<!-- SEARCH -->

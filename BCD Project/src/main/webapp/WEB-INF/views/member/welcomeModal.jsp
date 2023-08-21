@@ -14,7 +14,7 @@
     	<div class="modal-content rounded-4 shadow">
 		     
 		   <div class="modal-header pb-2 pt-2">
-   				<img src="../../resources/images/logo.svg" alt="Logo" style="height:30px; width:60px;"/>    
+   				<img src="../../resources/images/BCD.svg" alt="Logo" style="height:30px; width:60px;"/>    
     			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeModalWelcome"></button> 
     			<hr>
  		   </div>
@@ -26,7 +26,7 @@
             
             
 	            <div class="d-flex justify-content-center mt-5" style="width: 100%;">
-	        		<img src="../../resources/images/logo.svg" alt="Logo" style="height:120px; width:390px;"/>    
+	        		<img src="../../resources/images/BCD.svg" alt="Logo" style="height:120px; width:390px;"/>    
 	        	</div> 
 	        	  	   
 	        	 <div class="text-center mt-5">

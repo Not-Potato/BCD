@@ -220,9 +220,9 @@ public class MemberController {
 	@ResponseBody 
 	public String sendVerificationCode (@RequestParam("phoneNumber") String phoneNumber) {	
 
-		//String result = messageController.sendOne(phoneNumber);
-		String result = "success";
-//System.out.println("memberController result : " + result);
+		String result = messageController.sendOne(phoneNumber);
+		//String result = "success";
+System.out.println("memberController result : " + result);
 		 if (result.equals("success") ) {			 	
 	          return "success"; // 발송 성공
 	     } else {	    	

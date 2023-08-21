@@ -25,9 +25,9 @@
 		<div class="inner">
 			<div class="swiper mySwiper">
 				<div class="swiper-wrapper">
-					<div class="swiper-slide"><img src="../../resources/images/main-banner-1.png"></div>
-					<div class="swiper-slide"><img src="../../resources/images/main-banner-2.png"></div>
-					<div class="swiper-slide"><img src="../../resources/images/main-banner-3.png"></div>
+					<div class="swiper-slide"><img src="../../resources/images/main-banner-4.png"></div>
+					<div class="swiper-slide"><img src="../../resources/images/main-banner-5.png"></div>
+					<div class="swiper-slide"><img src="../../resources/images/main-banner-6.png"></div>
 				</div>
 				<div class="swiper-pagination"></div>
 			</div>

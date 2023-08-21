@@ -16,7 +16,7 @@
     	<div class="modal-content rounded-4 shadow">
 		     
 		   <div class="modal-header pb-2 pt-2">
-   				<img src="../../resources/images/logo.svg" alt="Logo" style="height:30px; width:60px;"/>    
+   				<img src="../../resources/images/BCD.svg" alt="Logo" style="height:30px; width:60px;"/>    
     			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeModalNickname"></button> 
     			<hr>
  		   </div>
