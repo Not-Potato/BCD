@@ -129,4 +129,9 @@
 		WHERE m_idx = #{idx}
 	</select>
 	
+	<select id="selectProfileByNickname" resultType="String">
+		SELECT m_profile_path FROM MEMBER
+		WHERE m_nickname = #{memberNickname}
+	</select>
+	
 </mapper>

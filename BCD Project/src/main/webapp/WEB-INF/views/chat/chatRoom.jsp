@@ -72,11 +72,12 @@
 	                <ul class="list-unstyled chat-list me-0 mb-0">
 <c:choose>
 	<c:when test="${not empty participantsList}">
-			<c:forEach var="item" items="${participantsList}" varStatus="loop">        
+			<c:forEach var="profile" items="${profileMap}" varStatus="loop">        
 	                    <li class="d-flex align-items-center">
-	                        <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="avatar">
+	                        <img src="${profile.value}" alt="프로필">
+	                   <!-- <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="avatar">-->
 	                        <div class="about">
-	                            <div class="name fs-7">${item}</div>
+	                            <div class="name fs-7">${profile.key}</div>
 	                        </div>
 	                    </li>
 	         </c:forEach>      
@@ -336,7 +337,7 @@
 								sendInfo.appendChild(sendNickname);
 									sendNickname.textContent=message.senderNickname;
 								sendInfo.appendChild(sendImg);
-									sendImg.setAttribute("src", "https://bootdey.com/img/Content/avatar/avatar7.png");
+									sendImg.setAttribute("src", message.memberProfile);
 									sendImg.setAttribute("alt", "profile");
 								
 						}else {
@@ -356,7 +357,7 @@
 							receiveDiv.appendChild(receiveInfo);
 							receiveDiv.appendChild(receiveMsgDiv);
 								receiveInfo.appendChild(receiveImg);
-									receiveImg.setAttribute("src", "https://bootdey.com/img/Content/avatar/avatar7.png");
+									receiveImg.setAttribute("src", message.memberProfile);
 									receiveImg.setAttribute("alt", "profile");
 								receiveInfo.appendChild(receiveNickname);
 									console.log("보낸사람 닉네임 : " + message);
@@ -386,7 +387,7 @@
 						sendInfo.appendChild(sendNickname);
 							sendNickname.textContent=message.senderNickname;
 						sendInfo.appendChild(sendImg);
-							sendImg.setAttribute("src", "https://bootdey.com/img/Content/avatar/avatar7.png");
+							sendImg.setAttribute("src", message.memberProfile);
 							sendImg.setAttribute("alt", "profile");
 						
 				}else {
@@ -406,7 +407,7 @@
 					receiveDiv.appendChild(receiveInfo);
 					receiveDiv.appendChild(receiveMsgDiv);
 						receiveInfo.appendChild(receiveImg);
-							receiveImg.setAttribute("src", "https://bootdey.com/img/Content/avatar/avatar7.png");
+							receiveImg.setAttribute("src", message.memberProfile);
 							receiveImg.setAttribute("alt", "profile");
 						receiveInfo.appendChild(receiveNickname);
 							console.log("보낸사람 닉네임 : " + message);

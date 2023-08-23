@@ -3,6 +3,7 @@ package kr.co.bcd.chat.controller;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -44,14 +45,24 @@ public class ChatRoomController {
 	private SessionManageController sessionManage;
 	
 	@GetMapping("/list.do")
-	public String chatRoomList(@RequestParam(value="category", defaultValue="" )String category,
+	public String chatRoomList(@RequestParam(value="categories", defaultValue="" )String categories,
 							   @RequestParam(value="cpage", defaultValue = "1") int currentPage,
 							   @RequestParam(value="searchTxt", defaultValue = "") String searchTxt,
 							   HttpSession session,
 							   HttpServletResponse response,
 							   Model model)throws Exception {
 		
-		int listCount = chatRoomService.selectListCount(searchTxt,category);
+		List<String> selectedCategories;
+		if(categories ==null || categories.equals("")) {
+			selectedCategories = new ArrayList<>();
+		}else {
+			selectedCategories = Arrays.asList(categories.split(","));
+		}
+			
+		System.out.println("selectedCategories : "+selectedCategories);
+		System.out.println("selectedCategories비어있니? : "+selectedCategories.isEmpty());
+		
+		int listCount = chatRoomService.selectListCount(searchTxt,selectedCategories);
 		int pageLimit = 10;
 		int boardLimit = 16;
 		
@@ -59,11 +70,14 @@ public class ChatRoomController {
 		
 		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		
-		List<ChatRoom> list = chatRoomService.selectListAll(pi, category, searchTxt);
+		List<ChatRoom> list = chatRoomService.selectListAll(pi, selectedCategories, searchTxt);
 		List<Integer> participantsSizeList = new ArrayList<>(); 
 		List<String> roomOwnerList = new ArrayList<>();
+		//인기항목 가져오기
+		List<String> popularCategories = chatRoomService.getPopularCategories();
+		String popularCategoriesJson = new ObjectMapper().writeValueAsString(popularCategories);
 		
-		
+		//방장
 		String roomOwner;
 		
 		for (ChatRoom chatRoom : list) {
@@ -101,6 +115,7 @@ public class ChatRoomController {
 		model.addAttribute("list", list);
 		model.addAttribute("row", row);
 		model.addAttribute("pi", pi);
+		model.addAttribute("popularCategoriesJson", popularCategoriesJson);
 		
 		
 		System.out.println("채팅방 몇 개 : "+listCount);
@@ -156,6 +171,9 @@ public class ChatRoomController {
 			int memberIdx = (int) session.getAttribute("memberIdx");
 			String newParticipant = memberService.selectNickname(memberIdx);
 			System.out.println("뉴멤버"+newParticipant);
+			
+			//memberProfile 가져오기
+		//	String memberProfile = memberService.selectProfile(memberIdx);
 
 			
 			//채팅 참여자 목록 가져오기
@@ -185,13 +203,24 @@ public class ChatRoomController {
 				//참여자 수 구하기
 				participantsSize = participantsList.size();
 				
+			//	Map<String, String> profileMap = new HashMap<>();
+				Map<String, String> profileMap = new LinkedHashMap<>();
+				
 				for (String participant : participantsList) {
+					String profileImage = memberService.selectProfileByNickname(participant);
+					profileMap.put(participant, profileImage);
 					System.out.println("참여자 목록 출력 : "+participant);
+					System.out.println("참여자 이미지경로 : "+profileImage);
+					
 				}	
+				model.addAttribute("profileMap", profileMap);
+
 			}	
 			else {
 				roomOwner = getParticipants;
 				participantsSize = 1;
+				String memberProfile = memberService.selectProfileByNickname(roomOwner);
+				model.addAttribute("memberProfile", memberProfile);
 			}	
 			//DB 대화 목록 가져오기
 			

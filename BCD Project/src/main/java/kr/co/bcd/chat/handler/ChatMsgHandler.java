@@ -48,7 +48,9 @@ public class ChatMsgHandler extends TextWebSocketHandler {
 
 	    for(ChatMsg chatMsg : previousChat) {
 	    	String senderNickname=memberService.selectNickname(chatMsg.getSenderIdx());
+	    	String memberProfile=memberService.selectProfile(chatMsg.getSenderIdx());
 	    	chatMsg.setSenderNickname(senderNickname);
+	    	chatMsg.setMemberProfile(memberProfile);
 	    }
 	    
 //	    	ObjectMapper objectMapper = new ObjectMapper();
@@ -110,8 +112,11 @@ public class ChatMsgHandler extends TextWebSocketHandler {
 				//chatMsg 객체를 다시 json형식으로 변환
 				ObjectNode chatMsgJson = objectMapper.valueToTree(chatMsg);
 				//sender의 닉네임 구하기
-				String senderNickname=memberService.selectNickname(chatMsg.getSenderIdx());    
+				String senderNickname=memberService.selectNickname(chatMsg.getSenderIdx()); 
+				//profile 이미지 
+				String memberProfile=memberService.selectProfileByNickname(senderNickname);
 				chatMsgJson.put("senderNickname", senderNickname);
+				chatMsgJson.put("memberProfile", memberProfile);
 				String responsePayload = objectMapper.writeValueAsString(chatMsgJson);
 				logger.info("chatMsg", session.getId(), message.getPayload());
 				int idx = chatMsg.getRoomIdx();

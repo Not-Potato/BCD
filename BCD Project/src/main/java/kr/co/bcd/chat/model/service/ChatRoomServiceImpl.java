@@ -23,11 +23,11 @@ public class ChatRoomServiceImpl implements ChatRoomService{
 	private SqlSessionTemplate sqlSession;
 
 	
-	public int selectListCount(String searchTxt, String category) {
-		return chatRoomDao.selectListCount(searchTxt, category, sqlSession);
+	public int selectListCount(String searchTxt, List<String> selectedCategories) {
+		return chatRoomDao.selectListCount(searchTxt, selectedCategories, sqlSession);
 	}
-	public List<ChatRoom> selectListAll(PageInfo pi, String category, String searchTxt) {
-		return chatRoomDao.selectListAll(pi,category,searchTxt, sqlSession);
+	public List<ChatRoom> selectListAll(PageInfo pi, List<String> selectedCategories, String searchTxt) {
+		return chatRoomDao.selectListAll(pi,selectedCategories,searchTxt, sqlSession);
 	}
 	public int createChatRoom(ChatRoom chatRoom) {
 		return chatRoomDao.createChatRoom(chatRoom, sqlSession);
@@ -53,5 +53,8 @@ public class ChatRoomServiceImpl implements ChatRoomService{
 	}
 	public List<ChatMsg> previousChat(int idx) {
 		return chatRoomDao.previousChat(idx, sqlSession);
+	}
+	public List<String> getPopularCategories() {
+		return chatRoomDao.getPopularCategories(sqlSession);
 	}
 }

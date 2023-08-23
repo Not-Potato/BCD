@@ -1,5 +1,7 @@
 package kr.co.bcd.board.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.co.bcd.board.comment.model.dto.Comment;
 import kr.co.bcd.board.comment.model.service.CommentServiceImpl;
@@ -46,15 +50,23 @@ public class BoardController {
 	private SessionManageController sessionManage;
 	
 	@GetMapping("/list.do")
-	public String boardList(@RequestParam(value="category", defaultValue="") String category, 
+	public String boardList(@RequestParam(value="categories", defaultValue="") String categories, 
 							@RequestParam(value = "keyword", defaultValue = "") String keyword,
 							@RequestParam(value = "cpage", defaultValue = "1") int currentPage,
 							@RequestParam(value = "searchTxt", defaultValue = "") String searchTxt,
 							HttpSession session, 
-							Model model){
+							Model model)throws Exception{
 							
+		//카테고리 리스트
+		List<String> selectedCategories;
+		if(categories == null || categories.equals("")) {
+			selectedCategories = new ArrayList<>(); //카테고리 선택 안할 시 빈 배열 보내기
+		}else {
+			selectedCategories = Arrays.asList(categories.split(",")); //String categories를 ,로 잘라서 배열만듦
+		}
+		
 		// 전체 게시글 수 구하기
-		int listCount = postService.selectListCount(category, keyword, searchTxt);
+		int listCount = postService.selectListCount(selectedCategories, keyword, searchTxt);
 		int pageLimit = 10;		// 보여질 페이지 수
 //		int boardLimit = 15;	// 한 페이지에 들어갈 게시글 수
 // TODO: TEST CODE
@@ -71,7 +83,7 @@ public class BoardController {
 		
 		
 		// 목록 불러오기
-		List<Post> list = postService.selectListAll(pi, category, keyword, searchTxt);
+		List<Post> list = postService.selectListAll(pi, selectedCategories, keyword, searchTxt);
 		
 		Member m = new Member();
 
@@ -87,18 +99,18 @@ public class BoardController {
 			p.setWriter( memberService.selectNickname(p.getMemIdx()) );
 			p.setProfile( memberService.selectProfile(p.getMemIdx()) );
 		}
-
 		// 인기 항목 가져오기 (게시글 많은 순으로 3개)
 		List<Post> popularCategory = postService.selectPopularCategory();
-		Map<String, String> popular = new HashMap();
+		String popularCategoryJson = new ObjectMapper().writeValueAsString(popularCategory);
+		//Map<String, String> popular = new HashMap();
 
-		for (Post p : popularCategory) {
-			popular.put(p.getSubCategory(), p.getMainCategory());
-		}
+		//for (Post p : popularCategory) {
+		//	popular.put(p.getSubCategory(), p.getMainCategory());
+		//}
 
-		System.out.println(popular);
+		//System.out.println(popular);
 
-		model.addAttribute("popular", popular);
+		model.addAttribute("popularCategoryJson", popularCategoryJson);
 		
 		model.addAttribute("list", list);
 		model.addAttribute("row", row);

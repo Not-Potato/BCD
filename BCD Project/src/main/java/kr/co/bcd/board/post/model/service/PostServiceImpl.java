@@ -24,13 +24,13 @@ public class PostServiceImpl implements PostService {
 	
 	
 	@Override
-	public int selectListCount(String category, String keyword, String searchTxt) {
-		return postDao.selectListCount(sqlSession, category, keyword, searchTxt);
+	public int selectListCount(List<String> selectedCategories, String keyword, String searchTxt) {
+		return postDao.selectListCount(sqlSession, selectedCategories, keyword, searchTxt);
 	}
 	
 	@Override
-	public List<Post> selectListAll(PageInfo pi, String category, String keyword, String searchTxt) {
-		return postDao.selectListAll(sqlSession, pi, category, keyword, searchTxt);
+	public List<Post> selectListAll(PageInfo pi, List<String> selectedCategories, String keyword, String searchTxt) {
+		return postDao.selectListAll(sqlSession, pi, selectedCategories, keyword, searchTxt);
 	}
 
 	@Override

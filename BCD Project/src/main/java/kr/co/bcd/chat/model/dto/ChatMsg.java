@@ -20,4 +20,5 @@ public class ChatMsg {
 	
 	//-----------DB에 없는 필드-------------------
 	private String senderNickname;
+	private String memberProfile;
 }
