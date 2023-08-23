@@ -77,8 +77,8 @@ public class BoardController {
 		int listCount = postService.selectListCount(selectedCategories, keyword, searchTxt);
 
 		int pageLimit = 10;		// 보여질 페이지 수
-//		int boardLimit = 16;	// test 중이라 개수 늘림
-		int boardLimit = 4;	// test 중이라 개수 늘림
+		int boardLimit = 16;	// test 중이라 개수 늘림
+//		int boardLimit = 4;	// test 중이라 개수 늘림
 		
 		// 글 번호 뒤에서부터 출력해 주는 변수
 		// 1p --> row = 전체 게시글 수

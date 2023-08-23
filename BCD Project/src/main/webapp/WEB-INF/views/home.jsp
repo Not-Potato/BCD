@@ -213,21 +213,15 @@
 		</c:forEach>
 	</c:otherwise>
 </c:choose>			
-				<div class="mb-3 d-flex justify-content-center">
-		   	        <button type="button" class="btn btn-link" id="nextPageBtn">더보기</button> 
-		        	<input type="hidden" value="${pi.endPage}" id="endPage">
-			    </div>
+				
 			</div>
 		</main>
-<<<<<<< HEAD
 		<div class="mb-3 d-flex justify-content-center">
    	        <button type="button" class="btn btn-link " id="nextPageBtn">더보기</button> 
      	    <button type="button" class="btn btn-link " id="searchNextPageBtn">더보기</button> 
         	<button type="button" class="btn btn-link" id="categoryNextPageBtn">더보기</button> 
         	<input type="hidden" value="${pi.endPage}" id="endPage">
 	    </div>
-=======
->>>>>>> refs/heads/SSH4
 	</div>
 	
 	<%@ include file="./common/footer.jsp" %>
