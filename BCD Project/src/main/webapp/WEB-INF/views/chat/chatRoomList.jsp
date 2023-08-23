@@ -67,7 +67,7 @@
 	<!-- 모달 끝 -->
     <div class="container">
 	
-		<!-- board list -->
+		<!-- board list v-->
 		<main>
 
 			<div class="card mt-3" style="border: none;">
