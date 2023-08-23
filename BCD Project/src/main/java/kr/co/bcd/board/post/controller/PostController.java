@@ -73,10 +73,6 @@ public class PostController {
 	public String writing(MultipartFile file1, MultipartFile file2, Post post, HttpSession session) throws IllegalStateException, IOException  {
 //		세션에서 작성자 회원 고유번호 가져오기
 		post.setMemIdx((int)session.getAttribute("memberIdx"));
-		// TODO: test code
-		post.setMemIdx(2);
-		
-		System.out.println(post);
 		
 		// 대분류, 소분류, 투표 제목, 마감일, 선택지1, 선택지 2, 제목, 내용 => null ck & 글자수 제한 ck
 		boolean mainCategoryNullCk = dataValidation.nullCheck(post.getMainCategory());
@@ -170,9 +166,7 @@ public class PostController {
 	public String earlyClosed(@RequestParam(value = "writerIdx") int writerIdx,
 							  @RequestParam(value = "postIdx") int postIdx, HttpSession session) {
 		
-		// TODO: 페이지에서 받아온 writerIdx와 session에서 받아온 현재 접속자 idx가 동일한지 확인하기
-//		boolean myPost = writerIdx == (int)session.getAttribute("memberIdx") ? true : false;
-		boolean myPost = true;
+		boolean myPost = writerIdx == (int)session.getAttribute("memberIdx") ? true : false;
 		
 		if (!myPost) {
 			sessionManage.setSessionMsg("본인이 게시한 투표만 상태를 변경할 수 있습니다!", "error", session);

@@ -27,10 +27,7 @@ public class VoteController {
 	
 	@PostMapping("voted.do")
 	public String voted(Vote vote, HttpSession session) {
-		// TODO: 로그인한 유저인지 확인
 		vote.setMemIdx((int)session.getAttribute("memberIdx"));
-
-		System.out.println(vote);
 		
 		// 선택된 항목 존재하는지 ck
 		if (vote.getSeleted() != null) {	

@@ -1,5 +1,8 @@
 package kr.co.bcd.board.controller;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,19 +48,38 @@ public class BoardController {
 	@Autowired
 	private SessionManageController sessionManage;
 	
-	@GetMapping("/list.do")
-	public String boardList(@RequestParam(value="category", defaultValue="") String category, 
-							@RequestParam(value = "keyword", defaultValue = "") String keyword,
+	@RequestMapping("/list.do")
+	public String boardList(@RequestParam(value="categories", required = false) String categories, 
+							@RequestParam(value = "status", required = false) String status,
+							@RequestParam(value = "keyword", required = false) String keyword,
 							@RequestParam(value = "cpage", defaultValue = "1") int currentPage,
 							HttpSession session, 
 							Model model){
-							
+		// 선택된 배열
+		List<String> selectedCategories = new ArrayList<String>();
+		
 		// 전체 게시글 수 구하기
-		int listCount = postService.selectListCount(category, keyword);
+		int listCount = 0;
+		
+		// 카테고리 선택 시
+		if ( categories != null && !categories.equals("") ) {			
+			String[] split = categories.split(",");
+			for (String s : split) {
+				selectedCategories.add(s);
+			}
+			System.out.println(selectedCategories);
+//			listCount = postService.selectListCount(selectedCategories, null);
+		// 카테고리 미선택 시
+		} else {
+//			selectedCategories = null;
+		}
+		
+		listCount = postService.selectListCount(selectedCategories, null);
+		System.out.println("전체 게시글 수: " + listCount);
+		
 		int pageLimit = 10;		// 보여질 페이지 수
-//		int boardLimit = 15;	// 한 페이지에 들어갈 게시글 수
-// TODO: TEST CODE
-		int boardLimit = 16;	// test 중이라 개수 늘림
+//		int boardLimit = 16;	// test 중이라 개수 늘림
+		int boardLimit = 4;	// test 중이라 개수 늘림
 		
 		// 글 번호 뒤에서부터 출력해 주는 변수
 		// 1p --> row = 전체 게시글 수
@@ -67,13 +89,11 @@ public class BoardController {
 		
 		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		// 페이징 처리 끝
-		
+		System.out.println("pi: " + pi.getEndPage());
 		
 		// 목록 불러오기
-		List<Post> list = postService.selectListAll(pi, category, keyword);
+		List<Post> list = postService.selectListAll(pi, selectedCategories, keyword);
 		
-		Member m = new Member();
-
 		// 1. 작성일 날짜까지만 가져오도록 문자열 자르기
 		// 2. 댓글 수 가져오기
 		// 3. 투표 참여자 수 가져오기
@@ -95,8 +115,6 @@ public class BoardController {
 			popular.put(p.getSubCategory(), p.getMainCategory());
 		}
 
-		System.out.println(popular);
-
 		model.addAttribute("popular", popular);
 		
 		model.addAttribute("list", list);
@@ -110,9 +128,6 @@ public class BoardController {
 	
 	@GetMapping("/detail.do")
 	public String board(@RequestParam(value = "idx") int idx, Model model, HttpSession session, HttpServletRequest request) {
-		// TODO: test용 code!! 현재 2번 회원이 접속 중인 것으로 setting
-		session.setAttribute("memberIdx", 2);
-		
 		Post post = postService.detailBoard(idx);
 		
 		// DB 조회 성공 시
@@ -128,6 +143,7 @@ public class BoardController {
 				for (Comment comment : commentList) {
 					comment.setNickname( memberService.selectNickname(comment.getMemIdx()) );
 					comment.setCreateDate(comment.getCreateDate().substring(0, 19));
+					comment.setProfile( memberService.selectProfile(comment.getMemIdx()) );
 				}
 			}
 			

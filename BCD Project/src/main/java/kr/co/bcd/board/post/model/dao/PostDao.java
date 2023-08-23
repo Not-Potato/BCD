@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.jdbc.Null;
 import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
@@ -15,16 +16,22 @@ import kr.co.bcd.common.paging.model.PageInfo;
 
 @Repository
 public class PostDao {
-	public int selectListCount(SqlSessionTemplate sqlSession, String category, String keyword) {
+	public int selectListCount(SqlSessionTemplate sqlSession, List<String> selectedCategories, String status) {
 		Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("category", category);
-        paramMap.put("keyword", keyword);
+		
+		paramMap.put("categoryList", selectedCategories);
+		
+		if (status != null && !status.isEmpty()) {
+			paramMap.put("status", status);
+		}
+		
+        System.out.println("맵: " + paramMap);
 		return sqlSession.selectOne("boardMapper.selectListCount", paramMap);
 	}
 
-	public List<Post> selectListAll(SqlSessionTemplate sqlSession, PageInfo pi, String category, String keyword) {
+	public List<Post> selectListAll(SqlSessionTemplate sqlSession, PageInfo pi, List<String> selectedCategories, String keyword) {
 		Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("category", category);
+        paramMap.put("categoryList", selectedCategories);
         paramMap.put("keyword", keyword);
         
 		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
