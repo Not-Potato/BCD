@@ -384,7 +384,7 @@
 		}	
 		
 		
-		
+	/*	
 		// 필터 변동 시 사용할 함수 선언
 		function sendAjaxRequest(selectedCategories) {
 			selectedCategories = selectedCategories === null ? null : selectedCategories.join(",");
@@ -424,7 +424,7 @@
 					console.log('ajax 요청 실패', status, error);
 				}
 			});
-		}
+		}*/
 		//선택된 카테고리 표시
 		
 		//중복 허용 안되는 배열 만들기
