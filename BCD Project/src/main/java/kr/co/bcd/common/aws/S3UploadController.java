@@ -32,7 +32,7 @@ public class S3UploadController {
 			
 			// 년월일시분초 형식으로 데이터 가공
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMddHHmmss");
-			String output = "bcd_" + now.format(formatter);
+			String output = "bcd_post_" + now.format(formatter);
 			
 			// 랜덤 문자열 생성
 			int length = 8;

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.jdbc.Null;
 import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
@@ -15,16 +16,23 @@ import kr.co.bcd.common.paging.model.PageInfo;
 
 @Repository
 public class PostDao {
+
 	public int selectListCount(SqlSessionTemplate sqlSession, List<String> selectedCategories, String keyword, String searchTxt) {
+
 		Map<String, Object> paramMap = new HashMap<>();
+
         paramMap.put("categories", selectedCategories);
         paramMap.put("keyword", keyword);
         paramMap.put("searchTxt", searchTxt);
+
 		return sqlSession.selectOne("boardMapper.selectListCount", paramMap);
 	}
 
+
 	public List<Post> selectListAll(SqlSessionTemplate sqlSession, PageInfo pi, List<String> selectedCategories, String keyword, String searchTxt) {
+
 		Map<String, Object> paramMap = new HashMap<>();
+
         paramMap.put("categories", selectedCategories);
         paramMap.put("keyword", keyword);
         paramMap.put("searchTxt", searchTxt);

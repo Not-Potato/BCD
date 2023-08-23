@@ -4,7 +4,6 @@
 <html lang="ko" class="h-100">
 <head>
 	<%@ include file="./common/head.jsp" %>
-	
 	<!-- swiper plugin -->
 	<script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
 	<link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
@@ -64,7 +63,7 @@
 	<c:when test="${empty popular}">
 						<a class="btn btn-outline-primary popular" data-category="Venti Size"  data-popular="yes" id="popular1">사회/이슈</a>
 						<a class="btn btn-outline-primary popular" data-category="Venti Size"  data-popular="yes" id="popular2">연애/결혼</a>
-						<a class="btn btn-outline-primary popular" data-category="Tall Size"  data-popular="yes" id="popular4">점메추</a>
+						<a class="btn btn-outline-primary popular" data-category="Tall Size"  data-popular="yes" id="popular3">점메추</a>
 	</c:when>
 	<c:otherwise>
 		<c:forEach var="item" items="${ popular }" varStatus="status">
@@ -124,6 +123,7 @@
 					</ul>
 				</div>
 				
+
 				<div>
 					<!-- 드롭다운 정렬 
 					<div class="btn-group">
@@ -135,11 +135,12 @@
 							<li><a class="dropdown-item" href="#">참여도순</a></li>
 							<li><a class="dropdown-item" href="#">댓글 많은 순</a></li>
 						</ul>
+
 					</div>-->
 				</div>
 			</div>
 			
-			<div class="row" id=cardContainer>
+			<div class="row" id="cardContainer">
 <c:choose>
 	<c:when test="${empty list}">
 					<tr>
@@ -212,14 +213,21 @@
 		</c:forEach>
 	</c:otherwise>
 </c:choose>			
+				<div class="mb-3 d-flex justify-content-center">
+		   	        <button type="button" class="btn btn-link" id="nextPageBtn">더보기</button> 
+		        	<input type="hidden" value="${pi.endPage}" id="endPage">
+			    </div>
 			</div>
 		</main>
+<<<<<<< HEAD
 		<div class="mb-3 d-flex justify-content-center">
    	        <button type="button" class="btn btn-link " id="nextPageBtn">더보기</button> 
      	    <button type="button" class="btn btn-link " id="searchNextPageBtn">더보기</button> 
         	<button type="button" class="btn btn-link" id="categoryNextPageBtn">더보기</button> 
         	<input type="hidden" value="${pi.endPage}" id="endPage">
 	    </div>
+=======
+>>>>>>> refs/heads/SSH4
 	</div>
 	
 	<%@ include file="./common/footer.jsp" %>
@@ -235,6 +243,83 @@
 			},
 		});
 		
+		// 더보기 버튼
+		function andContent() {			
+			const nextPageBtn = $("#nextPageBtn");
+			   
+			let	page = 1;
+			
+			let endPage = $("#endPage").val();
+			
+			if (endPage == page) {
+				nextPageBtn.hide();
+			}
+			
+			nextPageBtn.click(function(){
+				page++;
+				console.log("page"+page);
+				
+				$.ajax({
+					url:"/board/list.do",
+					method:"GET",
+					data: {
+						 
+						cpage: pageNum
+					},
+					success: function(response){
+						//page++;
+						const content = $(response).find("#cardContainer").html();
+					 	console.log("endPage:"+endPage);
+						if(endPage == page){
+							nextPageBtn.hide();
+						}
+						$("#cardContainer").append(content);
+						
+						// 각 데이터를 처리하는 함수를 호출합니다.
+						$('.post').each(function() {
+							const createDate = $(this).find('.createDate').val();
+							const deadline = $(this).find('.deadline').val();
+							const status = $(this).find('.status').val();
+							const review = $(this).find('.review').val();
+							
+							processPost.call(this, createDate, deadline, status, review);
+						});
+					}
+				})
+			});
+		}
+		
+		/* 라벨링 */
+		// 각 데이터를 처리하는 함수를 정의합니다.
+		function processPost(createDate, deadline, status, review) {
+			// createDate를 이용하여 처리하는 로직
+			const today = getToday();
+			
+			// 오늘 작성된 글이라면
+			if (today === createDate) {			    
+				$(this).find('.new-label').removeClass('d-none'); // "오늘 마감" 라벨을 보이게 합니다.
+			}
+			
+			// 투표 진행 상태에 따른 "진행 중" OR "마감" 라벨
+			if (status === "A") {
+				$(this).find('.ing-label').removeClass('d-none'); // "진행 중" 라벨을 보이게 합니다.				
+
+				// 진행 중 && 오늘 마감될 투표라면
+				if (deadline === today) {				
+					$(this).find('.deadline-label').removeClass('d-none'); // "오늘 마감" 라벨을 보이게 합니다.
+				}
+			} else if (status === "B") {
+				$(this).find('.close-label').removeClass('d-none'); // "마감" 라벨을 보이게 합니다.
+			} else {
+				$(this).find('.early-close-label').removeClass('d-none'); // "마감" 라벨을 보이게 합니다.				
+			}
+			
+			// review가 존재한다면
+			if (review === "yes") {
+				$(this).find('.review-label').removeClass('d-none'); // "후기" 라벨을 보이게 합니다.
+			}
+		}
+		
 		/*  카테고리  */
 		
 		const popularTab = document.getElementById("popularTab");
@@ -249,7 +334,6 @@
 		
 		//active class 없애기
 		function removeActive(){
-			console.log("removeActive() 실행됨");
 			for(const activeClass of bigCategories) {
 				activeClass.classList.remove("active");
 			}
@@ -307,13 +391,52 @@
 		
 		
 		
+		// 필터 변동 시 사용할 함수 선언
+		function sendAjaxRequest(selectedCategories) {
+			selectedCategories = selectedCategories === null ? null : selectedCategories.join(",");
+			console.log(selectedCategories);
+			
+			$.ajax({
+				url: 'board/list.do',
+				method: 'POST',
+				data: {
+					categories: selectedCategories,
+					cpage: 1
+				},
+				dataType: 'html',
+				success: function(res) {
+				    endPage = $(res).find("#endPage").val();
+				 	console.log("endPage:"+endPage);
+				 	
+					if (endPage == 1){
+						nextPageBtn.hide();
+					}
+					
+					const content = $(res).find("#cardContainer").html();
+					$("#cardContainer").empty();
+					$("#cardContainer").append(content);
+					
+					// 라벨링
+					$('.post').each(function() {
+						const createDate = $(this).find('.createDate').val();
+						const deadline = $(this).find('.deadline').val();
+						const status = $(this).find('.status').val();
+						const review = $(this).find('.review').val();
+						
+						processPost.call(this, createDate, deadline, status, review);
+					});
+				},
+				error: function(xhr, status, error) {
+					console.log('ajax 요청 실패', status, error);
+				}
+			});
+		}
 		//선택된 카테고리 표시
 		
 		//중복 허용 안되는 배열 만들기
 		const selectedBtnIds = new Set();
 	    //클릭된 버튼 넣을 자리
 		const selectedBtnSection = document.querySelector(".selectedBtn");
-	    
 		const nextPageBtn = $("#nextPageBtn");
 		const categoryNextPageBtn = $("#categoryNextPageBtn");
 		//변수 선언
@@ -321,6 +444,7 @@
 		let endPage = 1;
 		let categoriesString = "";
 		//선택된 카테고리 (컨트롤러로 보낼)
+
 		const selectedCategories = new Set();
 	    
 		function selectBtn(){
@@ -356,6 +480,9 @@
 					
 					//클릭된 버튼 아이디 가져오는
 					const btnId = this.getAttribute("id");
+					// 선택된 카테고리의 text 저장
+					const btnText = this.textContent;
+					
 					//클릭하면 버튼 색깔 변경되는
 					let isOutline = this.classList.contains("btn-outline-primary");
 					 if (isOutline) {
@@ -363,6 +490,7 @@
 					 } else {
 						 this.classList.replace("btn-primary", "btn-outline-primary");
 					 }
+					 
 					//클릭된 버튼아이디로 버튼 자체 가져오기
 					const selectedBtn = document.getElementById(btnId);
 					//배열에 선택된 버튼이 존재하는지 확인
@@ -371,23 +499,26 @@
 					const cloneBtn = selectedBtn.cloneNode(true);
 					//복제된 버튼의 id 변경
 					cloneBtn.setAttribute("id",btnId+"-cloned");
-					if(selected) { //배열에 카테고리 존재한다면??
+					
+					if (selected) { //배열에 카테고리 존재한다면??
 						selectedBtnSection.removeChild(document.getElementById(btnId+'-cloned'));
-						console.log("삭제전 :"+Array.from(selectedBtnIds));	
 						selectedBtnIds.delete(btnId);
-						console.log("삭제 :"+Array.from(selectedBtnIds));
+						selectedCategories.delete(btnText);
 						selectedCount--;
 						resetBtnShow();
-					}else { //존재하지 않는다면 버튼 넣기
+					} else { //존재하지 않는다면 버튼 넣기
 						selectedBtnSection.appendChild(cloneBtn);
 						cloneBtn.classList.remove("btn", "btn-primary");
 						cloneBtn.classList.add("bg-secondary", "p-2", "bg-opacity-10", "text-dark", "rounded");
-						console.log("추가전 :"+Array.from(selectedBtnIds));
 						selectedBtnIds.add(btnId);
-						console.log("추가  :"+Array.from(selectedBtnIds));
+						selectedCategories.add(btnText);
 						selectedCount++;
 						resetBtnShow();
 					}
+					
+					const selectedCategoriesArray = Array.from(selectedCategories);
+					console.log("선택된 카테고리: " + selectedCategoriesArray);
+					sendAjaxRequest(selectedCategoriesArray);
 				});
 			}
 		}
@@ -498,6 +629,7 @@
 			categoryPage=1;
 			endPage = 1;
 			categoryMore(categoriesString, categoryPage);
+
 		}) 
 			
 		/*  카테고리 끝*/
@@ -515,36 +647,6 @@
 	// 최초에 화면 로드 시
 	$(document).ready(function() {
 		
-		// 각 데이터를 처리하는 함수를 정의합니다.
-		function processPost(createDate, deadline, status, review) {
-			// createDate를 이용하여 처리하는 로직
-			const today = getToday();
-			
-			// 오늘 작성된 글이라면
-			if (today === createDate) {			    
-				$(this).find('.new-label').removeClass('d-none'); // "오늘 마감" 라벨을 보이게 합니다.
-			}
-			
-			// 투표 진행 상태에 따른 "진행 중" OR "마감" 라벨
-			if (status === "A") {
-				$(this).find('.ing-label').removeClass('d-none'); // "진행 중" 라벨을 보이게 합니다.				
-
-				// 진행 중 && 오늘 마감될 투표라면
-				if (deadline === today) {				
-					$(this).find('.deadline-label').removeClass('d-none'); // "오늘 마감" 라벨을 보이게 합니다.
-				}
-			} else if (status === "B") {
-				$(this).find('.close-label').removeClass('d-none'); // "마감" 라벨을 보이게 합니다.
-			} else {
-				$(this).find('.early-close-label').removeClass('d-none'); // "마감" 라벨을 보이게 합니다.				
-			}
-			
-			// review가 존재한다면
-			if (review === "yes") {
-				$(this).find('.review-label').removeClass('d-none'); // "후기" 라벨을 보이게 합니다.
-			}
-		}
-
 		// 각 데이터를 처리하는 함수를 호출합니다.
 		$('.post').each(function() {
 			const createDate = $(this).find('.createDate').val();
@@ -552,11 +654,10 @@
 			const status = $(this).find('.status').val();
 			const review = $(this).find('.review').val();
 			
-			console.log(createDate, deadline, status, review);
-			
 			processPost.call(this, createDate, deadline, status, review);
 		});
 		
+
 		// 더보기 버튼
 		const nextPageBtn = $("#nextPageBtn");
 		const searchNextPageBtn = $("#searchNextPageBtn");
@@ -668,6 +769,7 @@
 				})
 			});
 		 }
+
 	});
 	
 	</script>

@@ -42,7 +42,7 @@
 		<result column="c_delete_date" property="deleteDate"></result>
 	</resultMap>
 	
-	<select id="selectListCount" resultType="_int">
+	<select id="selectListCount" resultType="_int" parameterType="java.util.HashMap">
 		SELECT COUNT(*) FROM POST
 		WHERE P_DELETE_DATE IS NULL
 		<if test="categories != null and !categories.isEmpty()">
@@ -51,15 +51,9 @@
 				#{category}
 			</foreach>
 		</if>
-		<if test="keyword != null and keyword != ''">
-		AND {
-			p_title LIKE '%' || #{keyword} || '%'
-         OR p_content LIKE '%' || #{keyword} || '%'
-         OR p_review LIKE '%' || #{keyword} || '%'
-         OR p_vote_title LIKE '%' || #{keyword} || '%'
-         OR p_vote_1ST LIKE '%' || #{keyword} || '%'
-         OR p_vote_2ND LIKE '%' || #{keyword} || '%'
-		}
+		<if test="status != null and !status.isEmpty()">
+			AND
+			P_STATUS = #{status}
 		</if>
 		<if test="searchTxt != null and searchTxt != ''">
 		AND (UPPER(p_title) LIKE '%'||#{searchTxt}||'%'

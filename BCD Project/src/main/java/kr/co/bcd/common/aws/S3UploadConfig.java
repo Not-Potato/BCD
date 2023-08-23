@@ -25,7 +25,6 @@ public class S3UploadConfig {
 	
 	@Bean
 	public AmazonS3 amazonS3() {
-		System.out.println(region);
 		AWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
 		
 		return AmazonS3ClientBuilder.standard()

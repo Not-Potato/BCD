@@ -24,7 +24,6 @@ public class S3UploadService {
 	public String upload(MultipartFile multipartFile, String fileName) throws IOException {
 //		String originalFilename = multipartFile.getOriginalFilename();
 		
-		System.out.println(bucket);
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(multipartFile.getSize());
         metadata.setContentType(multipartFile.getContentType());
