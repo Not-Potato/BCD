@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="chatMapper">
+	<resultMap type="chatMsg" id="chatMsgResultSet">
+		<result column="cm_idx" property="idx"></result>
+		<result column="cr_idx" property="roomIdx"></result>
+		<result column="m_idx" property="senderIdx"></result>
+		<result column="cm_content" property="content"></result>
+		<result column="cm_send_date" property="sendDate"></result>
+	</resultMap>
+
+	<resultMap type="chatRoom" id="chatRoomResultSet">
+		<result column="cr_idx" property="idx"></result>
+		<result column="cr_participants" property="participants"></result>
+		<result column="cr_category" property="category"></result>
+		<result column="cr_title" property="title"></result>
+		<result column="cr_create_date" property="createDate"></result>
+		<result column="cr_end_date" property="entDate"></result>
+	</resultMap>
+	
+	<select id="selectListCount" resultType="_int">
+		SELECT COUNT(*)FROM CHAT_ROOM
+		WHERE cr_end_date IS NULL
+		<if test="categories != null and !categories.isEmpty()">
+			AND cr_category IN
+			<foreach collection="categories" item="category" open="(" separator="," close=")">
+				#{category}
+			</foreach>
+		</if>
+		<if test="searchTxt != null and searchTxt != ''">
+		AND UPPER(cr_title) LIKE '%'||#{searchTxt}||'%'
+		</if>
+	</select>
+	
+	<select id="selectListAll" resultMap="chatRoomResultSet">
+		SELECT * FROM CHAT_ROOM
+		WHERE cr_end_date IS NULL
+		<if test="categories != null and !categories.isEmpty()">
+			AND cr_category IN
+			<foreach collection="categories" item="category" open="(" separator="," close=")">
+				#{category}
+			</foreach>
+		</if>
+		<if test="searchTxt != null and searchTxt != ''">
+		AND UPPER(cr_title) LIKE '%'||#{searchTxt}||'%'
+		</if>
+		ORDER BY cr_idx DESC
+	</select>
+	
+	<insert id = "createChatRoom" parameterType="ChatRoom">
+		<selectKey keyProperty="idx" resultType="int" order="AFTER">
+        	SELECT CR_IDX_SEQUENCE.CURRVAL FROM DUAL
+    	</selectKey>
+		INSERT INTO chat_room (CR_IDX,
+						   	   CR_PARTICIPANTS,
+							   CR_CATEGORY,
+							   CR_TITLE,
+							   CR_CREATE_DATE
+							   )
+					VALUES(CR_IDX_SEQUENCE.NEXTVAL, 
+							   #{participants},
+							   #{category},
+							   #{title}, 
+							   SYSDATE
+							   )
+		
+	</insert>
+	<select id="enterChatRoom" resultMap="chatRoomResultSet">
+		SELECT CR_IDX, CR_PARTICIPANTS, CR_CATEGORY,CR_TITLE,CR_CREATE_DATE
+		FROM CHAT_ROOM
+		WHERE CR_IDX = #{idx}
+	</select>
+	
+	<insert id="msgSave" parameterType="ChatMsg">
+			 INSERT INTO CHAT_MESSAGE (CM_IDX,CR_IDX,M_IDX,CM_CONTENT,CM_SEND_DATE) VALUES(CM_IDX_SEQUENCE.NEXTVAL,#{roomIdx},#{senderIdx},#{content},SYSDATE)
+	</insert>
+	
+	<update id="updateParticipants" parameterType="ChatRoom" >
+		UPDATE chat_room SET CR_PARTICIPANTS = #{participants} WHERE CR_IDX=#{idx}
+	</update>
+	
+	<delete id="deleteChatRoom" parameterType="int">
+		DELETE FROM chat_room WHERE CR_IDX=#{idx}
+	</delete>
+	
+	<delete id="deleteChatMsg" parameterType="int">
+		DELETE FROM chat_message WHERE CR_IDX=#{idx}
+	</delete>
+	<update id="modifyChatRoom">
+		UPDATE chat_room set CR_TITLE = #{title}, CR_CATEGORY = #{category} WHERE CR_IDX=#{idx}
+	</update>
+	<select id="previousChat" resultMap="chatMsgResultSet">
+		SELECT *
+		FROM chat_message 
+		WHERE CR_IDX = #{idx}
+		ORDER BY CM_SEND_DATE ASC
+	</select>
+	<select id="getPopularCategories" resultType="string">
+	    SELECT cr_category
+	    FROM CHAT_ROOM
+	    WHERE cr_end_date IS NULL
+	    GROUP BY cr_category
+	    ORDER BY COUNT(*) DESC
+	    FETCH FIRST 3 ROWS ONLY
+	</select>
+	
+	
+	
+</mapper>
