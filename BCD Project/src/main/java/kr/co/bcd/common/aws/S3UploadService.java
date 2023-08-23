@@ -17,14 +17,13 @@ import lombok.RequiredArgsConstructor;
 public class S3UploadService {
 	private final AmazonS3 amazonS3;
 	
-//	@Value("${aws.bucketName}")
+	@Value("${aws.bucketName}")
 	private String bucket;
 
 	// upload
 	public String upload(MultipartFile multipartFile, String fileName) throws IOException {
 //		String originalFilename = multipartFile.getOriginalFilename();
 		
-		System.out.println(bucket);
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(multipartFile.getSize());
         metadata.setContentType(multipartFile.getContentType());
