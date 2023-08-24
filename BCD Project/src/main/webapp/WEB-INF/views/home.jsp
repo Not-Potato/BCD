@@ -512,7 +512,6 @@
 					
 					const selectedCategoriesArray = Array.from(selectedCategories);
 					console.log("선택된 카테고리: " + selectedCategoriesArray);
-					sendAjaxRequest(selectedCategoriesArray);
 				});
 			}
 		}
