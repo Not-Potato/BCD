@@ -84,7 +84,7 @@ body{
 
 .people-list img {
     float: left;
-    border-radius: 50%
+    border-radius: !important 50%;
 }
 
 .people-list .about {

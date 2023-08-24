@@ -45,35 +45,30 @@
 	<select id="selectListCount" resultType="_int" parameterType="java.util.HashMap">
 		SELECT COUNT(*) FROM POST
 		WHERE P_DELETE_DATE IS NULL
-		<if test="categoryList != null and !categoryList.isEmpty()">
-			AND P_SUB_CATEGORY IN
-			<foreach collection="categoryList" item="category" open="(" separator="," close=")">
-				 #{category}
+		<if test="categories != null and !categories.isEmpty()">
+		AND P_SUB_CATEGORY IN
+			<foreach collection="categories" item="category" open="(" separator="," close=")">
+				#{category}
 			</foreach>
 		</if>
 		<if test="status != null and !status.isEmpty()">
 			AND
 			P_STATUS = #{status}
 		</if>
+		<if test="searchTxt != null and searchTxt != ''">
+		AND (UPPER(p_title) LIKE '%'||#{searchTxt}||'%'
+		OR UPPER(p_content) LIKE '%'||#{searchTxt}||'%')
+		</if>
 	</select>
 	
 	<select id="selectListAll" resultMap="postResultSet">
 		SELECT * FROM POST
 		WHERE P_DELETE_DATE IS NULL 
-		<if test="categoryList != null and !categoryList.isEmpty()">
-			AND P_SUB_CATEGORY IN
-			<foreach collection="categoryList" item="category" open="(" separator="," close=")">
-				 #{category}
+		<if test="categories != null and !categories.isEmpty()">
+		AND P_SUB_CATEGORY IN
+			<foreach collection="categories" item="category" open="(" separator="," close=")">
+				#{category}
 			</foreach>
-		</if>
-		ORDER BY p_create_date DESC
-	</select>
-	
-	<select id="selectListAll2" resultMap="postResultSet">
-		SELECT * FROM POST
-		WHERE P_DELETE_DATE IS NULL 
-		<if test="category != null and category != ''">
-		AND P_SUB_CATEGORY = #{category}
 		</if>
 		<if test="keyword != null and keyword != ''">
 		AND {
@@ -85,7 +80,11 @@
          OR p_vote_2ND LIKE '%' || #{keyword} || '%'
 		}
 		</if>
-		ORDER BY p_create_date DESC
+		<if test="searchTxt != null and searchTxt != ''">
+		AND (UPPER(p_title) LIKE '%'||#{searchTxt}||'%'
+		OR UPPER(p_content) LIKE '%'||#{searchTxt}||'%')
+		</if>
+		ORDER BY p_idx DESC
 	</select>
 	
 	<insert id="insertPost" parameterType="Post">
@@ -168,11 +167,11 @@
 			WHERE P_IDX = #{idx}
 	</update>
 	
-	<select id="selectPopularCategory" resultMap="postResultSet">
-		SELECT P_MAIN_CATEGORY, P_SUB_CATEGORY
+	<select id="selectPopularCategory" resultType="string">
+		SELECT P_SUB_CATEGORY
 		FROM POST
 		WHERE P_DELETE_DATE IS NULL
-		GROUP BY P_MAIN_CATEGORY, P_SUB_CATEGORY
+		GROUP BY P_SUB_CATEGORY
 		ORDER BY COUNT(*) DESC
 		FETCH FIRST 3 ROWS ONLY
 	</select>
@@ -284,4 +283,19 @@
 		WHERE P_IDX = #{postIdx}
 		AND M_IDX = #{memIdx}
 	</delete>
+	
+	<select id="selectMyListCount" resultType="_int">
+		SELECT COUNT(*) FROM POST
+		WHERE m_idx = #{memIdx} AND P_DELETE_DATE IS NULL
+    </select>
+    
+    <select id="selectMyListAll" resultMap="postResultSet">
+		SELECT * FROM POST
+		WHERE m_idx = #{memIdx} AND P_DELETE_DATE IS NULL 
+		ORDER BY p_create_date DESC
+	</select>
+	
+	
+	
+	
 </mapper>

@@ -4,7 +4,6 @@
 <html lang="ko" class="h-100">
 <head>
 	<%@ include file="./common/head.jsp" %>
-	<!-- 제발 . . -->
 	<!-- swiper plugin -->
 	<script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
 	<link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
@@ -44,23 +43,23 @@
 				<div class="card-header bg-transparent" id="bigCategories">
 					<ul class="nav nav-tabs card-header-tabs">
 						<li class="nav-item">
-							<a class="nav-link active text-primary" aria-current="true"  id=popularTab>인기항목</a>
+							<a class="nav-link active text-primary" aria-current="true" id=popularTab style="cursor: pointer;">인기항목</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link text-dark"  id="ventiTab">Venti Size</a>
+							<a class="nav-link text-dark"  id="ventiTab" style="cursor: pointer;">Venti Size</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link text-dark"  id="tallTab">Tall Size</a>
+							<a class="nav-link text-dark"  id="tallTab" style="cursor: pointer;">Tall Size</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link text-dark"  id="allCategoryTab">All</a>
+							<a class="nav-link text-dark"  id="allCategoryTab" style="cursor: pointer;">All</a>
 						</li>
 					</ul>
 				</div>
 				<div class="card-body ps-0">
 				 	<!-- 소분류 -->
 					<div class="mb-2 d-flex gap-1" id="smallCategories">
-<c:choose>
+<!--<c:choose>
 	<c:when test="${empty popular}">
 						<a class="btn btn-outline-primary popular" data-category="Venti Size"  data-popular="yes" id="popular1">사회/이슈</a>
 						<a class="btn btn-outline-primary popular" data-category="Venti Size"  data-popular="yes" id="popular2">연애/결혼</a>
@@ -71,16 +70,16 @@
 						<a class="btn btn-outline-primary popular" data-category="${ item.value }" data-popular="yes" id="popular${ status.count }">${ item.key }</a>
 		</c:forEach>
 	</c:otherwise>
-</c:choose>						
-						<a class="btn btn-outline-primary d-none" data-category="Venti Size" id="ventiSize1">연애/결혼</a>
-						<a class="btn btn-outline-primary d-none" data-category="Venti Size" id="ventiSize2">가족/친구</a>
-						<a class="btn btn-outline-primary d-none" data-category="Venti Size" id="ventiSize3">학교/직장</a>
-						<a class="btn btn-outline-primary d-none" data-category="Venti Size" id="ventiSize4">사회/이슈</a>
+</c:choose>		-->				
+						<a class="btn btn-outline-primary" data-category="Venti Size" id="ventiSize1">연애/결혼</a>
+						<a class="btn btn-outline-primary" data-category="Venti Size" id="ventiSize2">가족/친구</a>
+						<a class="btn btn-outline-primary" data-category="Venti Size" id="ventiSize3">학교/직장</a>
+						<a class="btn btn-outline-primary" data-category="Venti Size" id="ventiSize4">사회/이슈</a>
 						
-						<a class="btn btn-outline-primary d-none" data-category="Tall Size" id="tallSize1">점메추</a>
-						<a class="btn btn-outline-primary d-none" data-category="Tall Size" id="tallSize2">깻잎논쟁</a>
-						<a class="btn btn-outline-primary d-none" data-category="Tall Size" id="tallSize3">할까말까</a>
-						<a class="btn btn-outline-primary d-none" data-category="Tall Size" id="tallSize4">최애픽</a>
+						<a class="btn btn-outline-primary" data-category="Tall Size" id="tallSize1">점메추</a>
+						<a class="btn btn-outline-primary" data-category="Tall Size" id="tallSize2">깻잎논쟁</a>
+						<a class="btn btn-outline-primary" data-category="Tall Size" id="tallSize3">할까말까</a>
+						<a class="btn btn-outline-primary" data-category="Tall Size" id="tallSize4">최애픽</a>
 					</div>
 					
 					<!-- 적용된 필터 -->
@@ -124,8 +123,9 @@
 					</ul>
 				</div>
 				
-<!-- 				<div>
-					드롭다운 정렬
+
+				<div>
+					<!-- 드롭다운 정렬 
 					<div class="btn-group">
 						<button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
 							전체
@@ -135,8 +135,9 @@
 							<li><a class="dropdown-item" href="#">참여도순</a></li>
 							<li><a class="dropdown-item" href="#">댓글 많은 순</a></li>
 						</ul>
-					</div>
-				</div> -->
+
+					</div>-->
+				</div>
 			</div>
 			
 			<div class="row" id="cardContainer">
@@ -212,12 +213,15 @@
 		</c:forEach>
 	</c:otherwise>
 </c:choose>			
-				<div class="mb-3 d-flex justify-content-center">
-		   	        <button type="button" class="btn btn-link" id="nextPageBtn">더보기</button> 
-		        	<input type="hidden" value="${pi.endPage}" id="endPage">
-			    </div>
+				
 			</div>
 		</main>
+		<div class="mb-3 d-flex justify-content-center">
+   	        <button type="button" class="btn btn-link " id="nextPageBtn">더보기</button> 
+     	    <button type="button" class="btn btn-link " id="searchNextPageBtn">더보기</button> 
+        	<button type="button" class="btn btn-link" id="categoryNextPageBtn">더보기</button> 
+        	<input type="hidden" value="${pi.endPage}" id="endPage">
+	    </div>
 	</div>
 	
 	<%@ include file="./common/footer.jsp" %>
@@ -311,18 +315,16 @@
 		}
 		
 		/*  카테고리  */
-		const popularTab = $("#popularTab");
-		const ventiTab = $("#ventiTab");
-		const tallTab = $("#tallTab");
-		const allCategoryTab = $("#allCategoryTab");
 		
-		const popularCategories = $(".popular");
-		const bigCategories=  $("#bigCategories a");
-		const smallCategories = $("#smallCategories a");
-		 
-		const selectedBtnTag= $(".selectedBtn a");
-		
+		const popularTab = document.getElementById("popularTab");
+		const ventiTab = document.getElementById("ventiTab");
+		const tallTab = document.getElementById("tallTab");
+		const allCategoryTab = document.getElementById("allCategoryTab");
+		const bigCategories= document.getElementById("bigCategories").getElementsByTagName("a");
+		const smallCategories= document.getElementById("smallCategories").getElementsByTagName("a");
 		let selectedCount = 0;
+		//인기항목 json
+		const popularCategory = ${popularCategoryJson};
 		
 		//active class 없애기
 		function removeActive(){
@@ -330,34 +332,59 @@
 				activeClass.classList.remove("active");
 			}
 		}
-		
-		const categoryTabs = {
-			'popularTab': 'popular',
-			'ventiTab': 'Venti Size',
-			'tallTab': 'Tall Size'
-		};
-		
-		$('#allCategoryTab').click(function() {
+		//인기항목
+		popularTab.addEventListener("click", function() {
 			removeActive();
-			$('#allCategoryTab').addClass('active');
-			$('#smallCategories a').removeClass('d-none');
-		});
-		
-		$.each(categoryTabs, function(tabId, category) {
-			$('#' + tabId).click(function() {
-				removeActive();
-				$('#' + tabId).addClass('active');
-				$('#smallCategories a').addClass('d-none');
-				$('#smallCategories a[data-category="' + category + '"]').removeClass('d-none');
-		    
-				// 추가 기능: 인기 카테고리 탭일 때만 해당 내용 추가
-				if (category === 'popular') {
-					$('#smallCategories a[data-popular="yes"]').removeClass('d-none');
-					$('#smallCategories a[data-popular!="yes"]').addClass('d-none');
+			popularTab.classList.add("active");
+			for(const smallCategory of smallCategories){
+				console.log("smallCategory : "+smallCategory.textContent);
+				console.log("popularCategory : "+popularCategory);
+				if(popularCategory.includes(smallCategory.textContent.trim())){
+					smallCategory.style.display = "block";
+				}else {
+					smallCategory.style.display = "none";
 				}
-			});
+			}
 		});
 		
+		ventiTab.addEventListener("click", function() {
+			removeActive();
+			ventiTab.classList.add("active");
+			selectedCategory = "Venti Size"
+			showCategories(selectedCategory);
+		});
+		tallTab.addEventListener("click", function() {
+			removeActive();
+			tallTab.classList.add("active");
+			selectedCategory = "Tall Size"
+			showCategories(selectedCategory);
+		});
+		allCategoryTab.addEventListener("click", function() {
+			removeActive();
+			allCategoryTab.classList.add("active");
+			for(const category of smallCategories){
+	      		category.style.display = "block"; 
+			}
+		});
+		
+		window.onload = function() {
+			popularTab.click();
+	    };
+		
+	  //대분류에 맞는 카테고리 가져오기
+		function showCategories(selectedCategory){
+			for(const category of smallCategories){
+				if (category.getAttribute("data-category") == selectedCategory ) {
+	      			category.style.display = "block"; 
+				}else {
+					category.style.display = "none"; 
+				}
+				console.log("카테고리 : "+category.getAttribute("data-category"));
+			}
+		}	
+		
+		
+	/*	
 		// 필터 변동 시 사용할 함수 선언
 		function sendAjaxRequest(selectedCategories) {
 			selectedCategories = selectedCategories === null ? null : selectedCategories.join(",");
@@ -397,21 +424,54 @@
 					console.log('ajax 요청 실패', status, error);
 				}
 			});
-		}
+		}*/
 		//선택된 카테고리 표시
 		
 		//중복 허용 안되는 배열 만들기
 		const selectedBtnIds = new Set();
 	    //클릭된 버튼 넣을 자리
 		const selectedBtnSection = document.querySelector(".selectedBtn");
-	    
-		// 카테고리를 담을 배열
+		const nextPageBtn = $("#nextPageBtn");
+		const categoryNextPageBtn = $("#categoryNextPageBtn");
+		//변수 선언
+		let categoryPage = 1;
+		let endPage = 1;
+		let categoriesString = "";
+		//선택된 카테고리 (컨트롤러로 보낼)
+
 		const selectedCategories = new Set();
 	    
 		function selectBtn(){
 			
 			for(const btn of smallCategories){
+				//카테고리 가져오기
+				const category = btn.textContent;
+				
 				btn.addEventListener("click", function(){
+				console.log("버튼 텍스트 : "+category);
+					//초기화
+					categoryPage = 1;
+					endPage = 1;
+					categoriesString = "";
+					
+					if(selectedCategories.has(category)){
+						selectedCategories.delete(category);
+					}else{
+						selectedCategories.add(category);
+					}
+					
+					//set을 배열로 변환
+					const categoriesArray = Array.from(selectedCategories);
+					if(selectedCategories.size>0){
+						//배열을 string으로
+						categoriesString = categoriesArray.join(",");
+						console.log("categoriesStringㄴㄴㄴㄴ : "+categoriesString);
+					}else{ 
+						categoriesString = "";
+					}
+					
+					categoryMore(categoriesString, categoryPage);
+					
 					//클릭된 버튼 아이디 가져오는
 					const btnId = this.getAttribute("id");
 					// 선택된 카테고리의 text 저장
@@ -452,11 +512,87 @@
 					
 					const selectedCategoriesArray = Array.from(selectedCategories);
 					console.log("선택된 카테고리: " + selectedCategoriesArray);
-					sendAjaxRequest(selectedCategoriesArray);
 				});
 			}
 		}
 		selectBtn();
+		
+		//카테고리 정렬
+		function categoryMore(categoriesString, categoryPage){
+			$.ajax({
+				type : "GET",
+				url : "/board/list.do",
+				data : {
+					categories : categoriesString,
+					cpage : categoryPage
+				},
+				contentType : "application/json",
+				success:function(data){
+					nextPageBtn.hide();
+					const categoryEndPage = $(data).find("#endPage").val();
+					const categoryContent = $(data).find("#cardContainer").html();
+					
+					if(categoryPage == 1){
+						$("#cardContainer").empty();
+					}
+					if(categoryEndPage<=categoryPage){
+						categoryNextPageBtn.hide();
+					}else{
+						categoryNextPageBtn.show();
+					}
+					$("#cardContainer").append(categoryContent);
+					function processPost(createDate, deadline, status, review){
+						// createDate를 이용하여 처리하는 로직
+						const today = getToday();
+						
+						// 오늘 작성된 글이라면
+						if (today === createDate) {			    
+							$(this).find('.new-label').removeClass('d-none'); // "오늘 마감" 라벨을 보이게 합니다.
+						}
+						
+						// 투표 진행 상태에 따른 "진행 중" OR "마감" 라벨
+						if (status === "A") {
+							$(this).find('.ing-label').removeClass('d-none'); // "진행 중" 라벨을 보이게 합니다.				
+
+							// 진행 중 && 오늘 마감될 투표라면
+							if (deadline === today) {				
+								$(this).find('.deadline-label').removeClass('d-none'); // "오늘 마감" 라벨을 보이게 합니다.
+							}
+						} else if (status === "B") {
+							$(this).find('.close-label').removeClass('d-none'); // "마감" 라벨을 보이게 합니다.
+						} else {
+							$(this).find('.early-close-label').removeClass('d-none'); // "마감" 라벨을 보이게 합니다.				
+						}
+						
+						// review가 존재한다면
+						if (review === "yes") {
+							$(this).find('.review-label').removeClass('d-none'); // "후기" 라벨을 보이게 합니다.
+						}
+					}
+
+					// 각 데이터를 처리하는 함수를 호출합니다.
+					$('.post').each(function() {
+						const createDate = $(this).find('.createDate').val();
+						const deadline = $(this).find('.deadline').val();
+						const status = $(this).find('.status').val();
+						const review = $(this).find('.review').val();
+						
+						console.log(createDate, deadline, status, review);
+						
+						processPost.call(this, createDate, deadline, status, review);
+					});
+				},
+				error:function(error){
+					console.error("error");
+				}
+			});
+			
+		}
+		categoryNextPageBtn.click(function(){
+			endPage = 1;
+			categoryPage++;
+			categoryMore(categoriesString, categoryPage);
+		});
 		
 		//초기화 버튼
 		const resetBtn = document.getElementById("resetBtn");
@@ -479,10 +615,14 @@
 				
 			}
 			selectedBtnIds.clear();
-			selectedCategories.clear();
 			selectedCount = 0;
 			resetBtnShow();
-			console.log("선택된 카테고리: " + Array.from(selectedCategories));
+			selectedCategories.clear();
+			categoriesString = "";
+			categoryPage=1;
+			endPage = 1;
+			categoryMore(categoriesString, categoryPage);
+
 		}) 
 			
 		/*  카테고리 끝*/
@@ -499,21 +639,6 @@
 		
 	// 최초에 화면 로드 시
 	$(document).ready(function() {
-		// 인기 카테고리 중복 건 삭제
-		const duplicateElements = {};
-		
-		const allElements = $('#smallCategories a');
-		
-		allElements.each(function() {
-			const text = $(this).text(); // 요소의 내용 가져오기
-			if (duplicateElements[text]) {
-				// 중복된 요소가 이미 있는 경우 삭제
-				$(this).remove();
-			} else {
-				// 중복되지 않은 경우 객체에 추가
-				duplicateElements[text] = true;
-			}
-		});
 		
 		// 각 데이터를 처리하는 함수를 호출합니다.
 		$('.post').each(function() {
@@ -525,7 +650,119 @@
 			processPost.call(this, createDate, deadline, status, review);
 		});
 		
-		andContent();
+
+		// 더보기 버튼
+		const nextPageBtn = $("#nextPageBtn");
+		const searchNextPageBtn = $("#searchNextPageBtn");
+		const categoryNextPageBtn = $("#categoryNextPageBtn");
+		   
+		let	page = 1;
+		const currentUrl = window.location.href;
+		
+		//페이지 이동했을 시 (검색창에 검색어 입력해서 옴)
+		if(currentUrl.includes("searchTxt")){
+			nextPageBtn.hide();
+			categoryNextPageBtn.hide();
+			//쿼리스트링에서 searchTxt 가져오기.
+			// ?searchTxt=""로 반환 -> 첫번째 글자인 ?를 빼면 searchTxt="" 가져옴
+			const queryString = window.location.search.substring(1); 
+			const params = new URLSearchParams(queryString);
+			const searchTxt = params.get("searchTxt");
+			
+			let searchPage = 1;
+	    	let searchEndPage = 1; // endPage 초기화
+	    	
+	    	afterSearch(searchTxt);
+			
+			//더보기 버튼
+			  searchNextPageBtn.click(function(){
+				 searchPage++;
+				 afterSearch(searchTxt);
+			 }); 
+			
+			  function afterSearch(searchTxt){
+			  		
+					console.log("들어왔나 애프터");
+			  		
+			  		$.ajax({
+			  			url : "http://localhost:8080/board/list.do",
+			  			method:"GET",
+			  			data:{searchTxt : searchTxt,
+			  				  cpage : searchPage},
+			  			success:function(response){
+			  				
+			  				console.log("url:"+window.location.href);
+			  				console.log(searchPage+"searchPage");
+			  				
+			  		
+			  				const searchEndPage = $(response).find("#endPage").val();
+			  				const searchContent = $(response).find("#cardContainer").html();
+							console.log("searchend...Page"+searchEndPage);
+			  				
+			  				if(searchPage==1){
+				  				$("#cardContainer").empty();
+			  				} 
+			  				
+							if(searchEndPage<=searchPage){
+				 				searchNextPageBtn.hide(); 
+				 			} else {
+				 				console.log("else")
+				 				searchNextPageBtn.show(); // 다음 페이지가 있을 때는 더보기 버튼을 보여줌
+				 					
+			 				}
+			 				$("#cardContainer").append(searchContent);
+			 				
+			 				//뱃지
+			 				$('.post').each(function() {
+			 					const createDate = $(this).find('.createDate').val();
+			 					const deadline = $(this).find('.deadline').val();
+			 					const status = $(this).find('.status').val();
+			 					const review = $(this).find('.review').val();
+			 					
+			 					console.log(createDate, deadline, status, review);
+			 					
+			 					processPost.call(this, createDate, deadline, status, review);
+			 				});
+			  			}//success
+			  		});//ajax
+			  }//afterSearch
+		}//if
+		else{
+			categoryNextPageBtn.hide();
+			searchNextPageBtn.hide();
+			nextPageBtn.click(function(){
+				page++;
+				console.log("HOMEpage"+page);
+					
+				$.ajax({
+					url:"/board/list.do?cpage="+page,
+					method:"GET",
+					success: function(response){
+						//page++;
+						const content = $(response).find("#cardContainer").html();
+					    endPage = $("#endPage").val();
+					 	console.log("HOMEendPage:"+endPage);
+						if(endPage <= page){
+							nextPageBtn.hide();
+						}
+						$("#cardContainer").append(content);
+						
+						// 각 데이터를 처리하는 함수를 호출합니다.
+						$('.post').each(function() {
+							const createDate = $(this).find('.createDate').val();
+							const deadline = $(this).find('.deadline').val();
+							const status = $(this).find('.status').val();
+							const review = $(this).find('.review').val();
+							
+							console.log(createDate, deadline, status, review);
+							
+							processPost.call(this, createDate, deadline, status, review);
+						});
+					}
+				})
+			});
+		 }
+
 	});
 	
 	</script>

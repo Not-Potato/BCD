@@ -23,19 +23,28 @@
 	<select id="selectListCount" resultType="_int">
 		SELECT COUNT(*)FROM CHAT_ROOM
 		WHERE cr_end_date IS NULL
-		<if test="category != null and category != ''">
-		AND cr_category = #{category}
+		<if test="categories != null and !categories.isEmpty()">
+			AND cr_category IN
+			<foreach collection="categories" item="category" open="(" separator="," close=")">
+				#{category}
+			</foreach>
+		</if>
+		<if test="searchTxt != null and searchTxt != ''">
+		AND UPPER(cr_title) LIKE '%'||#{searchTxt}||'%'
 		</if>
 	</select>
 	
 	<select id="selectListAll" resultMap="chatRoomResultSet">
 		SELECT * FROM CHAT_ROOM
 		WHERE cr_end_date IS NULL
-		<if test="category != null and category != ''">
-		AND cr_category = #{category}
+		<if test="categories != null and !categories.isEmpty()">
+			AND cr_category IN
+			<foreach collection="categories" item="category" open="(" separator="," close=")">
+				#{category}
+			</foreach>
 		</if>
 		<if test="searchTxt != null and searchTxt != ''">
-		AND cr_title LIKE '%'||#{searchTxt}||'%'
+		AND UPPER(cr_title) LIKE '%'||#{searchTxt}||'%'
 		</if>
 		ORDER BY cr_idx DESC
 	</select>
@@ -87,6 +96,14 @@
 		FROM chat_message 
 		WHERE CR_IDX = #{idx}
 		ORDER BY CM_SEND_DATE ASC
+	</select>
+	<select id="getPopularCategories" resultType="string">
+	    SELECT cr_category
+	    FROM CHAT_ROOM
+	    WHERE cr_end_date IS NULL
+	    GROUP BY cr_category
+	    ORDER BY COUNT(*) DESC
+	    FETCH FIRST 3 ROWS ONLY
 	</select>
 	
 	

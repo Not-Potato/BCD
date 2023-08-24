@@ -36,18 +36,18 @@
 		          	<h2 class="fs-5 mb-3 text-center">어떤 주제로 얘기하고 싶나요?</h2>
 			         <div class="form-floating mb-3">
 			            <select class="form-select" id="floatingSelectGrid" name="bigCategory" onchange="changeCategoryOptions()">
-			                <option value="basis" disabled selected>큰 분류</option>
-			                <option value="value1" ${result.category == '진로' || result.category == '돈'? 'selected' : ''}>무거운 주제</option>
-			                <option value="value2" ${result.category == '옷' || result.category == '음식'? 'selected' : ''}>가벼운 주제</option>
+			                <option value="basis" disabled selected>Venti Size</option>
+			                <option value="value1" ${result.category == '연애/결혼' || result.category == '가족/친구' || result.category == '학교/직장'|| result.category == '사회/이슈'? 'selected' : ''}>Venti Size</option>
+			                <option value="value2" ${result.category == '점메추' || result.category == '깻잎논쟁' || result.category == '할까말까' || result.category == '최애픽'? 'selected' : ''}>Tall Size</option>
 			            </select>
-			            <label for="floatingSelectGrid">크게</label>
+			            <label for="floatingSelectGrid">✧˳⁺⁎₊✧˚˳⁺⁎₊𝙋𝙡𝙚𝙖𝙨𝙚 𝙘𝙝𝙤𝙤𝙨𝙚₊⁎⁺˳˚✧₊⁎⁺˳✧</label>
 			         </div>
 			         <div class="form-floating mb-3">
 			          	<select class="form-select" id="smallSelectGrid" name="category">
 			               <option value="${result.category}">${result.category}</option>
 			               
 			            </select>
-			            <label for="smallSelectGrid">작게</label>
+			            <label for="smallSelectGrid">✧˳⁺⁎₊✧˚˳⁺⁎₊𝙋𝙡𝙚𝙖𝙨𝙚 𝙘𝙝𝙤𝙤𝙨𝙚₊⁎⁺˳˚✧₊⁎⁺˳✧</label>
 			         </div>
 		          	  <hr class="my-4">
 		              <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary">수정하기</button>
@@ -72,11 +72,12 @@
 	                <ul class="list-unstyled chat-list me-0 mb-0">
 <c:choose>
 	<c:when test="${not empty participantsList}">
-			<c:forEach var="item" items="${participantsList}" varStatus="loop">        
+			<c:forEach var="profile" items="${profileMap}" varStatus="loop">        
 	                    <li class="d-flex align-items-center">
-	                        <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="avatar">
+	                        <img src="${profile.value}" alt="프로필">
+	                   <!-- <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="avatar">-->
 	                        <div class="about">
-	                            <div class="name fs-7">${item}</div>
+	                            <div class="name fs-7">${profile.key}</div>
 	                        </div>
 	                    </li>
 	         </c:forEach>      
@@ -336,7 +337,7 @@
 								sendInfo.appendChild(sendNickname);
 									sendNickname.textContent=message.senderNickname;
 								sendInfo.appendChild(sendImg);
-									sendImg.setAttribute("src", "https://bootdey.com/img/Content/avatar/avatar7.png");
+									sendImg.setAttribute("src", message.memberProfile);
 									sendImg.setAttribute("alt", "profile");
 								
 						}else {
@@ -356,7 +357,7 @@
 							receiveDiv.appendChild(receiveInfo);
 							receiveDiv.appendChild(receiveMsgDiv);
 								receiveInfo.appendChild(receiveImg);
-									receiveImg.setAttribute("src", "https://bootdey.com/img/Content/avatar/avatar7.png");
+									receiveImg.setAttribute("src", message.memberProfile);
 									receiveImg.setAttribute("alt", "profile");
 								receiveInfo.appendChild(receiveNickname);
 									console.log("보낸사람 닉네임 : " + message);
@@ -386,7 +387,7 @@
 						sendInfo.appendChild(sendNickname);
 							sendNickname.textContent=message.senderNickname;
 						sendInfo.appendChild(sendImg);
-							sendImg.setAttribute("src", "https://bootdey.com/img/Content/avatar/avatar7.png");
+							sendImg.setAttribute("src", message.memberProfile);
 							sendImg.setAttribute("alt", "profile");
 						
 				}else {
@@ -406,7 +407,7 @@
 					receiveDiv.appendChild(receiveInfo);
 					receiveDiv.appendChild(receiveMsgDiv);
 						receiveInfo.appendChild(receiveImg);
-							receiveImg.setAttribute("src", "https://bootdey.com/img/Content/avatar/avatar7.png");
+							receiveImg.setAttribute("src", message.memberProfile);
 							receiveImg.setAttribute("alt", "profile");
 						receiveInfo.appendChild(receiveNickname);
 							console.log("보낸사람 닉네임 : " + message);
@@ -570,15 +571,19 @@
 				//console.log(bigCategorySelect.value);
 				smallCategorySelect.innerHTML = `
 					<option value="basis" >세세한 분류</option>
-	                <option value="진로">진로</option>
-	                <option value="돈">돈</option>
+	                <option value="연애/결혼">연애/결혼</option>
+	                <option value="가족/친구">가족/친구</option>
+	                <option value="학교/직장">학교/직장</option>
+	                <option value="사회/이슈">사회/이슈</option>
 	            `;
 			}
 			else if(bigCategorySelect.value == "value2") {
 				smallCategorySelect.innerHTML = `
 					<option value="basis">세세한 분류</option>
-	                <option value="음식">음식</option>
-	                <option value="옷">옷</option>
+	                <option value="점메추">점메추</option>
+	                <option value="깻잎논쟁">깻잎논쟁</option>
+	                <option value="할까말까">할까말까</option>
+	                <option value="최애픽">최애픽</option>
 	            `;
 			}
 			

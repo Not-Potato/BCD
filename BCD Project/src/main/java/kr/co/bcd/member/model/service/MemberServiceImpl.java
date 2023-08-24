@@ -96,6 +96,10 @@ public class MemberServiceImpl implements MemberService {
 		return memberDao.selectProfile(sqlSession, memIdx);
 	}
 
+	@Override
+	public String selectProfileByNickname(String memberNickname) {
+		return memberDao.selectProfileByNickname(sqlSession, memberNickname);
+	}
 
 	
 }

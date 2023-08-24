@@ -67,7 +67,7 @@
 	<!-- 모달 끝 -->
     <div class="container">
 	
-		<!-- board list -->
+		<!-- board list v-->
 		<main>
 
 			<div class="card mt-3" style="border: none;">
@@ -75,27 +75,26 @@
 				<div class="card-header bg-transparent" id="bigCategories">
 					<ul class="nav nav-tabs card-header-tabs">
 						<li class="nav-item">
-							<a class="nav-link active text-primary" aria-current="true"  id=popularTab>인기항목</a>
+							<a class="nav-link active text-primary" aria-current="true"  id=popularTab style="cursor: pointer;">인기항목</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link text-dark"  id="bigWorryTab">Venti Size</a>
+							<a class="nav-link text-dark"  id="bigWorryTab" style="cursor: pointer;">Venti Size</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link text-dark"  id="smallWorryTab">Tall Size</a>
+							<a class="nav-link text-dark"  id="smallWorryTab" style="cursor: pointer;">Tall Size</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link text-dark"  id="allCategoryTab">All</a>
+							<a class="nav-link text-dark"  id="allCategoryTab" style="cursor: pointer;">All</a>
 						</li>
 					</ul>
 				</div>
 				<div class="card-body ps-0">
 				 	<!-- 소분류 -->
 					<div class="mb-2 d-flex gap-1" id="smallCategories">
-						
-						<a class="btn btn-outline-primary" data-category="popular" id="popular1">카테고리1</a>
-						<a class="btn btn-outline-primary" data-category="popular" id="popular2">카테고리2</a>
-						<a class="btn btn-outline-primary" data-category="popular" id="popular3">카테고리3</a>
-						
+					<!-- <input type="hidden" id=" popularCategoriesJson" value="${popularCategoriesJson}">-->
+					<!--<c:forEach var="category" items="${popularCategories}" varStatus="loop">
+							  <a class="btn btn-outline-primary" data-category="popular" id="popular${loop.index + 1}">${category}</a>
+						</c:forEach>-->
 						<a class="btn btn-outline-primary" data-category="bigWorry" id="bigWorry1">연애/결혼</a>
 						<a class="btn btn-outline-primary" data-category="bigWorry" id="bigWorry2">가족/친구</a>
 						<a class="btn btn-outline-primary" data-category="bigWorry" id="bigWorry3">학교/직장</a>
@@ -134,16 +133,7 @@
 				</div>
 				
 				<div>
-					<!-- 드롭다운 정렬 -->
-					<div class="btn-group">
-						<button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-							전체
-						</button>
-						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="#">최신순</a></li>
-							<li><a class="dropdown-item" href="#">참여자순</a></li>
-						</ul>
-					</div>
+					
 				</div>
 			</div>
 			
@@ -158,7 +148,7 @@
 	</c:when>
 	<c:otherwise>
 		<c:forEach var="item" items="${list}" varStatus="loop">
-				<div class="col-xl-3 col-sm-6" onclick="location.href='enter.do?idx=${item.idx}'">
+				<div class="col-xl-3 col-sm-6" onclick="location.href='enter.do?idx=${item.idx}'" style="cursor: pointer;">
 				    <div class="card-shadow card">
 				        <div class="card-body">
 				        	<div class="fw-bold fs-5 mb-2 col-12 d-inline-block text-truncate">
@@ -191,6 +181,8 @@
 <!--            	<button type="button" class="btn btn-link" href="list.do?cpage=${pi.currentPage+1 }" >더보기</button>-->
 <!--      	        	<button type="button" class="btn btn-link" id=nextPageBtn data-page=1 >더보기</button>  -->
      	        	<button type="button" class="btn btn-link" id="nextPageBtn">더보기</button> 
+     	        	<button type="button" class="btn btn-link" id="searchNextPageBtn">더보기</button> 
+     	        	<button type="button" class="btn btn-link" id="categoryNextPageBtn">더보기</button> 
      	        	<input type="hidden" value="${pi.endPage}" id="endPage">
 	        </div>
 	        <div class="mb-3 d-flex justify-content-end">	
@@ -285,8 +277,10 @@
 		const bigCategories= document.getElementById("bigCategories").getElementsByTagName("a");
 		const smallCategories= document.getElementById("smallCategories").getElementsByTagName("a");
 		const selectedBtnTag= document.querySelector(".selectedBtn").getElementsByTagName("a");
-		
 		let selectedCount = 0;
+		
+		//인기항목 json
+		const popularCategories = ${popularCategoriesJson};
 		
 		//active class 없애기
 		function removeActive(){
@@ -299,8 +293,22 @@
 		popularTab.addEventListener("click", function() {
 			removeActive();
 			popularTab.classList.add("active");
-			selectedCategory = "popular"
-			showCategories(selectedCategory);
+			
+		//	for(const category of popularCategories){
+				for(const smallCategory of smallCategories){
+					console.log("chat popularCategories:"+popularCategories);
+				
+				//	if(category.trim()==smallCategory.textContent.trim()){
+					if(popularCategories.includes(smallCategory.textContent.trim())){
+						smallCategory.style.display = "block";
+					}else {
+						smallCategory.style.display = "none";
+					}
+				}
+		//	}
+			
+			//selectedCategory = ""
+			//showCategories(selectedCategory);
 		});
 		bigWorryTab.addEventListener("click", function() {
 			removeActive();
@@ -329,7 +337,7 @@
 		//대분류에 맞는 카테고리 가져오기
 		function showCategories(selectedCategory){
 			for(const category of smallCategories){
-				if (category.getAttribute("data-category") == selectedCategory) {
+				if (category.getAttribute("data-category") == selectedCategory ) {
 	      			category.style.display = "block"; 
 				}else {
 					category.style.display = "none"; 
@@ -344,11 +352,54 @@
 		const selectedBtnIds = new Set();
 	    //클릭된 버튼 넣을 자리
 		const selectedBtnSection = document.querySelector(".selectedBtn");
+		const nextPageBtn = $("#nextPageBtn");
+		const categoryNextPageBtn = $("#categoryNextPageBtn");
+		let categoryPage = 1;
+		let endPage = 1;
+		let categoriesString = "";
+		const selectedCategories = new Set();
 		
 		function selectBtn(){
 			
+			
 			for(const btn of smallCategories){
+				//카테고리 가져오기
+				const category = btn.textContent;
+				
+				
 				btn.addEventListener("click", function(){
+					//초기화
+					categoryPage = 1;
+					endPage = 1;
+					categoriesString = "";
+					
+					if(selectedCategories.has(category)){
+						selectedCategories.delete(category);
+					}else {
+						selectedCategories.add(category);
+					}
+					
+					//set을 배열로 변환
+					const categoriesArray = Array.from(selectedCategories);
+					console.log("selectedCategories.size"+selectedCategories.size);
+					if(selectedCategories.size>0){
+						categoriesString = categoriesArray.join(",");
+						console.log("categoriesString : "+categoriesString);
+					} else {
+						console.log("여기??");
+						//배열 없으면 ""로 내보냄 -> 컨트롤러에서 다시 배열 만드는데 처리
+						categoriesString = "";
+					}
+					
+					//let currentCategoryEndPage = 1;
+					//let currentCategoryContent = "";
+					//endPage = 1;
+					
+					
+					categoryMore(categoriesString, categoryPage);
+					
+					
+					
 					//클릭된 버튼 아이디 가져오는
 					const btnId = this.getAttribute("id");
 					//클릭하면 버튼 색깔 변경되는
@@ -388,6 +439,59 @@
 		}
 		selectBtn();
 		
+		//카테고리 정렬
+		function categoryMore(categoriesString, categoryPage){
+			$.ajax({
+			   type:"GET",
+			   url : "/chat/list.do",
+			   data:{
+				   categories : categoriesString,
+				   cpage : categoryPage
+			   },
+			   contentType: "application/json",
+			   success:function(data){
+					console.log("success");
+					nextPageBtn.hide();
+					const categoryEndPage = $(data).find("#endPage").val();
+					console.log("categoryEndPage:"+categoryEndPage);
+	  				const categoryContent = $(data).find("#cardContainer").html();
+	  				
+	  				if(categoryPage==1){
+		  				$("#cardContainer").empty();
+	  				} 
+	  				
+					if(categoryEndPage<=categoryPage){
+						categoryNextPageBtn.hide(); 
+		 			} else {
+		 				console.log("else")
+		 			//	if (currentCategoryEndPage !== categoryEndPage ) {
+		 			//		currentCategoryEndPage = categoryEndPage;
+					//    }
+		 			//	if (currentCategoryContent !== categoryContent ) {
+		 			//		currentCategoryContent = categoryContent;
+					 //   }
+		 				categoryNextPageBtn.show(); // 다음 페이지가 있을 때는 더보기 버튼을 보여줌
+		 					
+	 				}
+	 				$("#cardContainer").append(categoryContent);
+					//currentCategoryEndPage = categoryEndPage;
+					//currentCategoryContent = categoryContent;
+			   },
+			   error:function(error){
+				   console.error("error : "+error);
+			   }
+			   
+			});
+		
+		}
+		
+		categoryNextPageBtn.click(function(){
+			endPage = 1;
+			categoryPage++;
+			categoryMore(categoriesString, categoryPage);
+	 	});
+		
+		
 		//초기화 버튼
 		const resetBtn = document.getElementById("resetBtn");
 		
@@ -400,6 +504,7 @@
 		}
 		
 		resetBtn.addEventListener("click", function(){
+		
 			for(const btnId of selectedBtnIds){
 				selectedBtnSection.removeChild(document.getElementById(btnId+'-cloned'));
 			}
@@ -409,8 +514,15 @@
 				
 			}
 			selectedBtnIds.clear();
+			selectedCategories.clear();
 			selectedCount = 0;
 			resetBtnShow();
+			console.log("selectedCategorieskkk  ; "+Array.from(selectedCategories).join(","));
+			categoriesString = "";
+			categoryPage=1;
+			endPage = 1;
+			categoryMore(categoriesString, categoryPage);
+			
 			
 		});
 			
@@ -419,36 +531,95 @@
 		/* 더보기 */
 		
 		$(document).ready(function(){
-	 	const nextPageBtn = $("#nextPageBtn");
-	   
-		let	page = 1;
-		
-		nextPageBtn.click(function(){
-//			
-			page++;
-			console.log("page"+page);
-			//location.href="/chat/list.do?cpage="+page;
+		 	const nextPageBtn = $("#nextPageBtn");
+		 	const searchNextPageBtn = $("#searchNextPageBtn");
+		 	const categoryNextPageBtn = $("#categoryNextPageBtn");
+		 	searchNextPageBtn.hide();
+		 	categoryNextPageBtn.hide();
+			let	page = 1;
+			let endPage = 1;
+			const currentUrl = window.location.href;
 			
-			$.ajax({
-				url:"/chat/list.do?cpage="+page,
-				method:"GET",
-				success: function(response){
-					//page++;
-					const content = $(response).find("#cardContainer").html();
-				    endPage = $("#endPage").val();
-				 	console.log("endPage:"+endPage);
-					if(endPage == page){
-						nextPageBtn.hide();
-					}
-					//previousNextPage = nextPage;
-					$("#cardContainer").append(content);
-						
-					
-				}
+			if(currentUrl.includes("searchTxt")){
+				nextPageBtn.hide();
 				
-			})
-			
-		});
+				//쿼리스트링에서 searchTxt 가져오기.
+				// ?searchTxt=""로 반환 -> 첫번째 글자인 ?를 빼면 searchTxt="" 가져옴
+				const queryString = window.location.search.substring(1); 
+				const params = new URLSearchParams(queryString);
+				const searchTxt = params.get("searchTxt");
+				
+				let searchPage = 1;
+		    	let searchEndPage = 1; // endPage 초기화
+		    	
+		    	afterSearch(searchTxt);
+				
+				//더보기 버튼
+				  searchNextPageBtn.click(function(){
+					 searchPage++;
+					 afterSearch(searchTxt);
+				 }); 
+				
+				  function afterSearch(searchTxt){
+				  		
+						console.log("들어왔나 애프터");
+				  		
+				  		$.ajax({
+				  			url : "http://localhost:8080/chat/list.do",
+				  			method:"GET",
+				  			data:{searchTxt : searchTxt,
+				  				  cpage : searchPage},
+				  			success:function(response){
+				  				
+				  				console.log("url:"+window.location.href);
+				  				console.log(searchPage+"searchPage");
+				  				
+				  		
+				  				const searchEndPage = $(response).find("#endPage").val();
+				  				const searchContent = $(response).find("#cardContainer").html();
+								console.log("searchend...Page"+searchEndPage);
+				  				
+				  				if(searchPage==1){
+					  				$("#cardContainer").empty();
+				  				} 
+				  				
+								if(searchEndPage<=searchPage){
+					 				searchNextPageBtn.hide(); 
+					 			} else {
+					 				console.log("else")
+					 				searchNextPageBtn.show(); // 다음 페이지가 있을 때는 더보기 버튼을 보여줌
+					 					
+				 				}
+				 				$("#cardContainer").append(searchContent);
+				
+				  			}//success
+				  		});//ajax
+				  }//afterSearch
+				
+			}
+		
+		
+			nextPageBtn.click(function(){
+				page++;
+				console.log("page"+page);
+				//location.href="/chat/list.do?cpage="+page;
+				
+				$.ajax({
+					url:"/chat/list.do?cpage="+page,
+					method:"GET",
+					success: function(response){
+						//page++;
+						const content = $(response).find("#cardContainer").html();
+					    endPage = $("#endPage").val();
+					 	console.log("endPage:"+endPage);
+						if(endPage <= page){
+							nextPageBtn.hide();
+						}
+						//previousNextPage = nextPage;
+						$("#cardContainer").append(content);
+					}
+				})//ajax
+			});
 		});
 
 		/* 더보기 끝 */

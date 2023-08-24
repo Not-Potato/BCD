@@ -43,6 +43,8 @@ public interface MemberService {
 
 	//프로필 사진 가져오기
 	String selectProfile(int memIdx);
-
+	
+	//프로필 사진 가져오기 (닉네임으로)
+	String selectProfileByNickname(String memberNickname);
 
 }

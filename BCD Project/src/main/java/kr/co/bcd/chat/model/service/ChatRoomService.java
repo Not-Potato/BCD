@@ -8,8 +8,8 @@ import kr.co.bcd.common.paging.model.PageInfo;
 
 public interface ChatRoomService {
 	
-	int selectListCount(String category);
-	List<ChatRoom> selectListAll(PageInfo pi, String category, String searchTxt);
+	int selectListCount(String searchTxt, List<String> selectedCategories);
+	List<ChatRoom> selectListAll(PageInfo pi, List<String> selectedCategories, String searchTxt);
 	//String getParticipants(int idx);
 	int createChatRoom(ChatRoom chatRoom);
 	ChatRoom enterChatRoom(int idx);
@@ -18,4 +18,5 @@ public interface ChatRoomService {
 	void deleteChatMsg(int idx);
 	int modifyChatRoom(ChatRoom chatRoom);
 	List<ChatMsg> previousChat(int idx);
+	List<String> getPopularCategories();
 }

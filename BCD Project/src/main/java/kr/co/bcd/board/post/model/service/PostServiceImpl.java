@@ -24,13 +24,15 @@ public class PostServiceImpl implements PostService {
 	
 	
 	@Override
-	public int selectListCount(List<String> selectedCategories, String status) {
-		return postDao.selectListCount(sqlSession, selectedCategories, status);
+
+	public int selectListCount(List<String> selectedCategories, String keyword, String searchTxt) {
+		return postDao.selectListCount(sqlSession, selectedCategories, keyword, searchTxt);
 	}
 	
 	@Override
-	public List<Post> selectListAll(PageInfo pi, List<String> selectedCategories, String keyword) {
-		return postDao.selectListAll(sqlSession, pi, selectedCategories, keyword);
+
+	public List<Post> selectListAll(PageInfo pi, List<String> selectedCategories, String keyword, String searchTxt) {
+		return postDao.selectListAll(sqlSession, pi, selectedCategories, keyword, searchTxt);
 	}
 
 	@Override
@@ -86,5 +88,13 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public List<Post> selectPopularCategory() {
 		return postDao.selectPopularCategory(sqlSession);
+	}
+
+	public int selectMyListCount(int memIdx) {
+		return postDao.selectMyListCount(sqlSession, memIdx);
+	}
+
+	public List<Post> selectMyListAll(PageInfo pi, int memIdx) {
+		return postDao.selectMyListAll(sqlSession, pi, memIdx);
 	}
 }

@@ -1,8 +1,9 @@
 package kr.co.bcd.board.controller;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.co.bcd.board.comment.model.dto.Comment;
 import kr.co.bcd.board.comment.model.service.CommentServiceImpl;
@@ -48,38 +51,34 @@ public class BoardController {
 	@Autowired
 	private SessionManageController sessionManage;
 	
+	
 	@RequestMapping("/list.do")
 	public String boardList(@RequestParam(value="categories", required = false) String categories, 
 							@RequestParam(value = "status", required = false) String status,
 							@RequestParam(value = "keyword", required = false) String keyword,
+
 							@RequestParam(value = "cpage", defaultValue = "1") int currentPage,
+							@RequestParam(value = "searchTxt", defaultValue = "") String searchTxt,
 							HttpSession session, 
-							Model model){
-		// 선택된 배열
-		List<String> selectedCategories = new ArrayList<String>();
+
+							Model model)throws Exception{
+							
+		//카테고리 리스트
+		List<String> selectedCategories;
+		if(categories == null || categories.equals("")) {
+			selectedCategories = new ArrayList<>(); //카테고리 선택 안할 시 빈 배열 보내기
+		}else {
+			selectedCategories = Arrays.asList(categories.split(",")); //String categories를 ,로 잘라서 배열만듦
+		}
+
 		
 		// 전체 게시글 수 구하기
-		int listCount = 0;
-		
-		// 카테고리 선택 시
-		if ( categories != null && !categories.equals("") ) {			
-			String[] split = categories.split(",");
-			for (String s : split) {
-				selectedCategories.add(s);
-			}
-			System.out.println(selectedCategories);
-//			listCount = postService.selectListCount(selectedCategories, null);
-		// 카테고리 미선택 시
-		} else {
-//			selectedCategories = null;
-		}
-		
-		listCount = postService.selectListCount(selectedCategories, null);
-		System.out.println("전체 게시글 수: " + listCount);
-		
+
+		int listCount = postService.selectListCount(selectedCategories, keyword, searchTxt);
+
 		int pageLimit = 10;		// 보여질 페이지 수
-//		int boardLimit = 16;	// test 중이라 개수 늘림
-		int boardLimit = 4;	// test 중이라 개수 늘림
+		int boardLimit = 16;	// test 중이라 개수 늘림
+//		int boardLimit = 4;	// test 중이라 개수 늘림
 		
 		// 글 번호 뒤에서부터 출력해 주는 변수
 		// 1p --> row = 전체 게시글 수
@@ -92,7 +91,9 @@ public class BoardController {
 		System.out.println("pi: " + pi.getEndPage());
 		
 		// 목록 불러오기
-		List<Post> list = postService.selectListAll(pi, selectedCategories, keyword);
+
+		List<Post> list = postService.selectListAll(pi, selectedCategories, keyword, searchTxt);
+
 		
 		// 1. 작성일 날짜까지만 가져오도록 문자열 자르기
 		// 2. 댓글 수 가져오기
@@ -106,16 +107,20 @@ public class BoardController {
 			p.setWriter( memberService.selectNickname(p.getMemIdx()) );
 			p.setProfile( memberService.selectProfile(p.getMemIdx()) );
 		}
-
 		// 인기 항목 가져오기 (게시글 많은 순으로 3개)
 		List<Post> popularCategory = postService.selectPopularCategory();
-		Map<String, String> popular = new HashMap();
+		String popularCategoryJson = new ObjectMapper().writeValueAsString(popularCategory);
+		//Map<String, String> popular = new HashMap();
 
-		for (Post p : popularCategory) {
-			popular.put(p.getSubCategory(), p.getMainCategory());
-		}
+		//for (Post p : popularCategory) {
+		//	popular.put(p.getSubCategory(), p.getMainCategory());
+		//}
 
-		model.addAttribute("popular", popular);
+
+		//System.out.println(popular);
+
+		model.addAttribute("popularCategoryJson", popularCategoryJson);
+
 		
 		model.addAttribute("list", list);
 		model.addAttribute("row", row);
@@ -128,6 +133,11 @@ public class BoardController {
 	
 	@GetMapping("/detail.do")
 	public String board(@RequestParam(value = "idx") int idx, Model model, HttpSession session, HttpServletRequest request) {
+
+		// TODO: test용 code!! 현재 2번 회원이 접속 중인 것으로 setting
+		//session.setAttribute("memberIdx", 2);
+		
+
 		Post post = postService.detailBoard(idx);
 		
 		// DB 조회 성공 시
@@ -220,4 +230,59 @@ public class BoardController {
 		}
 		
 	}
+	
+
+	//활동 내역
+	@GetMapping("/myList.do")
+	public String myPostList(@RequestParam(value = "cpage", defaultValue = "1") int currentPage,
+							HttpSession session, Model model){
+		
+		int memberIdx = (int) session.getAttribute("memberIdx");
+		System.out.println("memidx:"+memberIdx);
+		
+		// 전체 게시글 수 구하기
+		int listCount = postService.selectMyListCount(memberIdx);
+		int pageLimit = 10;		// 보여질 페이지 수
+		//int boardLimit = 15;	// 한 페이지에 들어갈 게시글 수
+		//TODO: TEST CODE
+		int boardLimit = 16;	// test 중이라 개수 늘림
+		
+		// 글 번호 뒤에서부터 출력해 주는 변수
+		// 1p --> row = 전체 게시글 수
+		// 2p --> row = 전체 게시글 수 - boardLimit
+		// 3p --> row = 전체 게시글 수 - boardLimit * 2
+		int row = listCount - (currentPage - 1) * boardLimit;
+		
+		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+		// 페이징 처리 끝
+		
+		
+		// 목록 불러오기
+		List<Post> list = postService.selectMyListAll(pi, memberIdx);
+		
+		Member m = new Member();
+		
+		// 1. 작성일 날짜까지만 가져오도록 문자열 자르기
+		// 2. 댓글 수 가져오기
+		// 3. 투표 참여자 수 가져오기
+		// 4. 작성자 닉네임 가져오기
+		for (Post p : list) {
+		p.setCreateDate(p.getCreateDate().substring(0, 10));
+		p.setDeadline(p.getDeadline().substring(0, 10));
+		p.setCommentCount( commentService.selectCommentCount(p.getIdx()) );
+		p.setVoteCount( voteService.selectVoteCount(p.getIdx()) );			
+		p.setWriter( memberService.selectNickname(p.getMemIdx()) );
+		p.setProfile( memberService.selectProfile(p.getMemIdx()) );
+		}
+		
+		model.addAttribute("list", list);
+		model.addAttribute("row", row);
+		model.addAttribute("pi", pi);
+		
+		sessionManage.getSessionMsg(session, model);
+		
+		
+			return "member/myList";
+		}
+
 }

@@ -10,6 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -38,8 +40,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kr.co.bcd.board.post.model.dto.Post;
+import kr.co.bcd.board.post.model.service.PostServiceImpl;
 import kr.co.bcd.common.aws.S3UploadController;
 import kr.co.bcd.common.controller.SessionManageController;
+import kr.co.bcd.common.paging.model.PageInfo;
+import kr.co.bcd.common.paging.template.Pagination;
 import kr.co.bcd.member.model.dto.Member;
 import kr.co.bcd.member.model.service.MemberServiceImpl;
 
@@ -64,6 +70,10 @@ public class MemberController {
 	
 	@Autowired
 	private S3UploadController uploadFile;
+	
+	@Autowired
+	private PostServiceImpl postService;
+	
 	
 	// 닉네임 중복여부 (ajax)
 	@RequestMapping("/nicknameCheck.do")
@@ -517,6 +527,6 @@ System.out.println("memberController result : " + result);
 		    return member;
 
 	}
-
+	
 
 }

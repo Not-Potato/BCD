@@ -15,15 +15,16 @@ import kr.co.bcd.common.paging.model.PageInfo;
 @Repository
 public class ChatRoomDao {
 
-	public int selectListCount(String category, SqlSessionTemplate sqlSession) {
+	public int selectListCount(String searchTxt, List<String> selectedCategories, SqlSessionTemplate sqlSession) {
 		Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("category", category);
+        paramMap.put("categories", selectedCategories);
+        paramMap.put("searchTxt", searchTxt);
 		return sqlSession.selectOne("chatMapper.selectListCount",paramMap);
 	}
 
-	public List<ChatRoom> selectListAll(PageInfo pi, String category, String searchTxt, SqlSessionTemplate sqlSession) {
+	public List<ChatRoom> selectListAll(PageInfo pi, List<String> selectedCategories, String searchTxt, SqlSessionTemplate sqlSession) {
 		Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("category", category);
+        paramMap.put("categories", selectedCategories);
         paramMap.put("searchTxt", searchTxt);
 		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
 		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
@@ -61,6 +62,10 @@ public class ChatRoomDao {
 
 	public List<ChatMsg> previousChat(int idx, SqlSessionTemplate sqlSession) {
 		return sqlSession.selectList("chatMapper.previousChat", idx);
+	}
+
+	public List<String> getPopularCategories(SqlSessionTemplate sqlSession) {
+		return sqlSession.selectList("chatMapper.getPopularCategories");
 	}
 
 //	public String getParticipants(int idx, SqlSessionTemplate sqlSession) {

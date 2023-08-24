@@ -16,23 +16,26 @@ import kr.co.bcd.common.paging.model.PageInfo;
 
 @Repository
 public class PostDao {
-	public int selectListCount(SqlSessionTemplate sqlSession, List<String> selectedCategories, String status) {
+
+	public int selectListCount(SqlSessionTemplate sqlSession, List<String> selectedCategories, String keyword, String searchTxt) {
+
 		Map<String, Object> paramMap = new HashMap<>();
-		
-		paramMap.put("categoryList", selectedCategories);
-		
-		if (status != null && !status.isEmpty()) {
-			paramMap.put("status", status);
-		}
-		
-        System.out.println("맵: " + paramMap);
+
+        paramMap.put("categories", selectedCategories);
+        paramMap.put("keyword", keyword);
+        paramMap.put("searchTxt", searchTxt);
+
 		return sqlSession.selectOne("boardMapper.selectListCount", paramMap);
 	}
 
-	public List<Post> selectListAll(SqlSessionTemplate sqlSession, PageInfo pi, List<String> selectedCategories, String keyword) {
+
+	public List<Post> selectListAll(SqlSessionTemplate sqlSession, PageInfo pi, List<String> selectedCategories, String keyword, String searchTxt) {
+
 		Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("categoryList", selectedCategories);
+
+        paramMap.put("categories", selectedCategories);
         paramMap.put("keyword", keyword);
+        paramMap.put("searchTxt", searchTxt);
         
 		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
 		
@@ -82,5 +85,17 @@ public class PostDao {
 	
 	public List<Post> selectPopularCategory(SqlSessionTemplate sqlSession) {
 		return sqlSession.selectList("boardMapper.selectPopularCategory");
+	}
+
+	public int selectMyListCount(SqlSessionTemplate sqlSession, int memIdx) {
+		return sqlSession.selectOne("boardMapper.selectMyListCount", memIdx);
+	}
+
+	public List<Post> selectMyListAll(SqlSessionTemplate sqlSession, PageInfo pi, int memIdx) {
+		
+		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
+		
+		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
+		return sqlSession.selectList("boardMapper.selectMyListAll", memIdx, rowBounds);
 	}
 }
